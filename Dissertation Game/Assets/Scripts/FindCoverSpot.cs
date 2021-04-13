@@ -5,11 +5,11 @@ public class FindCoverSpot : MonoBehaviour
 {
     [SerializeField] float radius;
     [SerializeField] LayerMask layerMask;
+    [SerializeField] int interval;
     public Collider[] hitColliders;
     public List<GameObject> waypoints;
     private WaypointGizmo waypointGizmoScript;
     private Pathfinding pathfinding;
-    private Grid grid;
 
     [SerializeField] List<int> colliderDistances;
 
@@ -18,17 +18,17 @@ public class FindCoverSpot : MonoBehaviour
     private void Awake()
     {
         pathfinding = GetComponent<Pathfinding>();
+        interval = Mathf.RoundToInt(1.0f / Time.deltaTime);
     }
     void Start()
     {
-        FindLayerObjets(layerMask.ToString());   
-        grid = GetComponent<Grid>();
+        colliderDistances = new List<int>();
+        FindLayerObjets(layerMask.ToString());           
     }
 
     // Update is called once per frame
     void Update()
     {
-        colliderDistances.Clear();
         foreach (Collider hitObject in hitColliders)
         {
             waypointGizmoScript = hitObject.GetComponent<WaypointGizmo>();
@@ -57,11 +57,18 @@ public class FindCoverSpot : MonoBehaviour
             //hitObject.GetComponent<Renderer>().material.color = Color.cyan;
         }
 
-        for(int i=0; i<hitColliders.Length; i++)
+        
+        if (Time.frameCount % interval == 0)
         {
-            List<AStarNode> path = pathfinding.FindPath(transform.position, hitColliders[i].transform.position);
-            colliderDistances.Add(path.Count);
+            Debug.Log("Calculate distances");
+            colliderDistances.Clear();
+            for (int i = 0; i < hitColliders.Length; i++)
+            {
+                List<AStarNode> path = pathfinding.FindPath(transform.position, hitColliders[i].transform.position);
+                colliderDistances.Add(path.Count);
+            }
         }
+        
 
     }
     void OnDrawGizmos()

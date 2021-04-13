@@ -20,7 +20,7 @@ public class Grid : MonoBehaviour
     private Pathfinding pathfinding;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
         gridWorldSize = new Vector2(GetComponent<Renderer>().bounds.size.x, GetComponent<Renderer>().bounds.size.z);
         nodeDiameter = nodeRadius * 2;
@@ -32,8 +32,8 @@ public class Grid : MonoBehaviour
 
     public AStarNode NodeFromWorldPosition(Vector3 worldPos)
     {
-        float xPoint = ((worldPos.x + gridWorldSize.x / 2) / gridWorldSize.x);
-        float yPoint = ((worldPos.z + gridWorldSize.y / 2) / gridWorldSize.y);
+        float xPoint = (worldPos.x + gridWorldSize.x / 2) / gridWorldSize.x;
+        float yPoint = (worldPos.z + gridWorldSize.y / 2) / gridWorldSize.y;
 
         xPoint = Mathf.Clamp01(xPoint);
         yPoint = Mathf.Clamp01(yPoint);
@@ -50,17 +50,11 @@ public class Grid : MonoBehaviour
         Vector3 bottomLeft = transform.position - Vector3.right * gridWorldSize.x / 2 - Vector3.forward * gridWorldSize.y / 2;
         for (int i = 0; i<gridSizeX; i++)
         {
-            for(int j=0; j<gridSizeX; j++)
+            for(int j=0; j<gridSizeY; j++)
             {
-                Vector3 worldPoint = bottomLeft + Vector3.right * (j * nodeDiameter + nodeRadius) + Vector3.forward * (i * nodeDiameter + nodeRadius);
-                bool cover = false;
-
-                if(Physics.CheckSphere(worldPoint, nodeRadius, coverMask))
-                {
-                    cover = true;
-                }
-
-                grid[i, j] = new AStarNode(cover, worldPoint, j, i);
+                Vector3 worldPoint = bottomLeft + Vector3.right * (i * nodeDiameter + nodeRadius) + Vector3.forward * (j * nodeDiameter + nodeRadius);
+                bool cover = (Physics.CheckSphere(worldPoint, nodeRadius, coverMask));
+                grid[i, j] = new AStarNode(cover, worldPoint, i, j);
             }
         }
     }
@@ -69,18 +63,18 @@ public class Grid : MonoBehaviour
     {
         List<AStarNode> neighbouringNodes = new List<AStarNode>();
 
-        for (int x = -1; x <= 1; x++)
+        for (int i = -1; i <= 1; i++)
         {
-            for (int y = -1; y <= 1; y++)
+            for (int j = -1; j <= 1; j++)
             {
                 //if we are on the node tha was passed in, skip this iteration.
-                if (x == 0 && y == 0)
+                if (i == 0 && j == 0)
                 {
                     continue;
                 }
 
-                int checkX = node.gridX + x;
-                int checkY = node.gridY + y;
+                int checkX = node.gridX + i;
+                int checkY = node.gridY + j;
 
                 //Make sure the node is within the grid.
                 if (checkX >= 0 && checkX < gridSizeX && checkY >= 0 && checkY < gridSizeY)
@@ -93,32 +87,24 @@ public class Grid : MonoBehaviour
 
         return neighbouringNodes;
     }
-
-    /*
     private void OnDrawGizmos()
     {
         Gizmos.DrawWireCube(transform.position, new Vector3(gridWorldSize.x, 0f, gridWorldSize.y));
 
         if(grid != null)
         {
-            foreach(AStarNode node in grid)
+            foreach (AStarNode node in grid)
             {
-                if (node.isCover)
-                {
-                    Gizmos.color = Color.red;
-                }
-                else
-                {
-                    Gizmos.color = Color.grey;
-                }
-
+                Gizmos.color = (!node.isCover) ? Color.white : Color.red;
                 if(finalPath != null)
                 {
-                    Gizmos.color = Color.blue;
+                    if (finalPath.Contains(node))
+                    {
+                        Gizmos.color = Color.black;
+                    }
                 }
-
-                Gizmos.DrawCube(node.position, Vector3.one * (nodeDiameter - Distance));
+                Gizmos.DrawCube(node.position, Vector3.one * (nodeDiameter - .1f));
             }
         }
-    }*/
+    }
 }

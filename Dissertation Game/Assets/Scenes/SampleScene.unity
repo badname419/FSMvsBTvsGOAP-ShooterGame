@@ -1522,6 +1522,7 @@ GameObject:
   - component: {fileID: 257762465}
   - component: {fileID: 257762464}
   - component: {fileID: 257762467}
+  - component: {fileID: 257762468}
   m_Layer: 7
   m_Name: Enemy
   m_TagString: Untagged
@@ -1638,6 +1639,19 @@ MonoBehaviour:
   hitColliders: []
   waypoints: []
   colliderDistances: 
+--- !u!114 &257762468
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 257762462}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f7fdffec9e315942bc552119ad53ec7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  plane: {fileID: 365236068}
 --- !u!54 &257762470
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -2556,7 +2570,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   gridWorldSize: {x: 0, y: 0}
-  nodeRadius: 1
+  nodeRadius: 0.5
   Distance: 0
 --- !u!1 &365817303
 GameObject:

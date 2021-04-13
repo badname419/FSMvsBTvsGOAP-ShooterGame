@@ -13,8 +13,8 @@ public class AStarNode
     public AStarNode parent;
 
     public int gCost;
-    public int hcost;
-    public int fCost {  get { return gCost + hcost; } }
+    public int hCost;
+    public int fCost {  get { return gCost + hCost; } }
 
     public AStarNode(bool isCover, Vector3 position, int gridX, int gridY)
     {
