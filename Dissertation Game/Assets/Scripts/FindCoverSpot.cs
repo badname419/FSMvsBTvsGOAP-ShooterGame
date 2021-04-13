@@ -6,12 +6,18 @@ public class FindCoverSpot : MonoBehaviour
     [SerializeField] float radius;
     [SerializeField] LayerMask layerMask;
     [SerializeField] int interval;
+
+    public GameObject textObject;
     public Collider[] hitColliders;
     public List<GameObject> waypoints;
     private WaypointGizmo waypointGizmoScript;
     private Pathfinding pathfinding;
 
     [SerializeField] List<int> colliderDistances;
+    private List<GameObject> floatingValues;
+
+    int maxValue;
+    int maxRadiusDistance;
 
     // Start is called before the first frame update
 
@@ -19,6 +25,9 @@ public class FindCoverSpot : MonoBehaviour
     {
         pathfinding = GetComponent<Pathfinding>();
         interval = Mathf.RoundToInt(1.0f / Time.deltaTime);
+        floatingValues = new List<GameObject>();
+        maxValue = 20;
+        maxRadiusDistance = 30;
     }
     void Start()
     {
@@ -29,33 +38,7 @@ public class FindCoverSpot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        foreach (Collider hitObject in hitColliders)
-        {
-            waypointGizmoScript = hitObject.GetComponent<WaypointGizmo>();
-            waypointGizmoScript.SetColor(Color.yellow);
-            //Gizmos.color = Color.yellow;
-            //Vector3 gizmoPosition = hitObject.transform.position;
-            //gizmoPosition.y -= 1f;
-            //Gizmos.DrawCube(gizmoPosition, new Vector3(1.0f, 1.0f, 1.0f));
-            //hitObject.GetComponent<Renderer>().material.color = Color.yellow;
-        }
-
-        hitColliders = Physics.OverlapSphere(gameObject.transform.position, radius, layerMask);
-        
-
-        foreach (Collider hitObject in hitColliders)
-        {
-
-            waypointGizmoScript = hitObject.GetComponent<WaypointGizmo>();
-            waypointGizmoScript.SetColor(Color.cyan);
-
-            //colliderDistances.Add(pathfinding.GetPathLength());
-            //Gizmos.color = Color.cyan;
-            //Vector3 gizmoPosition = hitObject.transform.position;
-            //gizmoPosition.y -= 1f;
-            //Gizmos.DrawCube(gizmoPosition, new Vector3(1.0f, 1.0f, 1.0f));
-            //hitObject.GetComponent<Renderer>().material.color = Color.cyan;
-        }
+        FindNearbyWaypoints();
 
         
         if (Time.frameCount % interval == 0)
@@ -67,6 +50,7 @@ public class FindCoverSpot : MonoBehaviour
                 List<AStarNode> path = pathfinding.FindPath(transform.position, hitColliders[i].transform.position);
                 colliderDistances.Add(path.Count);
             }
+            CalculateNearbyWaypointValue();
         }
         
 
@@ -88,6 +72,48 @@ public class FindCoverSpot : MonoBehaviour
                 waypoints.Add(go);
             }
         }
+    }
+
+    private void FindNearbyWaypoints()
+    {
+        foreach (Collider hitObject in hitColliders)
+        {
+            waypointGizmoScript = hitObject.GetComponent<WaypointGizmo>();
+            waypointGizmoScript.SetColor(Color.yellow);
+        }
+
+        hitColliders = Physics.OverlapSphere(gameObject.transform.position, radius, layerMask);
+
+
+        foreach (Collider hitObject in hitColliders)
+        {
+
+            waypointGizmoScript = hitObject.GetComponent<WaypointGizmo>();
+            waypointGizmoScript.SetColor(Color.cyan);
+        }
+    }
+
+    private void CalculateNearbyWaypointValue()
+    {
+        foreach(GameObject floatingText in floatingValues)
+        {
+            Destroy(floatingText);
+        }
+        floatingValues.Clear();
+
+        for(int i=0; i<hitColliders.Length; i++)
+        {
+            float fValue = (1 - (float)colliderDistances[i] / (float)maxRadiusDistance) * (float)maxValue;
+            int value = Mathf.RoundToInt(fValue);
+
+            Vector3 offset = new Vector3(1f, 0.5f, 0f);
+            Vector3 textPosition = hitColliders[i].transform.position + offset;
+
+            GameObject text = Instantiate(textObject, textPosition, Quaternion.Euler(new Vector3(90, 0, 0)), hitColliders[i].transform);
+            text.GetComponent<TextMesh>().text = value.ToString();
+            floatingValues.Add(text);
+        }
+        
     }
 
 }
