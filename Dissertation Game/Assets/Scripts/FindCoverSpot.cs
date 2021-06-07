@@ -5,16 +5,23 @@ public class FindCoverSpot : MonoBehaviour
 {
     [SerializeField] float radius;
     [SerializeField] LayerMask layerMask;
+    [SerializeField] LayerMask coverMask;
     [SerializeField] int interval;
+    public List<Transform> visibleObjects;
 
     public GameObject textObject;
     public Collider[] hitColliders;
     public List<GameObject> waypoints;
     private WaypointGizmo waypointGizmoScript;
     private Pathfinding pathfinding;
+    private FieldOfView fieldOfView;
+    private EnemyAI enemyAI;
+    private GameObject enemyPlayer;
+    private string playerTag = "Player";
 
     [SerializeField] List<int> colliderDistances;
     private List<GameObject> floatingValues;
+    private List<int> waypointValue;
 
     int maxValue;
     int maxRadiusDistance;
@@ -24,8 +31,14 @@ public class FindCoverSpot : MonoBehaviour
     private void Awake()
     {
         pathfinding = GetComponent<Pathfinding>();
+        fieldOfView = GetComponent<FieldOfView>();
+        enemyAI = GetComponent<EnemyAI>();
+        enemyPlayer = GameObject.FindGameObjectWithTag(playerTag);
         interval = Mathf.RoundToInt(1.0f / Time.deltaTime);
+
         floatingValues = new List<GameObject>();
+        visibleObjects = new List<Transform>();
+        waypointValue = new List<int>();
         maxValue = 20;
         maxRadiusDistance = 30;
     }
@@ -43,15 +56,12 @@ public class FindCoverSpot : MonoBehaviour
         
         if (Time.frameCount % interval == 0)
         {
-            Debug.Log("Calculate distances");
-            colliderDistances.Clear();
-            for (int i = 0; i < hitColliders.Length; i++)
-            {
-                List<AStarNode> path = pathfinding.FindPath(transform.position, hitColliders[i].transform.position);
-                colliderDistances.Add(path.Count);
-            }
+            CalculateDistances();
             CalculateNearbyWaypointValue();
+            CalculateCoverFromPrimary();
+            DrawValues();
         }
+
         
 
     }
@@ -93,27 +103,70 @@ public class FindCoverSpot : MonoBehaviour
         }
     }
 
+    private void CalculateDistances()
+    {
+        Debug.Log("Calculate distances");
+        colliderDistances.Clear();
+        for (int i = 0; i < hitColliders.Length; i++)
+        {
+            List<AStarNode> path = pathfinding.FindPath(transform.position, hitColliders[i].transform.position);
+            colliderDistances.Add(path.Count);
+        }
+    }
+
     private void CalculateNearbyWaypointValue()
     {
-        foreach(GameObject floatingText in floatingValues)
+        for(int i=0; i<hitColliders.Length; i++)
+        {
+            float fValue = (1 - (float)colliderDistances[i] / (float)maxRadiusDistance) * (float)maxValue;
+            int value = Mathf.RoundToInt(fValue);
+            waypointValue.Add(value);
+
+        }
+        
+    }
+
+    private void CalculateCoverFromPrimary()
+    {
+        visibleObjects.Clear();
+        fieldOfView.FindVisibleObjects(enemyAI.viewAngle, coverMask, hitColliders, visibleObjects, enemyPlayer);
+        
+        for(int i=0; i<visibleObjects.Count; i++)
+        {
+            string seenWaypointName = visibleObjects[i].name;
+            for(int j=0; j<hitColliders.Length; j++)
+            {
+                string waypointName = hitColliders[j].name;
+                if (seenWaypointName.Equals(waypointName))
+                {
+                    waypointValue[j] -= 20;
+
+                }
+            }
+        }
+
+    }
+
+    private void DrawValues()
+    {
+        foreach (GameObject floatingText in floatingValues)
         {
             Destroy(floatingText);
         }
         floatingValues.Clear();
 
-        for(int i=0; i<hitColliders.Length; i++)
-        {
-            float fValue = (1 - (float)colliderDistances[i] / (float)maxRadiusDistance) * (float)maxValue;
-            int value = Mathf.RoundToInt(fValue);
+        Vector3 offset = new Vector3(1f, 0.5f, 0f);
 
-            Vector3 offset = new Vector3(1f, 0.5f, 0f);
+        for (int i = 0; i < hitColliders.Length; i++)
+        {
             Vector3 textPosition = hitColliders[i].transform.position + offset;
 
             GameObject text = Instantiate(textObject, textPosition, Quaternion.Euler(new Vector3(90, 0, 0)), hitColliders[i].transform);
-            text.GetComponent<TextMesh>().text = value.ToString();
+            text.GetComponent<TextMesh>().text = waypointValue[i].ToString();
             floatingValues.Add(text);
         }
-        
+
+        waypointValue.Clear();
     }
 
 }

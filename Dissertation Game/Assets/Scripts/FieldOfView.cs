@@ -51,6 +51,38 @@ public class FieldOfView : MonoBehaviour
         return visibleEnemies;
     }
 
+    public List<Transform> FindVisibleObjects(float viewRadius, float viewAngle, LayerMask coverMask, LayerMask targetObjects, List<Transform> visibleObjects, GameObject ai)
+    {
+        visibleObjects.Clear();
+        Collider[] objectsInViewRadius = Physics.OverlapSphere(ai.transform.position, viewRadius, targetObjects);
+
+        return IterateThroughRadius(objectsInViewRadius, viewAngle, ai, coverMask, visibleObjects);
+    }
+
+    public List<Transform> FindVisibleObjects(float viewAngle, LayerMask coverMask, Collider[] targetObjects, List<Transform> visibleObjects, GameObject ai)
+    {
+        return IterateThroughRadius(targetObjects, viewAngle, ai, coverMask, visibleObjects);
+    }
+
+    private List<Transform> IterateThroughRadius(Collider[] objectsInViewRadius, float viewAngle, GameObject ai, LayerMask coverMask, List<Transform> visibleObjects)
+    {
+        for (int i = 0; i < objectsInViewRadius.Length; i++)
+        {
+            Transform enemy = objectsInViewRadius[i].transform;
+            Vector3 dirToEnemy = (enemy.position - ai.transform.position).normalized;
+            if (Vector3.Angle(ai.transform.forward, dirToEnemy) < viewAngle / 2)
+            {
+                float distToEnemy = Vector3.Distance(ai.transform.position, enemy.position);
+
+                if (!Physics.Raycast(ai.transform.position, dirToEnemy, distToEnemy, coverMask))
+                {
+                    visibleObjects.Add(enemy);
+                }
+            }
+        }
+        return visibleObjects;
+    }
+
     /*public Vector3 DirFromAngle(float angleInDegress, bool angleIsGlobal)
     {
         if (!angleIsGlobal)

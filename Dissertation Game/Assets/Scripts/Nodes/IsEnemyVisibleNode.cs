@@ -30,7 +30,7 @@ public class IsEnemyVisibleNode : Node
 
     public override NodeState Evaluate()
     {
-        visibleEnemies = fieldOfView.FindVisibleEnemies(viewRadius, viewAngle, enemyMask, coverMask, visibleEnemies, ai);
+        visibleEnemies = fieldOfView.FindVisibleObjects(viewRadius, viewAngle, coverMask, enemyMask, visibleEnemies, ai);
         return (visibleEnemies.Count != 0) ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }
