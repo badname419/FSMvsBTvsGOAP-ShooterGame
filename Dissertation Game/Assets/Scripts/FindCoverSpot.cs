@@ -130,6 +130,7 @@ public class FindCoverSpot : MonoBehaviour
 
             int distance = CalculateDistances(nearbyWaypoint);
             int value = CalculateDistanceValue(distance);
+
             //Debug
             if (seenModifier)
             {
@@ -197,7 +198,7 @@ public class FindCoverSpot : MonoBehaviour
         Vector3 enemyPosition = enemyPlayer.transform.position;
         float dist = Vector3.Distance(waypointPosition, enemyPosition);
 
-        return (dist <= maxPrefRange && dist >= minPrefRange) ? true : false;
+        return (dist <= maxPrefRange && dist >= minPrefRange);
     }
 
     private void DrawValues()
@@ -206,14 +207,11 @@ public class FindCoverSpot : MonoBehaviour
 
         foreach (Waypoint waypoint in waypointList)
         {
-            //Destroy(waypoint.floatingText);
-
             Collider waypointCollider = waypoint.waypointCollider;
             Vector3 textPosition = waypointCollider.transform.position + offset;
             GameObject text = Instantiate(textObject, textPosition, Quaternion.Euler(new Vector3(90, 0, 0)), waypointCollider.transform);
             text.GetComponent<TextMesh>().text = waypoint.value.ToString();
             waypoint.floatingText = text;
-            //Destroy(text);
         }
     }
 
