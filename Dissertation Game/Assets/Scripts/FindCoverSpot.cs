@@ -66,7 +66,7 @@ public class FindCoverSpot : MonoBehaviour
         {
             DestroyFloatingText();
             bestCover = FindBestCover();
-            DrawValues();
+            DrawFloatingText();
         }
 
     }
@@ -201,7 +201,7 @@ public class FindCoverSpot : MonoBehaviour
         return (dist <= maxPrefRange && dist >= minPrefRange);
     }
 
-    private void DrawValues()
+    private void DrawFloatingText()
     {
         Vector3 offset = new Vector3(1f, 0.5f, 0f);
 
