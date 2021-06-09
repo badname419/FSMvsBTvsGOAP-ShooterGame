@@ -1633,14 +1633,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   radius: 25.94
-  layerMask:
+  waypointMask:
     serializedVersion: 2
     m_Bits: 512
+  coverMask:
+    serializedVersion: 2
+    m_Bits: 64
   interval: 10
+  minPrefRange: 3.99
+  maxPrefRange: 0
   textObject: {fileID: 4935171831928698146, guid: bd96f1345ce36cb4f844e35641b6fe37, type: 3}
-  hitColliders: []
+  waypointColliders: []
   waypoints: []
-  colliderDistances: 
+  bestCover: {fileID: 0}
 --- !u!114 &257762468
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6003,7 +6008,7 @@ GameObject:
   - component: {fileID: 886983147}
   m_Layer: 8
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
