@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
 public class FindCoverSpot : MonoBehaviour
 {
     [SerializeField] float radius;
@@ -9,15 +10,22 @@ public class FindCoverSpot : MonoBehaviour
     [SerializeField] int interval;
     [SerializeField] float minPrefRange;
     [SerializeField] float maxPrefRange;
+    [SerializeField] float closeWallThreshold;
     [SerializeField] GameObject textObject;
     [SerializeField] Collider[] waypointColliders;
     [SerializeField] List<GameObject> waypoints;
     [SerializeField] GameObject bestCover;
     [SerializeField] int waypointNotSeenModifier;
     [SerializeField] int waypointInPrefRangeModifier;
+    [SerializeField] int waypointWallCloseModifier;
 
     [SerializeField] bool seenModifier;
     [SerializeField] bool rangeModifier;
+    [SerializeField] bool wallClosenessModifier;
+
+    [SerializeField] bool wallGizmo;
+    //Debug
+    [SerializeField] bool updateWallsBounds;
 
 
     private WaypointGizmo waypointGizmoScript;
@@ -26,9 +34,13 @@ public class FindCoverSpot : MonoBehaviour
     private EnemyAI enemyAI;
     private GameObject enemyPlayer;
     private string playerTag = "Player";
+    private string wallTag = "Wall";
     private int maxValue;
     private int maxRadiusDistance;
     private List<Waypoint> waypointList;
+    private List<Transform> enemyVisibleWaypoints;
+    private GameObject[] walls;
+    private List<Bounds> wallsBounds = new List<Bounds>();
 
     private class Waypoint
     {
@@ -45,17 +57,21 @@ public class FindCoverSpot : MonoBehaviour
         pathfinding = GetComponent<Pathfinding>();
         fieldOfView = GetComponent<FieldOfView>();
         enemyAI = GetComponent<EnemyAI>();
+
         enemyPlayer = GameObject.FindGameObjectWithTag(playerTag);
         interval = Mathf.RoundToInt(1.0f / Time.deltaTime);
 
         waypointList = new List<Waypoint>();
+        enemyVisibleWaypoints = new List<Transform>();
 
         maxValue = 20;
-        maxRadiusDistance = 30;
+        maxRadiusDistance = 30;      
     }
     void Start()
     {
-        FindLayerObjets(waypointMask.ToString());           
+        FindLayerObjects(waypointMask.ToString());
+        walls = FindTagObjects(wallTag);
+        CalculateExpandedWallBounds();
     }
 
     // Update is called once per frame
@@ -67,19 +83,39 @@ public class FindCoverSpot : MonoBehaviour
             DestroyFloatingText();
             bestCover = FindBestCover();
             DrawFloatingText();
-        }
 
+            //Debug
+            if (updateWallsBounds)
+            {
+                CalculateExpandedWallBounds();
+            }
+        }
     }
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(gameObject.transform.position, radius);
         Gizmos.color = Color.yellow;
-        Gizmos.DrawWireSphere(enemyPlayer.transform.position, minPrefRange);
-        Gizmos.DrawWireSphere(enemyPlayer.transform.position, maxPrefRange);
+        if (enemyPlayer != null && rangeModifier)
+        {
+            Gizmos.DrawWireSphere(enemyPlayer.transform.position, minPrefRange);
+            Gizmos.DrawWireSphere(enemyPlayer.transform.position, maxPrefRange);
+        }
+
+        if (wallGizmo)
+        {
+            Gizmos.color = Color.blue;
+            if (wallsBounds.Count != 0)
+            {
+                foreach (Bounds wallBound in wallsBounds)
+                {
+                    Gizmos.DrawWireCube(wallBound.center, wallBound.size);
+                }
+            }
+        }
     }
 
-    void FindLayerObjets(string layerName)
+    void FindLayerObjects(string layerName)
     {
         GameObject[] gos = GameObject.FindObjectsOfType(typeof(GameObject)) as GameObject[];
         foreach (GameObject go in gos)
@@ -88,6 +124,32 @@ public class FindCoverSpot : MonoBehaviour
             {
                 waypoints.Add(go);
             }
+        }
+    }
+
+    private GameObject[] FindTagObjects(string tagName)
+    {
+        return GameObject.FindGameObjectsWithTag(tagName);
+    }
+
+    private void CalculateExpandedWallBounds()
+    {
+        Collider m_Collider;
+        Vector3 m_Center;
+        Vector3 m_Size;
+
+        wallsBounds.Clear();
+
+        foreach (GameObject wall in walls)
+        {
+            m_Collider = wall.GetComponent<Collider>();
+            m_Center = m_Collider.bounds.center;
+            m_Size = m_Collider.bounds.size;
+
+            Bounds b = new Bounds(m_Center, m_Size);
+            b.Expand(closeWallThreshold);
+
+            wallsBounds.Add(b);
         }
     }
 
@@ -146,6 +208,13 @@ public class FindCoverSpot : MonoBehaviour
                     value += waypointInPrefRangeModifier;
                 }
             }
+            if (wallClosenessModifier)
+            {
+                if (IsCloseToWall(nearbyWaypoint))
+                {
+                    value += waypointWallCloseModifier;
+                }
+            }
 
 
             Waypoint waypoint = new Waypoint
@@ -175,7 +244,7 @@ public class FindCoverSpot : MonoBehaviour
 
     private bool IsWaypointSeen(Collider waypoint)
     {
-        List<Transform> enemyVisibleWaypoints = new List<Transform>();
+        enemyVisibleWaypoints.Clear();
         enemyVisibleWaypoints =  fieldOfView.FindVisibleObjects(enemyAI.viewAngle, coverMask, waypointColliders, enemyVisibleWaypoints, enemyPlayer);
         
         for(int i=0; i<enemyVisibleWaypoints.Count; i++)
@@ -211,6 +280,10 @@ public class FindCoverSpot : MonoBehaviour
             Vector3 textPosition = waypointCollider.transform.position + offset;
             GameObject text = Instantiate(textObject, textPosition, Quaternion.Euler(new Vector3(90, 0, 0)), waypointCollider.transform);
             text.GetComponent<TextMesh>().text = waypoint.value.ToString();
+            if (waypointCollider.gameObject.Equals(bestCover))
+            {
+                text.GetComponent<TextMesh>().color = Color.red;
+            }
             waypoint.floatingText = text;
         }
     }
@@ -223,6 +296,42 @@ public class FindCoverSpot : MonoBehaviour
         }
     }
 
-    
+    private bool IsCloseToWall(Collider waypoint)
+    {
+        Vector3 position = waypoint.transform.position;
+
+        //Convert from Transform to Collider
+        List<Collider> seenWaypoints = new List<Collider>();
+        foreach (Transform visibleWaypoint in enemyVisibleWaypoints)
+        {
+            seenWaypoints.Add(visibleWaypoint.GetComponent<Collider>());
+        }
+
+        //Check if the given waypoint not seen by the enemy
+        if (!seenWaypoints.Contains(waypoint))
+        {
+            foreach(Bounds wallBound in wallsBounds)
+            {
+                if (wallBound.Contains(position))
+                {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    private List<Collider> FindHiddenWaypoints()
+    {
+        List<Collider> seenWaypoints = new List<Collider>();
+        foreach(Transform visibleWaypoint in enemyVisibleWaypoints)
+        {
+            seenWaypoints.Add(visibleWaypoint.GetComponent<Collider>());
+        }
+
+        return waypointColliders.Except(seenWaypoints).ToList();
+
+    }
 
 }

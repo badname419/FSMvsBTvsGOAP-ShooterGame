@@ -8,19 +8,19 @@ public class FieldOfViewEditor : Editor
 {
     void OnSceneGUI()
     {
-        EnemyAI fow = (EnemyAI)target;
+        EnemyAI fov = (EnemyAI)target;
         Handles.color = Color.white;
-        Handles.DrawWireArc(fow.transform.position, Vector3.up, Vector3.forward, 360, fow.viewRadius);
-        Vector3 viewAngleA = DirFromAngle(-fow.viewAngle / 2, false, fow.transform);
-        Vector3 viewAngleB = DirFromAngle(fow.viewAngle / 2, false, fow.transform);
+        Handles.DrawWireArc(fov.transform.position, Vector3.up, Vector3.forward, 360, fov.viewRadius);
+        Vector3 viewAngleA = DirFromAngle(-fov.viewAngle / 2, false, fov.transform);
+        Vector3 viewAngleB = DirFromAngle(fov.viewAngle / 2, false, fov.transform);
 
-        Handles.DrawLine(fow.transform.position, fow.transform.position + viewAngleA * fow.viewRadius);
-        Handles.DrawLine(fow.transform.position, fow.transform.position + viewAngleB * fow.viewRadius);
+        Handles.DrawLine(fov.transform.position, fov.transform.position + viewAngleA * fov.viewRadius);
+        Handles.DrawLine(fov.transform.position, fov.transform.position + viewAngleB * fov.viewRadius);
 
         Handles.color = Color.red;
-        foreach(Transform visibleEnemy in fow.visibleEnemies)
+        foreach(Transform visibleEnemy in fov.visibleEnemies)
         {
-            Handles.DrawLine(fow.transform.position, visibleEnemy.position);
+            Handles.DrawLine(fov.transform.position, visibleEnemy.position);
         }
     }
 

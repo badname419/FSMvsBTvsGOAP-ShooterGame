@@ -51,6 +51,7 @@ public class FieldOfView : MonoBehaviour
         return visibleEnemies;
     }
 
+    //Use OverlapSphere first to determine all colliders around the object, then limit only to those between the viewing angles
     public List<Transform> FindVisibleObjects(float viewRadius, float viewAngle, LayerMask coverMask, LayerMask targetObjects, List<Transform> visibleObjects, GameObject ai)
     {
         visibleObjects.Clear();
@@ -59,6 +60,7 @@ public class FieldOfView : MonoBehaviour
         return IterateThroughRadius(objectsInViewRadius, viewAngle, ai, coverMask, visibleObjects);
     }
 
+    //If the list of colliders is already available, use this one
     public List<Transform> FindVisibleObjects(float viewAngle, LayerMask coverMask, Collider[] targetObjects, List<Transform> visibleObjects, GameObject ai)
     {
         return IterateThroughRadius(targetObjects, viewAngle, ai, coverMask, visibleObjects);
@@ -82,13 +84,4 @@ public class FieldOfView : MonoBehaviour
         }
         return visibleObjects;
     }
-
-    /*public Vector3 DirFromAngle(float angleInDegress, bool angleIsGlobal)
-    {
-        if (!angleIsGlobal)
-        {
-            angleInDegress += ai.transform.eulerAngles.y;
-        }
-        return new Vector3(Mathf.Sin(angleInDegress * Mathf.Deg2Rad), 0, Mathf.Cos(angleInDegress * Mathf.Deg2Rad));
-    }*/
 }
