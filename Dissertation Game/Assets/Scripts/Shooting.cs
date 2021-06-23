@@ -22,12 +22,6 @@ public class Shooting : MonoBehaviour
     private void Update()
 	{
 		timePassed += Time.deltaTime;
-		/*
-		if (Input.GetMouseButtonDown(0))
-		{
-			Shoot();
-		}
-		*/
 
 	}
 

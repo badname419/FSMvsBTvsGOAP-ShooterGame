@@ -17,8 +17,6 @@ public class Grid : MonoBehaviour
     float nodeDiameter;
     int gridSizeX, gridSizeY;
 
-    private Pathfinding pathfinding;
-
     // Start is called before the first frame update
     void Start()
     {
@@ -27,7 +25,6 @@ public class Grid : MonoBehaviour
         gridSizeX = Mathf.RoundToInt(gridWorldSize.x / nodeDiameter);
         gridSizeY = Mathf.RoundToInt(gridWorldSize.y / nodeDiameter);
         CreateGrid();
-        pathfinding = GetComponent<Pathfinding>();
     }
 
     public AStarNode NodeFromWorldPosition(Vector3 worldPos)
