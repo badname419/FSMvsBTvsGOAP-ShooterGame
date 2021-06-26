@@ -13,6 +13,6 @@ public class IdleAction: Action
 
     private void DoNothing()
     {
-        Debug.Log("IDLE");
+        //Debug.Log("IDLE");
     }
 }

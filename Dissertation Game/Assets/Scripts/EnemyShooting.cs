@@ -27,6 +27,11 @@ public class EnemyShooting : MonoBehaviour
 
 	public void Shoot()
 	{
-			Instantiate(bullet.transform, bulletSpawnPoint.transform.position, bulletSpawnPoint.transform.rotation);
+		Vector3 rot = bulletSpawnPoint.transform.rotation.eulerAngles;
+		rot = new Vector3(rot.x, rot.y + 90, rot.z);
+
+		Vector3 pos = bulletSpawnPoint.transform.position;
+		pos = new Vector3(pos.x, pos.y, pos.z);
+		Instantiate(bullet.transform, pos, Quaternion.Euler(rot));
 	}
 }

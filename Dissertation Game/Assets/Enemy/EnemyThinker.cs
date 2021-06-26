@@ -5,7 +5,7 @@ using UnityEngine;
 public class EnemyThinker : MonoBehaviour
 {
     public Pathfinding pathfinding;
-    public KnownEnemies knownEnemies;
+    public KnownEnemiesBlackboard knownEnemies;
 
 
     void Start()
@@ -13,7 +13,7 @@ public class EnemyThinker : MonoBehaviour
         
     }
 
-    public void Setup(Transform spawnPoint, Pathfinding pathfinding, KnownEnemies knownEnemies)
+    public void Setup(Transform spawnPoint, Pathfinding pathfinding, KnownEnemiesBlackboard knownEnemies)
     {
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;

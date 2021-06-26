@@ -5,7 +5,6 @@ using UnityEngine;
 [CreateAssetMenu(menuName = "AI/State")]
 public class State : ScriptableObject
 {
-
     public Action[] actions;
     public Transition[] transitions;
     public Color sceneGizmoColor = Color.grey;
@@ -32,7 +31,7 @@ public class State : ScriptableObject
 
             for (int j = 0; j < transitions[i].decision.Length; j++)
             {
-                decisionSucceeded = transitions[i].decision[i].Decide(controller);
+                decisionSucceeded = transitions[i].decision[j].Decide(controller);
                 if (!decisionSucceeded)
                 {
                     break;
@@ -46,6 +45,11 @@ public class State : ScriptableObject
             else
             {
                 controller.TransitionToState(transitions[i].falseState);
+            }
+
+            if (decisionSucceeded)
+            {
+                break;
             }
         }
     }

@@ -18,4 +18,6 @@ public class EnemyStats : ScriptableObject
     public LayerMask enemyLayer;
     public LayerMask coverMask;
 
+    public float rotationSpeed = 10f;
+
 }

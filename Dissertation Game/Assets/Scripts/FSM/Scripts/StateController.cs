@@ -19,12 +19,14 @@ public class StateController : MonoBehaviour
     [HideInInspector] public EnemyShooting enemyShooting;
     [HideInInspector] public List<Transform> wayPointList;
     [HideInInspector] public int nextWayPoint;
-    [HideInInspector] public Transform spottedEnemy;
+    [HideInInspector] public Transform closestEnemy;
+    [HideInInspector] public Vector3 lastKnownEnemyLoc;
     [HideInInspector] public float distanceToEnemy;
     [HideInInspector] public float stateTimeElapsed;
     [HideInInspector] public EnemyThinker enemyThinker;
     [HideInInspector] public float lastShotTime;
 
+    [HideInInspector] public Vector3 walkingTarget;
     private bool aiActive;
 
 
@@ -90,6 +92,7 @@ public class StateController : MonoBehaviour
 
     private void OnExitState()
     {
+        navMeshAgent.isStopped = true;
         stateTimeElapsed = 0;
     }
 }

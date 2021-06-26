@@ -10,9 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bffb75611d798434390e9b2aec31f6e8, type: 3}
-  m_Name: Search Enemy
+  m_Name: ChaseState
   m_EditorClassIdentifier: 
-  actions: []
+  actions:
+  - {fileID: 11400000, guid: f626f1fea5bda904893603da94b931cc, type: 2}
   transitions:
   - decision:
     - {fileID: 11400000, guid: b9a4e51b026d6e64ba75691db0fc1ef3, type: 2}

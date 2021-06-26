@@ -19,6 +19,8 @@ public class LookDecision : Decision
         Vector3 position = controller.gameObject.transform.position;
         Collider[] enemiesInViewRadius = Physics.OverlapSphere(position, controller.enemyStats.viewRadius, controller.enemyStats.enemyLayer);
 
+        List<Transform> visibleEnemiesList = new List<Transform>();
+
         for (int i = 0; i < enemiesInViewRadius.Length; i++)
         {
             Transform enemy = enemiesInViewRadius[i].transform;
@@ -29,15 +31,16 @@ public class LookDecision : Decision
 
                 if (!Physics.Raycast(controller.gameObject.transform.position, dirToEnemy, distToEnemy, controller.enemyStats.coverMask))
                 {
-                    controller.enemyThinker.knownEnemies.AddEnemy(enemy);
-                    //controller.enemyBlackboard.AddEnemy(enemy);
+                    visibleEnemiesList.Add(enemy);
+                    controller.enemyThinker.knownEnemies.UpdateEnemyList(enemy);
                 }
             }
         }
 
-        if (controller.enemyThinker.knownEnemies.enemyTransforms.Count != 0)
+        if (visibleEnemiesList.Count != 0)
         {
-            controller.spottedEnemy = ChooseTarget(controller);
+            controller.closestEnemy = ChooseTarget(controller, visibleEnemiesList);
+            controller.walkingTarget = controller.closestEnemy.position;
             return true;
         }
         else
@@ -47,16 +50,16 @@ public class LookDecision : Decision
  
     }
 
-    private Transform ChooseTarget(StateController controller)
+    private Transform ChooseTarget(StateController controller, List<Transform> visibleEnemiesList)
     {
-        KnownEnemies knownEnemies = controller.enemyThinker.knownEnemies;
+        //KnownEnemies knownEnemies = controller.enemyThinker.knownEnemies;
         //Blackboard blackboard = controller.enemyBlackboard;
         float shortestDistance = Mathf.Infinity;
         int index = 0;
 
-        for(int i=0; i < knownEnemies.enemyTransforms.Count; i++)
+        for(int i=0; i < visibleEnemiesList.Count; i++)
         {
-            float distance = Vector3.Distance(controller.gameObject.transform.position, knownEnemies.enemyPositions[i]);
+            float distance = Vector3.Distance(controller.gameObject.transform.position, visibleEnemiesList[i].position);
             if(distance < shortestDistance)
             {
                 shortestDistance = distance;
@@ -64,6 +67,6 @@ public class LookDecision : Decision
             }
         }
 
-        return knownEnemies.enemyTransforms[index];
+        return visibleEnemiesList[index];
     }
 }

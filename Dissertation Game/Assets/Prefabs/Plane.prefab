@@ -14,7 +14,6 @@ GameObject:
   - component: {fileID: 76288284474082539}
   - component: {fileID: 76288284474082535}
   - component: {fileID: 76288284474082532}
-  - component: {fileID: -3772008675293124695}
   m_Layer: 0
   m_Name: Plane
   m_TagString: Untagged
@@ -137,23 +136,5 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   gridWorldSize: {x: 0, y: 0}
-  nodeRadius: 0.5
-  Distance: 0
---- !u!114 &-3772008675293124695
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 76288284474082538}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 64bc3ce19393ed34cba8d6b4af0a20ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  coverMask:
-    serializedVersion: 2
-    m_Bits: 64
-  gridWorldSize: {x: 0, y: 0}
-  nodeRadius: 0
+  nodeRadius: 1
   Distance: 0

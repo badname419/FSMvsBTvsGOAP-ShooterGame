@@ -8,6 +8,7 @@ public class Blackboard : ScriptableObject
 {
     public List<Transform> enemyTransforms = new List<Transform>();
     public List<Vector3> enemyPositions = new List<Vector3>();
+    public List<Vector3> enemyPreviousPositions = new List<Vector3>();
 
     [HideInInspector] public void AddEnemy(Transform transform)
     {
@@ -17,7 +18,11 @@ public class Blackboard : ScriptableObject
             {
                 if (enemyTransforms[i].Equals(transform))
                 {
-                    enemyPositions[i] = transform.position;
+                    if (enemyPositions[i] != transform.position)
+                    {
+                        enemyPreviousPositions[i] = enemyPositions[i];
+                        enemyPositions[i] = transform.position;
+                    }
                     break;
                 }
 
@@ -25,6 +30,7 @@ public class Blackboard : ScriptableObject
                 {
                     enemyTransforms.Add(transform);
                     enemyPositions.Add(transform.position);
+                    enemyPreviousPositions.Add(transform.position);
                 }
             }
         }
@@ -32,6 +38,7 @@ public class Blackboard : ScriptableObject
         {
             enemyTransforms.Add(transform);
             enemyPositions.Add(transform.position);
+            enemyPreviousPositions.Add(transform.position);
         }
     }
 

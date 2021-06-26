@@ -5,23 +5,19 @@ using UnityEngine;
 
 public class Pathfinding : MonoBehaviour
 {
+    [SerializeField] GameObject plane;
     Grid grid;
     private Transform startPosition;
     private Transform targetPosition;
 
     private void Awake()
     {
-        grid = GetComponent<Grid>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        //FindPath(startPosition.position, targetPosition.position);
+        grid = plane.GetComponent<Grid>();
     }
 
     public List<AStarNode> FindPath(Vector3 startPos, Vector3 targetPos)
     {
+        int k = 0;
         AStarNode startNode = grid.NodeFromWorldPosition(startPos);
         AStarNode targetNode = grid.NodeFromWorldPosition(targetPos);
 
@@ -30,37 +26,42 @@ public class Pathfinding : MonoBehaviour
 
         openList.Add(startNode);
 
-        while(openList.Count > 0)
+        while (openList.Count > 0)
         {
             AStarNode currentNode = openList[0];
-            for(int i=1; i<openList.Count; i++)
+            for (int i = 1; i < openList.Count; i++)
             {
-                if(openList[i].fCost < currentNode.fCost || openList[i].fCost == currentNode.fCost && openList[i].hcost < currentNode.hcost)
+                if (openList[i].fCost < currentNode.fCost || openList[i].fCost == currentNode.fCost)
                 {
-                    currentNode = openList[i];
+                    if (openList[i].hCost < currentNode.hCost)
+                    {
+                        currentNode = openList[i];
+                    }
                 }
             }
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
-            if(currentNode == targetNode)
+            if (currentNode == targetNode)
             {
                 GetFinalPath(startNode, targetNode);
+                return grid.finalPath;
             }
 
-            foreach(AStarNode neighbourNode in grid.GetNeighbouringNodes(currentNode))
+            foreach (AStarNode neighbourNode in grid.GetNeighbouringNodes(currentNode))
             {
-                if(!neighbourNode.isCover || closedList.Contains(neighbourNode))
+                k++;
+                if (neighbourNode.isCover || closedList.Contains(neighbourNode))
                 {
                     continue;
                 }
 
                 int moveCost = currentNode.gCost + getManhattanDistance(currentNode, neighbourNode);
 
-                if(moveCost < neighbourNode.gCost || !openList.Contains(neighbourNode))
+                if (moveCost < neighbourNode.gCost || !openList.Contains(neighbourNode))
                 {
                     neighbourNode.gCost = moveCost;
-                    neighbourNode.hcost = getManhattanDistance(neighbourNode, targetNode);
+                    neighbourNode.hCost = getManhattanDistance(neighbourNode, targetNode);
                     neighbourNode.parent = currentNode;
 
                     if (!openList.Contains(neighbourNode))
@@ -76,10 +77,10 @@ public class Pathfinding : MonoBehaviour
 
     private int getManhattanDistance(AStarNode nodeA, AStarNode nodeB)
     {
-        int iX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
-        int iY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
+        int disX = Mathf.Abs(nodeA.gridX - nodeB.gridX);
+        int disY = Mathf.Abs(nodeA.gridY - nodeB.gridY);
 
-        return iX + iY;
+        return disX + disY;
     }
 
     private void GetFinalPath(AStarNode startNode, AStarNode targetNode)
