@@ -15,6 +15,9 @@ public class PlayerMovement : MonoBehaviour
     private Rigidbody rigidbody;
 
     public GameObject camera;
+    Vector3 distantForward;
+    Vector3 distantRight;
+    Vector3 distantLeft;
 
 
     // Start is called before the first frame update
@@ -55,5 +58,31 @@ public class PlayerMovement : MonoBehaviour
         {
             transform.Translate(0, 0, -moveSpeed * Time.deltaTime, Space.World);
         }
+
+        //Debug
+        Vector3 forward = transform.forward;
+        forward.y = 0;
+        float headingAngle = Quaternion.LookRotation(forward).eulerAngles.y;
+
+        float radius = 10f;
+        distantForward = transform.position + forward * radius;
+
+        Vector3 rightVector = Quaternion.Euler(0, 120, 0) * forward;
+        distantRight = transform.position + rightVector * radius;
+
+        Vector3 leftVector = Quaternion.Euler(0, 240, 0) * forward;
+        distantLeft = transform.position + leftVector * radius;
+    }
+
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.blue;
+        Gizmos.DrawLine(transform.position, distantForward);
+
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawLine(transform.position, distantRight);
+
+        Gizmos.color = Color.green;
+        Gizmos.DrawLine(transform.position, distantLeft);
     }
 }

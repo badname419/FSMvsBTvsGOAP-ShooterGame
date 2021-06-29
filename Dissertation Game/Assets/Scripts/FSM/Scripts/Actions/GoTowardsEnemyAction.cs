@@ -9,22 +9,16 @@ public class GoTowardsEnemyAction : Action
     public override void Act(StateController controller)
     {
         NavMeshAgent agent = controller.navMeshAgent;
-        Vector3 target = ChooseTarget(controller);
 
-        float distance = Vector3.Distance(target, agent.transform.position);
+        int closestEnemyIndex = ChooseTarget(controller);
+        controller.closestEnemyIndex = closestEnemyIndex;
+        controller.walkingTarget = controller.enemyThinker.knownEnemies.knownEnemiesList[closestEnemyIndex].previousPosition;
 
-        if (distance > 0.2f)
-        {
-            agent.isStopped = false;
-            agent.SetDestination(target);
-        }
-        else
-        {
-            agent.isStopped = true;
-        }
+        agent.isStopped = false;
+        agent.SetDestination(controller.walkingTarget);
     }
 
-    private Vector3 ChooseTarget(StateController controller)
+    private int ChooseTarget(StateController controller)
     {
         int index = 0;
         float shortestDistance = Mathf.Infinity;
@@ -34,7 +28,7 @@ public class GoTowardsEnemyAction : Action
         // Compare distances to the known enemies
         for(int i=0; i<knownEnemies.knownEnemiesList.Count; i++)
         {
-            float distance = Vector3.Distance(position1, knownEnemies.knownEnemiesList[i].currentPosition);
+            float distance = Vector3.Distance(position1, knownEnemies.knownEnemiesList[i].previousPosition);
             if (distance < shortestDistance)
             {
                 shortestDistance = distance;
@@ -42,6 +36,6 @@ public class GoTowardsEnemyAction : Action
             }
         }
 
-        return knownEnemies.knownEnemiesList[index].currentPosition;
+        return index;
     }
 }

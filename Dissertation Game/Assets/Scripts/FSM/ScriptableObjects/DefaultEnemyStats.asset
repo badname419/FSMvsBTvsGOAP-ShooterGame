@@ -17,7 +17,7 @@ MonoBehaviour:
   attackRate: 0.6
   shootingDamage: 30
   viewRadius: 68
-  viewAngle: 108
+  viewAngle: 138
   maxHp: 100
   hpThreshold: 30
   enemyLayer:
@@ -26,3 +26,4 @@ MonoBehaviour:
   coverMask:
     serializedVersion: 2
     m_Bits: 64
+  rotationSpeed: 10

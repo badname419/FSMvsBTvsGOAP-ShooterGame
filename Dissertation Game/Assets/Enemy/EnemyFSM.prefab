@@ -246,8 +246,8 @@ MonoBehaviour:
   - {fileID: 0}
   bulletSpawnPoint: {fileID: 4679247325823122217}
   waitTime: 0.45
-  viewRadius: 68
-  viewAngle: 108
+  viewRadius: 68.83
+  viewAngle: 138
   enemyMask:
     serializedVersion: 2
     m_Bits: 256
@@ -337,15 +337,19 @@ MonoBehaviour:
   bulletSpawnPoint: {fileID: 4679247325823122217}
   remainState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
   currentHP: 100
+  targetProximityThreshold: 3
   navMeshAgent: {fileID: 0}
   enemyShooting: {fileID: 0}
   wayPointList: []
+  enemyThinker: {fileID: 0}
   nextWayPoint: 0
-  spottedEnemy: {fileID: 0}
   distanceToEnemy: 0
   stateTimeElapsed: 0
-  enemyThinker: {fileID: 0}
   lastShotTime: 0
+  lastKnownEnemyLoc: {x: 0, y: 0, z: 0}
+  closestEnemy: {fileID: 0}
+  closestEnemyIndex: 0
+  walkingTarget: {x: 0, y: 0, z: 0}
 --- !u!114 &4679247325785446870
 MonoBehaviour:
   m_ObjectHideFlags: 0

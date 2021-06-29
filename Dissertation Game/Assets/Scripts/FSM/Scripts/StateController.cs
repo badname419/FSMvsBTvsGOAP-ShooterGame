@@ -6,27 +6,39 @@ using UnityEngine.AI;
 
 public class StateController : MonoBehaviour
 {
-
     public State currentState;
     public EnemyStats enemyStats;
     public Blackboard enemyBlackboard;
     public GameObject bulletSpawnPoint;
     public State remainState;
     public float currentHP;
+    public float targetProximityThreshold;
 
 
     [HideInInspector] public NavMeshAgent navMeshAgent;
     [HideInInspector] public EnemyShooting enemyShooting;
     [HideInInspector] public List<Transform> wayPointList;
-    [HideInInspector] public int nextWayPoint;
-    [HideInInspector] public Transform closestEnemy;
-    [HideInInspector] public Vector3 lastKnownEnemyLoc;
+    [HideInInspector] public EnemyThinker enemyThinker;
+
+    [HideInInspector] public int nextWayPoint;  
     [HideInInspector] public float distanceToEnemy;
     [HideInInspector] public float stateTimeElapsed;
-    [HideInInspector] public EnemyThinker enemyThinker;
-    [HideInInspector] public float lastShotTime;
+    [HideInInspector] public float lastShotTime; 
 
+    // For Chasing and searching
+    [HideInInspector] public Transform closestEnemy;
+    [HideInInspector] public int closestEnemyIndex;
     [HideInInspector] public Vector3 walkingTarget;
+    [HideInInspector] public Vector3 lastKnownEnemyLoc;
+
+    [HideInInspector] public int numOfRotations;
+    [HideInInspector] public int totalRotations;
+    [HideInInspector] public Vector3 forwardRotationTarget;
+    [HideInInspector] public Vector3 rightRotationTarget;
+    [HideInInspector] public Vector3 leftRotationTarget;
+    [HideInInspector] public Vector3[] targetArray;
+
+
     private bool aiActive;
 
 
@@ -36,6 +48,9 @@ public class StateController : MonoBehaviour
         navMeshAgent = GetComponent<NavMeshAgent>();
         enemyThinker = GetComponent<EnemyThinker>();
         currentHP = enemyStats.maxHp;
+        numOfRotations = 0;
+        totalRotations = 5;
+        targetArray = new Vector3[totalRotations];
     }
 
     public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager)
@@ -64,8 +79,8 @@ public class StateController : MonoBehaviour
     {
         //if (currentState != null && eyes != null)
         //{
-            //Gizmos.color = currentState.sceneGizmoColor;
-            //Gizmos.DrawWireSphere(eyes.position, enemyStats.lookSphereCastRadius);
+        //Gizmos.color = currentState.sceneGizmoColor;
+        //Gizmos.DrawWireSphere(eyes.position, enemyStats.lookSphereCastRadius);
         //}
     }
 
@@ -74,6 +89,7 @@ public class StateController : MonoBehaviour
         if (nextState != remainState)
         {
             currentState = nextState;
+            GetComponent<Renderer>().material.SetColor("_Color", currentState.sceneGizmoColor);
             OnExitState();
         }
     }
@@ -93,6 +109,13 @@ public class StateController : MonoBehaviour
     private void OnExitState()
     {
         navMeshAgent.isStopped = true;
+        if(forwardRotationTarget != Vector3.zero)
+        {
+            forwardRotationTarget = Vector3.zero;
+            leftRotationTarget = Vector3.zero;
+            rightRotationTarget = Vector3.zero;
+            numOfRotations = 0;
+        }  
         stateTimeElapsed = 0;
     }
 }

@@ -10,14 +10,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: bffb75611d798434390e9b2aec31f6e8, type: 3}
-  m_Name: Idle Enemy
+  m_Name: SearchingState
   m_EditorClassIdentifier: 
-  actions:
-  - {fileID: 11400000, guid: a9b30aac6097dc34ba5a76c3cc85d006, type: 2}
+  actions: []
   transitions:
   - decision:
     - {fileID: 11400000, guid: b9a4e51b026d6e64ba75691db0fc1ef3, type: 2}
-    - {fileID: 11400000, guid: 3735ae98179e09e42ad5f5b6a7d19c24, type: 2}
+    - {fileID: 11400000, guid: ad628811d7658bc45b649e14800f17f3, type: 2}
     trueState: {fileID: 11400000, guid: 80a77fe9d904de44aa6d89bf744a1464, type: 2}
     falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
-  sceneGizmoColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
+  - decision:
+    - {fileID: 11400000, guid: 6b5ed08d0faca5d4783cf9e72dbaccf8, type: 2}
+    trueState: {fileID: 11400000, guid: a4a77c5bc078dc440b27cb7bf5e789ff, type: 2}
+    falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
+  sceneGizmoColor: {r: 0.25872195, g: 0.72916836, b: 0.9622642, a: 1}

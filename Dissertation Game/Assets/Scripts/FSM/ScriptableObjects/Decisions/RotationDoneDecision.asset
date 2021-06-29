@@ -9,6 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d788de70f5171d944be23da682c1ae0d, type: 3}
-  m_Name: GoTowardsEnemyAction
+  m_Script: {fileID: 11500000, guid: 2dfb4a90522f55f489db9adc889330bb, type: 3}
+  m_Name: RotationDoneDecision
   m_EditorClassIdentifier: 

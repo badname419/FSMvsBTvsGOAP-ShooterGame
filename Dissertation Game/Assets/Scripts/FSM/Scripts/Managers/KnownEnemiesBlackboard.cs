@@ -74,12 +74,16 @@ public class KnownEnemiesBlackboard
         {
             AddEnemy(transform);
         }
-        Debug.LogWarning(knownEnemiesList.Count);
     }
 
     public bool IsEmpty()
     {
-        return knownEnemiesList.Count > 0 ? false : true;
+        return knownEnemiesList.Count == 0;
+    }
+
+    public void RemoveAtIndex(int index)
+    {
+        knownEnemiesList.RemoveAt(index);
     }
 
     private void UpdateEnemy(Vector3 newPosition)

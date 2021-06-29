@@ -1334,7 +1334,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52bff80e6fa398740a9967a7882a43a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numOfEnemies: 1
+  numOfEnemies: 3
   spawnPoints:
   - {fileID: 1853110326}
   - {fileID: 1238480171}
