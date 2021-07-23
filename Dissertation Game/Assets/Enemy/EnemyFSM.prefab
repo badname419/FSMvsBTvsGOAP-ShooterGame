@@ -117,7 +117,7 @@ GameObject:
   - component: {fileID: 81493570573625472}
   m_Layer: 7
   m_Name: EnemyFSM
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -346,10 +346,16 @@ MonoBehaviour:
   distanceToEnemy: 0
   stateTimeElapsed: 0
   lastShotTime: 0
-  lastKnownEnemyLoc: {x: 0, y: 0, z: 0}
   closestEnemy: {fileID: 0}
   closestEnemyIndex: 0
   walkingTarget: {x: 0, y: 0, z: 0}
+  lastKnownEnemyLoc: {x: 0, y: 0, z: 0}
+  numOfRotations: 0
+  totalRotations: 0
+  forwardRotationTarget: {x: 0, y: 0, z: 0}
+  rightRotationTarget: {x: 0, y: 0, z: 0}
+  leftRotationTarget: {x: 0, y: 0, z: 0}
+  targetArray: []
 --- !u!114 &4679247325785446870
 MonoBehaviour:
   m_ObjectHideFlags: 0

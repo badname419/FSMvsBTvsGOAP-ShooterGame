@@ -20,6 +20,7 @@ public class GoTowardsEnemyAction : Action
 
     private int ChooseTarget(StateController controller)
     {
+
         int index = 0;
         float shortestDistance = Mathf.Infinity;
         Vector3 position1 = controller.transform.position;

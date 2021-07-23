@@ -14,17 +14,24 @@ public class FieldOfView : MonoBehaviour
     private List<Transform> visibleEnemies = new List<Transform>();
     private GameObject ai;*/
 
-    /*private void Start()
+    private string enemyTag = "Enemy";
+    private EnemyStats enemyStats;
+
+    private void Start()
     {
-        //StartCoroutine("FindEnemiesWithDelay", .2f);
-    }*/
+        if (this.CompareTag(enemyTag))
+        {
+            enemyStats = GetComponent<EnemyStats>();
+            StartCoroutine("FindEnemiesWithDelay", .2f);
+        }
+    }
 
     IEnumerator FindEnemiesWithDelay(float delay)
     {
         while (true)
         {
             yield return new WaitForSeconds(delay);
-            //FindVisibleEnemies();
+            //FindVisibleEnemies(enemyStats.viewRadius, enemyStats.viewAngle, );
         }
     }
 

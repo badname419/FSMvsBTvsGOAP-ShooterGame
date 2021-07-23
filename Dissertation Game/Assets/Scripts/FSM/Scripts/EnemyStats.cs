@@ -21,4 +21,7 @@ public class EnemyStats : ScriptableObject
     public float rotationSpeed = 10f;
     public float rotationAngle = 120f;
 
+    public float aggroDistance = 1000f;
+    public float arrivalDistance = 1.5f;
+
 }

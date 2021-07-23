@@ -37,6 +37,8 @@ public class EnemyAI : MonoBehaviour
 
     private Node topNode;
 
+    public EnemyStats enemyStats;
+
     private float _currentHealth;
 
     public float currentHealth
