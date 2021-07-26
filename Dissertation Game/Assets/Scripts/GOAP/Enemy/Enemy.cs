@@ -33,7 +33,7 @@ public class Enemy : GeneralEnemy
 	public override HashSet<KeyValuePair<string, object>> CreateGoalState()
 	{
 		HashSet<KeyValuePair<string, object>> goal = new HashSet<KeyValuePair<string, object>>();
-		goal.Add(new KeyValuePair<string, object>("findPlayer", true));
+		goal.Add(new KeyValuePair<string, object>("seeEnemy", true));
 		goal.Add(new KeyValuePair<string, object>("attackPlayer", true));
 		goal.Add(new KeyValuePair<string, object>("stayAlive", true));
 

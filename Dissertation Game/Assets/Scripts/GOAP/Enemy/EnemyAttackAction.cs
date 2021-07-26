@@ -19,7 +19,7 @@ public class EnemyAttackAction : GOAPAction
 	public override void ResetGA()
 	{
 		attacked = false;
-		target = null;
+		target = transform.position;
 	}
 
 	public override bool IsActionFinished()
@@ -35,7 +35,7 @@ public class EnemyAttackAction : GOAPAction
 	public override bool CheckPrecondition(GameObject agent)
 	{
 		Enemy currEnemy = agent.GetComponent<Enemy>();
-		target = currEnemy.gameObject;
+		target = currEnemy.gameObject.transform.position;
 		return LookForEnemies(currEnemy);
 	}
 

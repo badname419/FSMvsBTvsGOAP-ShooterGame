@@ -37,8 +37,6 @@ public class EnemyAI : MonoBehaviour
 
     private Node topNode;
 
-    public EnemyStats enemyStats;
-
     private float _currentHealth;
 
     public float currentHealth
@@ -70,7 +68,7 @@ public class EnemyAI : MonoBehaviour
         RangeNode chasingRangeNode = new RangeNode(chasingRange, playerTransform, transform);
         RangeNode shootingRangeNode = new RangeNode(shootingRange, playerTransform, transform);
         ShootNode shootNode = new ShootNode(agent, this, playerTransform, bulletSpawnPoint, bullet, waitTime, gameObject);
-        IsEnemyVisibleNode enemyVisibleNode = new IsEnemyVisibleNode(viewRadius, viewAngle, enemyMask, coverMask, visibleEnemies, gameObject);
+        IsEnemyVisibleNode enemyVisibleNode = new IsEnemyVisibleNode(visibleEnemies, gameObject);
 
         Sequence chaseSequence = new Sequence(new List<Node> { chasingRangeNode, chaseNode });
         Sequence shootSequence = new Sequence(new List<Node> { enemyVisibleNode, shootNode });

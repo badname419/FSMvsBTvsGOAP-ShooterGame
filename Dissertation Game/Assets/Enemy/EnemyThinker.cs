@@ -4,14 +4,9 @@ using UnityEngine;
 
 public class EnemyThinker : MonoBehaviour
 {
-    public Pathfinding pathfinding;
+    [HideInInspector] public Pathfinding pathfinding;
     public KnownEnemiesBlackboard knownEnemies;
-
-
-    void Start()
-    {
-        
-    }
+    public EnemyStats enemyStats; 
 
     public void Setup(Transform spawnPoint, Pathfinding pathfinding, KnownEnemiesBlackboard knownEnemies)
     {

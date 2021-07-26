@@ -24,4 +24,6 @@ public class EnemyStats : ScriptableObject
     public float aggroDistance = 1000f;
     public float arrivalDistance = 1.5f;
 
+    public int maxRotations = 5;
+
 }

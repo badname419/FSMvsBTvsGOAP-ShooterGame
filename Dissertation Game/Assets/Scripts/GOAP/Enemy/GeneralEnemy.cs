@@ -99,14 +99,13 @@ public abstract class GeneralEnemy : MonoBehaviour, IGOAP
 
 	public virtual bool MoveAgentToAction(GOAPAction nextAction)
 	{
-		Debug.Log("Something");
-		float dist = Vector3.Distance(transform.position, nextAction.target.transform.position);
+		float dist = Vector3.Distance(transform.position, nextAction.target);
 
 		if(dist < enemyStats.aggroDistance)
         {
 			GetComponent<NavMeshAgent>().isStopped = false;
-			GetComponent<NavMeshAgent>().SetDestination(nextAction.target.transform.position);//Let the nav mesh do the work
-			Vector3 v3LookDirection = nextAction.target.transform.position - transform.position;//Look at the target
+			GetComponent<NavMeshAgent>().SetDestination(nextAction.target);//Let the nav mesh do the work
+			Vector3 v3LookDirection = nextAction.target - transform.position;//Look at the target
 			v3LookDirection.y = 0;
 			Quaternion qRotation = Quaternion.LookRotation(v3LookDirection);
 			transform.rotation = Quaternion.Slerp(transform.rotation, qRotation, 0.005f);

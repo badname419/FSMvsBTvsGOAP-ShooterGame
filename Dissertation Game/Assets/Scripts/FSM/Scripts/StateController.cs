@@ -49,7 +49,7 @@ public class StateController : MonoBehaviour
         enemyThinker = GetComponent<EnemyThinker>();
         currentHP = enemyStats.maxHp;
         numOfRotations = 0;
-        totalRotations = 5;
+        totalRotations = enemyStats.maxRotations;
         targetArray = new Vector3[totalRotations];
     }
 

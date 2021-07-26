@@ -106,7 +106,7 @@ public sealed class GOAPAgent : MonoBehaviour
 		moveToState = (fsm, gameObject) => {
 
 			GOAPAction action = currentActions.Peek();
-			if (action.NeedsToBeInRange() && action.target == null)
+			if (action.NeedsToBeInRange() && action.target == Vector3.zero)
 			{
 				fsm.PopState();
 				fsm.PopState();
@@ -163,7 +163,7 @@ public sealed class GOAPAgent : MonoBehaviour
 				}
 				else
 				{
-					Debug.Log("not range");
+					//Debug.Log("not range");
 					fsm.PushState(moveToState);
 				}
 			}

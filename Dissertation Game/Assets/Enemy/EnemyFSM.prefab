@@ -110,9 +110,9 @@ GameObject:
   - component: {fileID: 4679247325785446866}
   - component: {fileID: 4679247325785446877}
   - component: {fileID: 4679247325785446876}
+  - component: {fileID: 4679247325785446872}
   - component: {fileID: 4679247325785446879}
   - component: {fileID: 4679247325785446878}
-  - component: {fileID: 4679247325785446872}
   - component: {fileID: 4679247325785446870}
   - component: {fileID: 81493570573625472}
   m_Layer: 7
@@ -278,47 +278,6 @@ NavMeshAgent:
   m_BaseOffset: 0.5
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
---- !u!114 &4679247325785446879
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4679247325785446874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 10d6b3be86356b546bb61eba8412b65e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &4679247325785446878
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4679247325785446874}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 27ceae8840fbe58448714b7522e0fdda, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  radius: 25
-  waypointMask:
-    serializedVersion: 2
-    m_Bits: 512
-  coverMask:
-    serializedVersion: 2
-    m_Bits: 64
-  textObject: {fileID: 4308742135965690343, guid: 02ea4491d06578b44a4575b0d185dff6, type: 3}
-  waypointColliders: []
-  waypoints: []
-  bestCover: {fileID: 0}
-  seenModifier: 1
-  rangeModifier: 1
-  wallClosenessModifier: 1
-  wallGizmo: 0
-  updateWallsBounds: 0
-  findCoverValues: {fileID: 11400000, guid: e1e16349402c405429d139370b6d53dc, type: 2}
 --- !u!114 &4679247325785446872
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356,6 +315,50 @@ MonoBehaviour:
   rightRotationTarget: {x: 0, y: 0, z: 0}
   leftRotationTarget: {x: 0, y: 0, z: 0}
   targetArray: []
+--- !u!114 &4679247325785446879
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4679247325785446874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 10d6b3be86356b546bb61eba8412b65e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seesEnemy: 0
+  closestEnemyPosition: {x: 0, y: 0, z: 0}
+  lastKnownEnemyPosition: {x: 0, y: 0, z: 0}
+--- !u!114 &4679247325785446878
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4679247325785446874}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 27ceae8840fbe58448714b7522e0fdda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  radius: 25
+  waypointMask:
+    serializedVersion: 2
+    m_Bits: 512
+  coverMask:
+    serializedVersion: 2
+    m_Bits: 64
+  textObject: {fileID: 4308742135965690343, guid: 02ea4491d06578b44a4575b0d185dff6, type: 3}
+  waypointColliders: []
+  waypoints: []
+  bestCover: {fileID: 0}
+  seenModifier: 1
+  rangeModifier: 1
+  wallClosenessModifier: 1
+  wallGizmo: 0
+  updateWallsBounds: 0
+  findCoverValues: {fileID: 11400000, guid: e1e16349402c405429d139370b6d53dc, type: 2}
 --- !u!114 &4679247325785446870
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -369,6 +372,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathfinding: {fileID: 0}
+  enemyStats: {fileID: 0}
 --- !u!114 &81493570573625472
 MonoBehaviour:
   m_ObjectHideFlags: 0

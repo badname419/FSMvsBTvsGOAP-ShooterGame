@@ -11,9 +11,18 @@ public abstract class GOAPAction : MonoBehaviour
 
 	public float cost = 1f;
 
-	public GameObject target;
+	public Vector3 target;
 
-	public GOAPAction()
+	internal FieldOfView fieldOfView;
+	internal EnemyThinker enemyThinker;
+
+	private void Awake()
+    {
+		fieldOfView = GetComponent<FieldOfView>();
+		enemyThinker = GetComponent<EnemyThinker>();
+	}
+
+    public GOAPAction()
 	{
 		preconditions = new HashSet<KeyValuePair<string, object>>();
 		effects = new HashSet<KeyValuePair<string, object>>();
@@ -22,7 +31,7 @@ public abstract class GOAPAction : MonoBehaviour
 	public void ResetAction()
 	{
 		inRange = false;
-		target = null;
+		target = Vector3.zero;
 		ResetGA();
 	}
 
