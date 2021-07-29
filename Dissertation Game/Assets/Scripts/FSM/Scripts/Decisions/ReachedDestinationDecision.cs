@@ -15,15 +15,15 @@ public class ReachedDestinationDecision : Decision
 
     private bool CheckIfDestinationReached(StateController controller)
     {
-        float distance = Vector3.Distance(controller.walkingTarget, controller.transform.position);
+        float distance = Vector3.Distance(controller.enemyThinker.walkingTarget, controller.transform.position);
 
         if (distance < controller.targetProximityThreshold)
         {
             //Remove the enemy from the knownEnemiesBlackboard,
             //The enemy's current location isn't known anymore
             KnownEnemiesBlackboard knownEnemies = controller.enemyThinker.knownEnemies;
-            controller.lastKnownEnemyLoc = knownEnemies.knownEnemiesList[controller.closestEnemyIndex].currentPosition;
-            controller.enemyThinker.knownEnemies.RemoveAtIndex(controller.closestEnemyIndex);
+            controller.enemyThinker.lastKnownEnemyLoc = knownEnemies.knownEnemiesList[controller.enemyThinker.closestEnemyIndex].currentPosition;
+            controller.enemyThinker.knownEnemies.RemoveAtIndex(controller.enemyThinker.closestEnemyIndex);
             return true;
         }
         else

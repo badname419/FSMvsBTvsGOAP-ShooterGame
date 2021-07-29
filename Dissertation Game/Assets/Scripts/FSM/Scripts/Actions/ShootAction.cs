@@ -12,10 +12,14 @@ public class ShootAction : Action
 
     private void Shoot(StateController controller)
     {
-        if (controller.CheckIfPeriodElapsed(controller.lastShotTime, controller.enemyStats.attackRate))
+        Debug.LogWarning(controller.enemyThinker.lastShotTime);
+        Debug.LogWarning(controller.enemyThinker.stateTimeElapsed);
+        Debug.LogWarning(controller.enemyStats.attackRate);
+        if (controller.CheckIfPeriodElapsed(controller.enemyThinker.lastShotTime, controller.enemyStats.attackRate))
         {
-            controller.lastShotTime = controller.stateTimeElapsed;
-            controller.enemyShooting.Shoot();
+            Debug.LogWarning("Shoot 2");
+            controller.enemyThinker.lastShotTime = controller.enemyThinker.stateTimeElapsed;
+            controller.enemyShooting.Shoot(controller.enemyStats.shootingWaitTime);
         }
     }
 }

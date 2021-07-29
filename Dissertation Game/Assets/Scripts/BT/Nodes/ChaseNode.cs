@@ -5,25 +5,25 @@ using UnityEngine.AI;
 
 public class ChaseNode : Node
 {
-    private Transform target;
     private NavMeshAgent agent;
     private EnemyAI ai;
 
-    public ChaseNode(Transform target, NavMeshAgent agent, EnemyAI ai)
+    public ChaseNode(NavMeshAgent agent, EnemyAI ai)
     {
-        this.target = target;
         this.agent = agent;
         this.ai = ai;
     }
 
     public override NodeState Evaluate()
     {
+        Vector3 target = ai.fieldOfView.lastKnownEnemyPosition;
+
         ai.SetColor(Color.yellow);
-        float distance = Vector3.Distance(target.position, agent.transform.position);
+        float distance = Vector3.Distance(target, agent.transform.position);
         if(distance > 0.2f)
         {
             agent.isStopped = false;
-            agent.SetDestination(target.position);
+            agent.SetDestination(target);
             return NodeState.RUNNING;
         }
         else

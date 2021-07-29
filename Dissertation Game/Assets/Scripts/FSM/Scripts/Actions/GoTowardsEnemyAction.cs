@@ -11,11 +11,11 @@ public class GoTowardsEnemyAction : Action
         NavMeshAgent agent = controller.navMeshAgent;
 
         int closestEnemyIndex = ChooseTarget(controller);
-        controller.closestEnemyIndex = closestEnemyIndex;
-        controller.walkingTarget = controller.enemyThinker.knownEnemies.knownEnemiesList[closestEnemyIndex].previousPosition;
+        controller.enemyThinker.closestEnemyIndex = closestEnemyIndex;
+        controller.enemyThinker.walkingTarget = controller.enemyThinker.knownEnemies.knownEnemiesList[closestEnemyIndex].previousPosition;
 
         agent.isStopped = false;
-        agent.SetDestination(controller.walkingTarget);
+        agent.SetDestination(controller.enemyThinker.walkingTarget);
     }
 
     private int ChooseTarget(StateController controller)

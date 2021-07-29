@@ -16,41 +16,20 @@ public class StateController : MonoBehaviour
 
 
     [HideInInspector] public NavMeshAgent navMeshAgent;
-    [HideInInspector] public EnemyShooting enemyShooting;
+    [HideInInspector] public Shooting enemyShooting;
     [HideInInspector] public List<Transform> wayPointList;
     [HideInInspector] public EnemyThinker enemyThinker;
 
-    [HideInInspector] public int nextWayPoint;  
-    [HideInInspector] public float distanceToEnemy;
-    [HideInInspector] public float stateTimeElapsed;
-    [HideInInspector] public float lastShotTime; 
-
-    // For Chasing and searching
-    [HideInInspector] public Transform closestEnemy;
-    [HideInInspector] public int closestEnemyIndex;
-    [HideInInspector] public Vector3 walkingTarget;
-    [HideInInspector] public Vector3 lastKnownEnemyLoc;
-
-    [HideInInspector] public int numOfRotations;
-    [HideInInspector] public int totalRotations;
-    [HideInInspector] public Vector3 forwardRotationTarget;
-    [HideInInspector] public Vector3 rightRotationTarget;
-    [HideInInspector] public Vector3 leftRotationTarget;
-    [HideInInspector] public Vector3[] targetArray;
-
-
+    
     private bool aiActive;
 
 
     void Awake()
     {
-        enemyShooting = GetComponent<EnemyShooting>();
+        enemyShooting = GetComponent<Shooting>();
         navMeshAgent = GetComponent<NavMeshAgent>();
         enemyThinker = GetComponent<EnemyThinker>();
         currentHP = enemyStats.maxHp;
-        numOfRotations = 0;
-        totalRotations = enemyStats.maxRotations;
-        targetArray = new Vector3[totalRotations];
     }
 
     public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager)
@@ -96,26 +75,26 @@ public class StateController : MonoBehaviour
 
     public bool CheckIfCountDownElapsed(float duration)
     {
-        stateTimeElapsed += Time.deltaTime;
-        return (stateTimeElapsed >= duration);
+        enemyThinker.stateTimeElapsed += Time.deltaTime;
+        return (enemyThinker.stateTimeElapsed >= duration);
     }
 
     public bool CheckIfPeriodElapsed(float lastOccurance, float duration)
     {
-        stateTimeElapsed += Time.deltaTime;
-        return (stateTimeElapsed - lastOccurance >= duration);
+        enemyThinker.stateTimeElapsed += Time.deltaTime;
+        return (enemyThinker.stateTimeElapsed >= duration);
     }
 
     private void OnExitState()
     {
         navMeshAgent.isStopped = true;
-        if(forwardRotationTarget != Vector3.zero)
+        if(enemyThinker.forwardRotationTarget != Vector3.zero)
         {
-            forwardRotationTarget = Vector3.zero;
-            leftRotationTarget = Vector3.zero;
-            rightRotationTarget = Vector3.zero;
-            numOfRotations = 0;
-        }  
-        stateTimeElapsed = 0;
+            enemyThinker.forwardRotationTarget = Vector3.zero;
+            enemyThinker.leftRotationTarget = Vector3.zero;
+            enemyThinker.rightRotationTarget = Vector3.zero;
+            enemyThinker.numOfRotations = 0;
+        }
+        enemyThinker.stateTimeElapsed = 0;
     }
 }

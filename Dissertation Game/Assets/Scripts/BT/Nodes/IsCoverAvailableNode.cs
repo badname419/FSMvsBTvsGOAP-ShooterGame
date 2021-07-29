@@ -9,18 +9,24 @@ public class IsCoverAvailableNode : Node
     private Transform target;
     private EnemyAI ai;
 
-    public IsCoverAvailableNode(Cover[] availableCovers, Transform target, EnemyAI ai)
+    //Clean this up by removing the unused variables and functions.
+    public IsCoverAvailableNode(EnemyAI ai)
     {
-        this.availableCovers = availableCovers;
-        this.target = target;
+        //this.availableCovers = availableCovers;
+        //this.target = target;
         this.ai = ai;
     }
 
     public override NodeState Evaluate()
     {
+        GameObject bestCoverSpot = ai.coverSystem.FindBestCover();
+        ai.SetBestCoverSpot(bestCoverSpot.transform);
+        return IsSpotValid(bestCoverSpot) ? NodeState.SUCCESS : NodeState.FAILURE;
+
+        /*
         Transform bestSpot = FindBestCoverSpot();
         ai.SetBestCoverSpot(bestSpot);
-        return bestSpot != null ? NodeState.SUCCESS : NodeState.FAILURE;
+        return bestSpot != null ? NodeState.SUCCESS : NodeState.FAILURE;*/
     }
 
     private Transform FindBestCoverSpot()
@@ -64,6 +70,24 @@ public class IsCoverAvailableNode : Node
             }
         }
         return bestSpot;
+    }
+
+    private bool IsSpotValid(GameObject spot)
+    {
+        bool isEnemyVisible = ai.fieldOfView.seesEnemy;
+        if(isEnemyVisible == false)
+        {
+            return true;
+        }
+
+        RaycastHit hit;
+        Vector3 direction = (ai.fieldOfView.closestEnemyPosition - spot.transform.position).normalized;
+        float distance = Vector3.Distance(spot.transform.position, ai.fieldOfView.closestEnemyPosition);
+        if(!Physics.Raycast(spot.transform.position, direction, distance, ai.enemyStats.coverMask))
+        {
+            return false;
+        }
+        return true;
     }
 
     private bool CheckIfSpotIsValid(Transform spot)

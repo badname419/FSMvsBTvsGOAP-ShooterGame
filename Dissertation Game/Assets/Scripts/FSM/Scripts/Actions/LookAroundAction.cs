@@ -16,11 +16,11 @@ public class LookAroundAction : Action
         float radius = 10f;
         
         //If the values are zero it means this script is run for the first time
-        if(controller.forwardRotationTarget == Vector3.zero)
+        if(controller.enemyThinker.forwardRotationTarget == Vector3.zero)
         {
-           controller.targetArray = FindRotationTargets(controller, current, radius);
+           controller.enemyThinker.targetArray = FindRotationTargets(controller, current, radius);
         }
-        Vector3 target = controller.targetArray[controller.numOfRotations];
+        Vector3 target = controller.enemyThinker.targetArray[controller.enemyThinker.numOfRotations];
 
         var targetRotation = Quaternion.LookRotation(target - current);
         var str = Mathf.Min(controller.enemyStats.rotationSpeed * Time.deltaTime, 1);
@@ -31,29 +31,29 @@ public class LookAroundAction : Action
 
         if(angleToTarget <= 4f)
         {
-            controller.numOfRotations++;
+            controller.enemyThinker.numOfRotations++;
         }
 
     }
 
     private Vector3[] FindRotationTargets(StateController controller, Vector3 currentPosition, float radius)
     {
-        Vector3[] targetArray = new Vector3[5];
-        Vector3 forwardVector = (controller.lastKnownEnemyLoc - currentPosition).normalized;
+        Vector3[] targetArray = new Vector3[controller.enemyThinker.totalRotations];
+        Vector3 forwardVector = (controller.enemyThinker.lastKnownEnemyLoc - currentPosition).normalized;
         forwardVector.y = 0;
         float rotationAngle = controller.enemyStats.rotationAngle;
 
-        controller.forwardRotationTarget = currentPosition + forwardVector * radius;
+        controller.enemyThinker.forwardRotationTarget = currentPosition + forwardVector * radius;
 
         Vector3 rightVector = Quaternion.Euler(0, rotationAngle, 0) * forwardVector;
         Vector3 leftVector = Quaternion.Euler(0, 360 - rotationAngle, 0) * forwardVector;
 
-        controller.rightRotationTarget = currentPosition + rightVector * radius;
-        controller.leftRotationTarget = currentPosition + leftVector * radius;
+        controller.enemyThinker.rightRotationTarget = currentPosition + rightVector * radius;
+        controller.enemyThinker.leftRotationTarget = currentPosition + leftVector * radius;
 
-        targetArray[0] = targetArray[2] = targetArray[4] = controller.forwardRotationTarget;
-        targetArray[1] = controller.leftRotationTarget;
-        targetArray[3] = controller.rightRotationTarget;
+        targetArray[0] = targetArray[2] = targetArray[4] = controller.enemyThinker.forwardRotationTarget;
+        targetArray[1] = controller.enemyThinker.leftRotationTarget;
+        targetArray[3] = controller.enemyThinker.rightRotationTarget;
         return targetArray;
     }
 }

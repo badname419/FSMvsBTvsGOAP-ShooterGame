@@ -13,7 +13,7 @@ public class LookAtEnemyAction : Action
     private void LookAt(StateController controller)
     {
         Vector3 current = controller.transform.position;
-        Vector3 target = controller.closestEnemy.position;
+        Vector3 target = controller.enemyThinker.closestEnemy.position;
 
         var targetRotation = Quaternion.LookRotation(target - current);
         var str = Mathf.Min(controller.enemyStats.rotationSpeed * Time.deltaTime, 1);

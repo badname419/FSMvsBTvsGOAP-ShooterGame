@@ -6,33 +6,18 @@ using UnityEngine.AI;
 
 public class EnemyAI : MonoBehaviour
 {
-    [SerializeField] private float startingHealth;
-    [SerializeField] private float lowHealthThreshold;
-    [SerializeField] private float healthRestoreRate;
-
-    [SerializeField] private float chasingRange;
-    [SerializeField] private float shootingRange;
+    [HideInInspector] public EnemyThinker enemyThinker;
+    [HideInInspector] public EnemyStats enemyStats;
+    [HideInInspector] public CoverSystem coverSystem;
+    [HideInInspector] public FieldOfView fieldOfView;
 
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Cover[] availableCovers;
 
-    public GameObject bulletSpawnPoint;
-    [SerializeField] private float waitTime;
-
-    //Field view
-    [SerializeField] public float viewRadius;
-    [Range(0, 360)]
-    [SerializeField] public float viewAngle;
-
-    [SerializeField] private LayerMask enemyMask;
-    [SerializeField] private LayerMask coverMask;
-
     public List<Transform> visibleEnemies = new List<Transform>();
 
-    public GameObject bullet;
-
     private Material material;
-    private Transform bestCoverSpot;
+    public Transform bestCoverSpot;
     private NavMeshAgent agent;
 
     private Node topNode;
@@ -42,32 +27,37 @@ public class EnemyAI : MonoBehaviour
     public float currentHealth
     {
         get { return _currentHealth; }
-        set { _currentHealth = Mathf.Clamp(value, 0, startingHealth); }
+        set { _currentHealth = Mathf.Clamp(value, 0, enemyStats.maxHp); }
     }
 
     private void Awake()
     {
         agent = GetComponent<NavMeshAgent>();
         material = GetComponent<MeshRenderer>().material;
+        enemyThinker = GetComponent<EnemyThinker>();
+        enemyStats = enemyThinker.enemyStats;
+        coverSystem = GetComponent<CoverSystem>();
+        fieldOfView = GetComponent<FieldOfView>();
+
         ConstructBehaviourTree();
     }
 
     private void Start()
     {
-        _currentHealth = startingHealth;
+        _currentHealth = enemyStats.maxHp;
         
     }
 
     private void ConstructBehaviourTree()
     {
-        IsCoverAvailableNode coverAvailableNode = new IsCoverAvailableNode(availableCovers, playerTransform, this);
+        IsCoverAvailableNode coverAvailableNode = new IsCoverAvailableNode(this);
         GoToCoverNode goToCoverNode = new GoToCoverNode(agent, this);
-        HealthNode healthNode = new HealthNode(this, lowHealthThreshold);
-        IsCoveredNode isCoveredNode = new IsCoveredNode(playerTransform, transform);
-        ChaseNode chaseNode = new ChaseNode(playerTransform, agent, this);
-        RangeNode chasingRangeNode = new RangeNode(chasingRange, playerTransform, transform);
-        RangeNode shootingRangeNode = new RangeNode(shootingRange, playerTransform, transform);
-        ShootNode shootNode = new ShootNode(agent, this, playerTransform, bulletSpawnPoint, bullet, waitTime, gameObject);
+        HealthNode healthNode = new HealthNode(this, enemyStats.hpThreshold);
+        IsCoveredNode isCoveredNode = new IsCoveredNode(this);
+        ChaseNode chaseNode = new ChaseNode(agent, this);
+        RangeNode chasingRangeNode = new RangeNode(enemyStats.lookRange, transform, this);
+        RangeNode shootingRangeNode = new RangeNode(enemyStats.shootingRange, transform, this);
+        ShootNode shootNode = new ShootNode(agent, this, enemyStats.shootingWaitTime, gameObject);
         IsEnemyVisibleNode enemyVisibleNode = new IsEnemyVisibleNode(visibleEnemies, gameObject);
 
         Sequence chaseSequence = new Sequence(new List<Node> { chasingRangeNode, chaseNode });
@@ -89,7 +79,7 @@ public class EnemyAI : MonoBehaviour
             SetColor(Color.red);
             agent.isStopped = true;
         }
-        currentHealth += Time.deltaTime * healthRestoreRate;
+        currentHealth += Time.deltaTime * enemyStats.hpRestoreRate;
     }
 
     private void OnMouseDown()

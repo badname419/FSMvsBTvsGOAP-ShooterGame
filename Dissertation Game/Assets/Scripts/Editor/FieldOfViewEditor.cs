@@ -3,25 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-[CustomEditor (typeof (EnemyAI))]
+[CustomEditor (typeof (EnemyThinker))]
 public class FieldOfViewEditor : Editor
 {
     void OnSceneGUI()
     {
-        EnemyAI fow = (EnemyAI)target;
+
+        EnemyThinker enemyThinker = (EnemyThinker)target;
+        EnemyStats enemyStats = enemyThinker.enemyStats;
         Handles.color = Color.white;
-        Handles.DrawWireArc(fow.transform.position, Vector3.up, Vector3.forward, 360, fow.viewRadius);
-        Vector3 viewAngleA = DirFromAngle(-fow.viewAngle / 2, false, fow.transform);
-        Vector3 viewAngleB = DirFromAngle(fow.viewAngle / 2, false, fow.transform);
+        Handles.DrawWireArc(enemyThinker.transform.position, Vector3.up, Vector3.forward, 360, enemyStats.viewRadius);
+        Vector3 viewAngleA = DirFromAngle(-enemyStats.viewAngle / 2, false, enemyThinker.transform);
+        Vector3 viewAngleB = DirFromAngle(enemyStats.viewAngle / 2, false, enemyThinker.transform);
 
-        Handles.DrawLine(fow.transform.position, fow.transform.position + viewAngleA * fow.viewRadius);
-        Handles.DrawLine(fow.transform.position, fow.transform.position + viewAngleB * fow.viewRadius);
+        Handles.DrawLine(enemyThinker.transform.position, enemyThinker.transform.position + viewAngleA * enemyStats.viewRadius);
+        Handles.DrawLine(enemyThinker.transform.position, enemyThinker.transform.position + viewAngleB * enemyStats.viewRadius);
 
-        Handles.color = Color.red;
+        /*Handles.color = Color.red;
         foreach(Transform visibleEnemy in fow.visibleEnemies)
         {
             Handles.DrawLine(fow.transform.position, visibleEnemy.position);
-        }
+        }*/
     }
 
     private Vector3 DirFromAngle(float angleInDegress, bool angleIsGlobal, Transform target)

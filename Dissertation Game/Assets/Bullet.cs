@@ -9,12 +9,19 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float maxDistance;
 
     private GameObject triggeringEnemy;
+    private Rigidbody rigidbody;
     private float damage;
+
+    private void Start()
+    {
+        rigidbody = GetComponent<Rigidbody>();
+    }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Translate(Vector3.forward * Time.deltaTime * bulletVelocity);
+        rigidbody.velocity = transform.forward * bulletVelocity;
+        //transform.Translate(Vector3.forward * Time.deltaTime * bulletVelocity);
 
         maxDistance += 1 * Time.deltaTime;
 
@@ -31,5 +38,11 @@ public class Bullet : MonoBehaviour
             triggeringEnemy = other.gameObject;
             triggeringEnemy.GetComponent<EnemyAI>().TakeDamage(damage);
         }
+    }
+
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Hit");
+        Destroy(this.gameObject);
     }
 }

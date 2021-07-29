@@ -4,7 +4,7 @@ using UnityEngine;
 using System.Linq;
 using System;
 
-public class FindCoverSpot : MonoBehaviour
+public class CoverSystem : MonoBehaviour
 {
     [SerializeField] float radius;
     [SerializeField] LayerMask waypointMask;
@@ -34,7 +34,9 @@ public class FindCoverSpot : MonoBehaviour
     private WaypointGizmo waypointGizmoScript;
     private Pathfinding pathfinding;
     private FieldOfView fieldOfView;
+    private EnemyThinker enemyThinker;
     private EnemyAI enemyAI;
+    private EnemyStats enemyStats;
     private GameObject enemyPlayer;
     private string playerTag = "Player";
     private string wallTag = "Wall";
@@ -59,6 +61,8 @@ public class FindCoverSpot : MonoBehaviour
         pathfinding = GetComponent<Pathfinding>();
         fieldOfView = GetComponent<FieldOfView>();
         enemyAI = GetComponent<EnemyAI>();
+        enemyThinker = GetComponent<EnemyThinker>();
+        enemyStats = enemyThinker.enemyStats;
 
         enemyPlayer = GameObject.FindGameObjectWithTag(playerTag);
 
@@ -167,7 +171,7 @@ public class FindCoverSpot : MonoBehaviour
         }
     }
 
-    private GameObject FindBestCover()
+    public GameObject FindBestCover()
     {
         waypointList.Clear();
         FindNearbyWaypoints();
@@ -269,7 +273,7 @@ public class FindCoverSpot : MonoBehaviour
     private bool IsWaypointSeen(Collider waypoint)
     {
         enemyVisibleWaypoints.Clear();
-        enemyVisibleWaypoints = fieldOfView.FindVisibleObjects(enemyAI.viewAngle, coverMask, waypointColliders, enemyVisibleWaypoints, enemyPlayer);
+        enemyVisibleWaypoints = fieldOfView.FindVisibleObjects(enemyStats.viewAngle, coverMask, waypointColliders, enemyVisibleWaypoints, enemyPlayer);
 
         for (int i = 0; i < enemyVisibleWaypoints.Count; i++)
         {

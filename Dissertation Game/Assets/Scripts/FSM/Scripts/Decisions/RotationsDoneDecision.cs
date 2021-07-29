@@ -15,7 +15,7 @@ public class RotationsDoneDecision : Decision
 
     private bool CheckIfRotationsDone(StateController controller)
     {
-        if(controller.numOfRotations < controller.totalRotations)
+        if(controller.enemyThinker.numOfRotations < controller.enemyThinker.totalRotations)
         {
             return false;
         }

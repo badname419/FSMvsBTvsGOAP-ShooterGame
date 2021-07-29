@@ -15,6 +15,11 @@ public class Pathfinding : MonoBehaviour
         grid = plane.GetComponent<Grid>();
     }
 
+    private void Start()
+    {
+        //grid = plane.GetComponent<Grid>();
+    }
+
     public List<AStarNode> FindPath(Vector3 startPos, Vector3 targetPos)
     {
         int k = 0;
