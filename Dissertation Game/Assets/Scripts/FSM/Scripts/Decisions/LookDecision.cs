@@ -41,12 +41,10 @@ public class LookDecision : Decision
         {
             controller.enemyThinker.closestEnemy = ChooseTarget(controller, visibleEnemiesList);
             controller.enemyThinker.walkingTarget = controller.enemyThinker.closestEnemy.position;
-            Debug.Log("True");
             return true;
         }
         else
         {
-            Debug.Log("False");
             return false;
         }
  

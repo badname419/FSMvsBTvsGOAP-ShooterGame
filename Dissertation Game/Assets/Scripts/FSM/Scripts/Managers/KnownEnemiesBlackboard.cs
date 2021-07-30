@@ -19,11 +19,14 @@ public class KnownEnemiesBlackboard
         public Vector3 currentPosition { get; set; }
         public Vector3 previousPosition { get; set; }
 
-        public KnownEnemy(Transform transform, Vector3 currentPosition, Vector3 previousPosition)
+        public int hp { get; set; }
+
+        public KnownEnemy(Transform transform, Vector3 currentPosition, Vector3 previousPosition, int hp)
         {
             this.transform = transform;
             this.currentPosition = currentPosition;
             this.previousPosition = previousPosition;
+            this.hp = hp;
         }
     }
 
@@ -94,7 +97,57 @@ public class KnownEnemiesBlackboard
 
     private void AddEnemy(Transform transform)
     {
-        KnownEnemy enemy = new KnownEnemy(transform, transform.position, transform.position);
+        PlayerLogic playerLogic = transform.gameObject.GetComponent<PlayerLogic>();
+        KnownEnemy enemy = new KnownEnemy(transform, transform.position, transform.position, playerLogic.CurrentHealth);
         knownEnemiesList.Add(enemy);
+    }
+
+    public GameObject DetermineTheClosestEnemy(Vector3 origin)
+    {
+        int index = -1;
+        float shortestDistance = 0;
+        if(knownEnemiesList.Count == 1)
+        {
+            return knownEnemiesList[0].transform.gameObject;
+        }
+        else
+        {
+            for(int i=0; i < knownEnemiesList.Count; i++)
+            {
+                float distance = Vector3.Distance(origin, knownEnemiesList[i].currentPosition);
+                if(i == 0)
+                {
+                    shortestDistance = distance;
+                    index = 0;
+                }
+                else
+                {
+                    if(distance < shortestDistance)
+                    {
+                        shortestDistance = distance;
+                        index = i;
+                    }
+                }
+            }
+            return knownEnemiesList[index].transform.gameObject;
+        }
+    }
+
+    public int FindEnemyIndex(Transform targetTransform)
+    {
+        for (int i = 0; i < knownEnemiesList.Count; i++)
+        {
+            if (knownEnemiesList[i].transform.Equals(targetTransform))
+            {
+                return i;
+            }
+        }
+        return 0;
+    }
+
+    public void UpdateEnemyHP(Transform transform, int newHP)
+    {
+        int index = FindEnemyIndex(transform);
+        knownEnemiesList[index].hp = newHP;
     }
 }

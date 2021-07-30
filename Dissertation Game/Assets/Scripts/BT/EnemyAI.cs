@@ -10,6 +10,7 @@ public class EnemyAI : MonoBehaviour
     [HideInInspector] public EnemyStats enemyStats;
     [HideInInspector] public CoverSystem coverSystem;
     [HideInInspector] public FieldOfView fieldOfView;
+    [HideInInspector] public KnownEnemiesBlackboard knownEnemiesBlackboard;
 
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Cover[] availableCovers;
@@ -23,6 +24,7 @@ public class EnemyAI : MonoBehaviour
     private Node topNode;
 
     private float _currentHealth;
+    public enum Target { Enemy, Kit};
 
     public float currentHealth
     {
@@ -45,30 +47,45 @@ public class EnemyAI : MonoBehaviour
     private void Start()
     {
         _currentHealth = enemyStats.maxHp;
-        
+        knownEnemiesBlackboard = enemyThinker.knownEnemies;    
     }
 
     private void ConstructBehaviourTree()
     {
         IsCoverAvailableNode coverAvailableNode = new IsCoverAvailableNode(this);
         GoToCoverNode goToCoverNode = new GoToCoverNode(agent, this);
-        HealthNode healthNode = new HealthNode(this, enemyStats.hpThreshold);
+        HealthThresholdNode hpThresholdNode = new HealthThresholdNode(this, enemyStats.hpThreshold);
+        LessHealthThanEnemyNode lessHealthNode = new LessHealthThanEnemyNode(this);
         IsCoveredNode isCoveredNode = new IsCoveredNode(this);
-        ChaseNode chaseNode = new ChaseNode(agent, this);
-        RangeNode chasingRangeNode = new RangeNode(enemyStats.lookRange, transform, this);
-        RangeNode shootingRangeNode = new RangeNode(enemyStats.shootingRange, transform, this);
+        GoToLastKnownPositionNode goToLastPositionNode = new GoToLastKnownPositionNode(agent, this);
+        RangeNode chasingRangeNode = new RangeNode(enemyStats.viewRadius, this, (int)Target.Enemy);
+        RangeNode shootingRangeNode = new RangeNode(enemyStats.shootingRange, this, (int)Target.Enemy);
         ShootNode shootNode = new ShootNode(agent, this, enemyStats.shootingWaitTime, gameObject);
-        IsEnemyVisibleNode enemyVisibleNode = new IsEnemyVisibleNode(visibleEnemies, gameObject);
+        IsEnemyVisibleNode enemyVisibleNode = new IsEnemyVisibleNode(this);
+        IsLastEnemyPositionKnownNode lastKnownPositionNode = new IsLastEnemyPositionKnownNode(gameObject);
 
-        Sequence chaseSequence = new Sequence(new List<Node> { chasingRangeNode, chaseNode });
-        Sequence shootSequence = new Sequence(new List<Node> { enemyVisibleNode, shootNode });
+        RangeNode kitInRangeNode = new RangeNode(enemyStats.kitGrabingRange, this, (int)Target.Kit);
+
+        Sequence grabAKit = new Sequence(new List<Node> {kitInRangeNode }); //
+
+        Selector tryToHeal = new Selector(new List<Node> { }); //
+
+        //Sequence healSequence = new Sequence(new List<Node> { hpThresholdNode, lessHealthNode, })
+
+        Selector seeEnemySelector = new Selector(new List<Node> { });
+
+        Sequence chaseSequence = new Sequence(new List<Node> { enemyVisibleNode, chasingRangeNode, goToLastPositionNode });
+        Sequence shootSequence = new Sequence(new List<Node> { enemyVisibleNode, shootingRangeNode, shootNode });
 
         Sequence goToCoverSequence = new Sequence(new List<Node> { coverAvailableNode, goToCoverNode });
         Selector findCoverSelector = new Selector(new List<Node> { goToCoverSequence, chaseSequence });
         Selector tryToTakeCoverSelector = new Selector(new List<Node> { isCoveredNode, findCoverSelector });
-        Sequence mainCoverSequence = new Sequence(new List<Node> { healthNode, tryToTakeCoverSelector });
+        Sequence mainCoverSequence = new Sequence(new List<Node> { hpThresholdNode, tryToTakeCoverSelector });
 
-        topNode = new Selector(new List<Node> { mainCoverSequence, shootSequence, chaseSequence });
+        Sequence isLastPositionKnown = new Sequence(new List<Node> { lastKnownPositionNode, goToLastPositionNode });
+        Selector searchForEnemySelector = new Selector(new List<Node> { isLastPositionKnown});
+
+        topNode = new Selector(new List<Node> { mainCoverSequence, shootSequence/*, /*chaseSequence/*, searchForEnemySelector*/});
     }
 
     private void Update()

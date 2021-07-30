@@ -8,8 +8,9 @@ public class EnemyStats : ScriptableObject
     //Vision and ranges
     public float lookRange = 40f;
     public float shootingRange = 30f;
-    public float viewRadius = 68f;
+    public float viewRadius = 72f;
     public float viewAngle = 108f;
+    public float kitGrabingRange = 30f;
 
     public int shootingDamage = 30;
     public float attackRate = 1f;
@@ -17,7 +18,7 @@ public class EnemyStats : ScriptableObject
 
     //Health
     public float maxHp = 100f;
-    public float hpThreshold = 30f;
+    public float hpThreshold = 0.3f;
     public float hpRestoreRate = 1f;
 
     //Masks

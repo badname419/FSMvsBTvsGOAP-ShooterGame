@@ -3,24 +3,25 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class IsEnemyVisibleNode : Node
+public class IsLastEnemyPositionKnownNode: Node
 {
     public List<Transform> visibleEnemies = new List<Transform>();
 
     private FieldOfView fieldOfView;
-    private EnemyAI ai;
+    private GameObject ai;
+    private EnemyAI enemyAI;
 
-    public IsEnemyVisibleNode(EnemyAI ai)
+    public IsLastEnemyPositionKnownNode(GameObject gameObject)
     {
-        this.ai = ai;
-        fieldOfView = ai.fieldOfView;
+        this.ai = gameObject;
+        enemyAI = gameObject.GetComponent<EnemyAI>();
+        fieldOfView = enemyAI.GetComponent<FieldOfView>();
     }
 
     public override NodeState Evaluate()
     {
-        //visibleEnemies = fieldOfView.GetVisibleEnemyTransforms();
-        Debug.Log(fieldOfView.seesEnemy);
-        return (fieldOfView.seesEnemy) ? NodeState.SUCCESS : NodeState.FAILURE;
+        bool lastPositionKnown = fieldOfView.lastKnownEnemyPosition != Vector3.zero;
+        return (lastPositionKnown) ? NodeState.SUCCESS : NodeState.FAILURE;
         //visibleEnemies = fieldOfView.FindVisibleEnemies(enemyStats.viewRadius, enemyStats.viewAngle, enemyStats.enemyLayer, enemyStats.coverMask, visibleEnemies, ai);
         //Debug.Log(visibleEnemies.Count);
         //return (visibleEnemies.Count != 0) ? NodeState.SUCCESS : NodeState.FAILURE;

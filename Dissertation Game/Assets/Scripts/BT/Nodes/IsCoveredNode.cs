@@ -29,9 +29,10 @@ public class IsCoveredNode : Node
         {
 
             RaycastHit hit;
-            Vector3 direction = (ai.fieldOfView.closestEnemyPosition - ai.bestCoverSpot.position).normalized;
-            float distance = Vector3.Distance(ai.bestCoverSpot.position, ai.fieldOfView.closestEnemyPosition);
-            if (!Physics.Raycast(ai.bestCoverSpot.position, direction, distance, ai.enemyStats.coverMask))
+            Vector3 bestCoverSpot = ai.coverSystem.FindBestCover().transform.position;
+            Vector3 direction = (ai.fieldOfView.closestEnemyPosition - bestCoverSpot).normalized;
+            float distance = Vector3.Distance(bestCoverSpot, ai.fieldOfView.closestEnemyPosition);
+            if (!Physics.Raycast(bestCoverSpot, direction, distance, ai.enemyStats.coverMask))
             {
                 covered = false;
             }

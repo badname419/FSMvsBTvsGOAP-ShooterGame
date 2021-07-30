@@ -16,6 +16,7 @@ public class FieldOfView : MonoBehaviour
 
     private string playerTag = "Player";
     private EnemyStats enemyStats;
+    private KnownEnemiesBlackboard knownEnemiesBlackboard;
 
     public List<VisibleEnemy> visibleEnemies;
     public bool seesEnemy;
@@ -38,6 +39,7 @@ public class FieldOfView : MonoBehaviour
     {
         closestEnemyPosition = Vector3.zero;
         lastKnownEnemyPosition = closestEnemyPosition;
+        knownEnemiesBlackboard = GetComponent<EnemyThinker>().knownEnemies;
 
         visibleEnemies = new List<VisibleEnemy>();
         seesEnemy = false;
@@ -77,6 +79,7 @@ public class FieldOfView : MonoBehaviour
                 {
                     VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);
                     visibleEnemies.Add(visibleEnemy);
+                    knownEnemiesBlackboard.UpdateEnemyList(enemy);
                 }
             }
         }     

@@ -145,11 +145,10 @@ GameObject:
   - component: {fileID: 3801847644179617810}
   - component: {fileID: 6302642181595835723}
   - component: {fileID: 9190375951492098583}
-  - component: {fileID: 6394026254117292201}
   - component: {fileID: 6934519325583210644}
   - component: {fileID: 4096667758422304173}
   m_Layer: 7
-  m_Name: EnemyBT 1
+  m_Name: EnemyBT
   m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -282,11 +281,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e2127fe12e34564e854fc2f297d908f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  startingHealth: 100
-  lowHealthThreshold: 50
-  healthRestoreRate: 1
-  chasingRange: 30
-  shootingRange: 15
+  enemyThinker: {fileID: 0}
+  enemyStats: {fileID: 0}
+  coverSystem: {fileID: 0}
+  fieldOfView: {fileID: 0}
   playerTransform: {fileID: 0}
   availableCovers:
   - {fileID: 0}
@@ -299,18 +297,8 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
-  bulletSpawnPoint: {fileID: 384091463771322944}
-  waitTime: 0.45
-  viewRadius: 68
-  viewAngle: 108.6
-  enemyMask:
-    serializedVersion: 2
-    m_Bits: 256
-  coverMask:
-    serializedVersion: 2
-    m_Bits: 64
   visibleEnemies: []
-  bullet: {fileID: 1508967437056282987, guid: 3c65e434f1d16ea49a89dd6e3d0a0dd9, type: 3}
+  bestCoverSpot: {fileID: 0}
 --- !u!114 &6302642181595835723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -346,37 +334,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   textObject: {fileID: 4308742135965690343, guid: 02ea4491d06578b44a4575b0d185dff6, type: 3}
-  waypointColliders:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  waypointColliders: []
   waypoints: []
   bestCover: {fileID: 0}
   seenModifier: 1
@@ -385,19 +343,6 @@ MonoBehaviour:
   wallGizmo: 0
   updateWallsBounds: 0
   findCoverValues: {fileID: 11400000, guid: e1e16349402c405429d139370b6d53dc, type: 2}
---- !u!114 &6394026254117292201
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 470787981240711513}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9f7fdffec9e315942bc552119ad53ec7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  plane: {fileID: 0}
 --- !u!114 &6934519325583210644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -444,7 +389,7 @@ MonoBehaviour:
   bulletSpawnPoint: {fileID: 716307046963171403}
   bullet: {fileID: 1508967437056282987, guid: 3c65e434f1d16ea49a89dd6e3d0a0dd9, type: 3}
   damage: 0
-  xOffset: 0
+  xOffset: 500
   yOffset: 0
   zOffset: 0
 --- !u!1 &716307046963171403
