@@ -8,10 +8,11 @@ public class GameManager : MonoBehaviour
     public List<Transform> spawnPoints;
     public GameObject enemyObject;
     public GameObject playerObject;
-    public GameObject cameraObject;
+    //public GameObject cameraObject;
 
     private Pathfinding pathfinding;
     private KnownEnemiesBlackboard knownEnemies;
+    private string cameraTag = "MainCamera";
 
 
     // Start is called before the first frame update
@@ -21,7 +22,6 @@ public class GameManager : MonoBehaviour
         pathfinding = GetComponent<Pathfinding>();
         SpawnPlayer();
         SpawnEnemies();
-        SpawnCamera(playerObject);
     }
 
     private void SpawnEnemies()
@@ -40,16 +40,16 @@ public class GameManager : MonoBehaviour
     private void SpawnPlayer()
     {
         var player = Instantiate(playerObject);
-        SpawnCamera(player);
+        SetupCamera(player);
         var playerLogic = player.GetComponent<PlayerLogic>();
 
         playerLogic.Setup(knownEnemies);
     }
 
-    private void SpawnCamera(GameObject player)
+    private void SetupCamera(GameObject playerObject)
     {
-        var camera = Instantiate(cameraObject);
-        Camera cameraScript = camera.GetComponent<Camera>();
-        cameraScript.player = player.transform;
+        GameObject mainCamera = GameObject.FindGameObjectsWithTag(cameraTag)[0];
+        Camera cameraScript = mainCamera.GetComponent<Camera>();
+        cameraScript.player = playerObject.transform;
     }
 }

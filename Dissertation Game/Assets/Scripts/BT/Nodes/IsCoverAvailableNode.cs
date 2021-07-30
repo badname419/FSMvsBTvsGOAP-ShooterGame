@@ -19,6 +19,7 @@ public class IsCoverAvailableNode : Node
 
     public override NodeState Evaluate()
     {
+        //Add check to see if the cover hasn't been taken by someone else
         GameObject bestCoverSpot = ai.coverSystem.FindBestCover();
         ai.SetBestCoverSpot(bestCoverSpot.transform);
         return IsSpotValid(bestCoverSpot) ? NodeState.SUCCESS : NodeState.FAILURE;

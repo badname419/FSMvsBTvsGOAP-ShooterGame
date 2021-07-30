@@ -1311,7 +1311,6 @@ MonoBehaviour:
   - {fileID: 1387698070}
   enemyObject: {fileID: 470787981240711513, guid: be9ba07bc467ab747993afb0196d32c0, type: 3}
   playerObject: {fileID: 325436660790668543, guid: 350318d27c65875488128822e3f9bb60, type: 3}
-  cameraObject: {fileID: 963194225}
 --- !u!4 &208505161
 Transform:
   m_ObjectHideFlags: 0
@@ -1648,7 +1647,6 @@ MonoBehaviour:
   - {fileID: 1498694939}
   - {fileID: 1690209173}
   visibleEnemies: []
-  bestCoverSpot: {fileID: 0}
 --- !u!114 &257762467
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5133,7 +5131,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 50, y: 100, z: 0}
 --- !u!1 &724553942
 GameObject:
@@ -6323,11 +6321,6 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &963194225 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 826338329306368624, guid: 967cfa71725a9d44ea71f7b8a4f205ee, type: 3}
-  m_PrefabInstance: {fileID: 826338329731639041}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &964830469
 GameObject:
   m_ObjectHideFlags: 0
@@ -8004,7 +7997,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4679247325785446875, guid: 4186b5eeabcb16041a6ade5b42e47afd, type: 3}
       propertyPath: m_RootOrder
-      value: 10
+      value: 9
       objectReference: {fileID: 0}
     - target: {fileID: 4679247325785446875, guid: 4186b5eeabcb16041a6ade5b42e47afd, type: 3}
       propertyPath: m_LocalPosition.x
@@ -8630,7 +8623,7 @@ Transform:
   - {fileID: 659440901}
   - {fileID: 1387698070}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1276098951
 GameObject:
@@ -14446,7 +14439,7 @@ PrefabInstance:
     - target: {fileID: 325436660790668532, guid: 350318d27c65875488128822e3f9bb60, type: 3}
       propertyPath: camera
       value: 
-      objectReference: {fileID: 963194225}
+      objectReference: {fileID: 0}
     - target: {fileID: 325436660790668539, guid: 350318d27c65875488128822e3f9bb60, type: 3}
       propertyPath: m_RootOrder
       value: 3
@@ -14583,7 +14576,7 @@ PrefabInstance:
       objectReference: {fileID: 886983143}
     - target: {fileID: 826338329306368629, guid: 967cfa71725a9d44ea71f7b8a4f205ee, type: 3}
       propertyPath: m_RootOrder
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 826338329306368629, guid: 967cfa71725a9d44ea71f7b8a4f205ee, type: 3}
       propertyPath: m_LocalPosition.x

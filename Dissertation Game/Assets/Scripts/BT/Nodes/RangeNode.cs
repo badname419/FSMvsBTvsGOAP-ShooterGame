@@ -5,26 +5,29 @@ using UnityEngine;
 public class RangeNode : Node
 {
     private float range;
-    private int target;
+    //private int target;
     private EnemyAI ai;
+    private FieldOfView fieldOfView;
+    private EnemyAI.Target target;
 
-    public RangeNode(float range, EnemyAI ai, int target)
+    public RangeNode(float range, EnemyAI ai, EnemyAI.Target target)
     {
         this.range = range;
         this.target = target;
         this.ai = ai;
+        this.fieldOfView = ai.fieldOfView;
     }
 
     public override NodeState Evaluate()
     {
         Vector3 targetPosition = new Vector3();
-        if (target == (int)EnemyAI.Target.Enemy)
+        if (target.Equals(EnemyAI.Target.Enemy))
         {
-            targetPosition = ai.fieldOfView.lastKnownEnemyPosition;
+            targetPosition = fieldOfView.lastKnownEnemyPosition;
         }
-        else if(target == (int)EnemyAI.Target.Kit)
+        else if(target.Equals(EnemyAI.Target.Kit))
         {
-            targetPosition = Vector3.zero;
+            return NodeState.FAILURE;
         }
 
         if(targetPosition == Vector3.zero)

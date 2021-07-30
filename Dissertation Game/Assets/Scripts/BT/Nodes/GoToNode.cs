@@ -6,26 +6,51 @@ using UnityEngine.AI;
 
 public class GoToNode: Node
 {
-    private FieldOfView fieldOfView;
     private NavMeshAgent navMeshAgent;
     private EnemyStats enemyStats;
+    private FieldOfView fieldOfView;
+    //private int target;
+    private EnemyAI ai;
+    private EnemyAI.Target target;
 
-    public GoToNode(EnemyAI ai)
+    public GoToNode(EnemyAI ai, EnemyAI.Target target)
     {
-        this.fieldOfView = ai.fieldOfView;
+        this.ai = ai;
         this.navMeshAgent = ai.gameObject.GetComponent<NavMeshAgent>();
         this.enemyStats = ai.enemyStats;
+        this.fieldOfView = ai.fieldOfView;
+        this.target = target;
     }
 
     public override NodeState Evaluate()
     {
-        Vector3 target = fieldOfView.lastKnownEnemyPosition;
+        //Vector3 target = fieldOfView.lastKnownEnemyPosition;
 
-        float distance = Vector3.Distance(target, navMeshAgent.transform.position);
+        Vector3 targetPosition = new Vector3();
+        if (target.Equals(EnemyAI.Target.Enemy))
+        {
+            targetPosition = ai.fieldOfView.lastKnownEnemyPosition;
+        }
+        else if (target.Equals(EnemyAI.Target.Kit))
+        {
+            return NodeState.FAILURE;
+        }
+        else if(target.Equals(EnemyAI.Target.Cover))
+        {
+            targetPosition = ai.GetBestCoverSpot().position;
+        }
+
+
+        if (targetPosition == Vector3.zero)
+        {
+            return NodeState.FAILURE;
+        }
+
+        float distance = Vector3.Distance(targetPosition, navMeshAgent.transform.position);
         if (distance > enemyStats.arrivalDistance)
         {
             navMeshAgent.isStopped = false;
-            navMeshAgent.SetDestination(target);
+            navMeshAgent.SetDestination(targetPosition);
             return NodeState.RUNNING;
         }
         else
