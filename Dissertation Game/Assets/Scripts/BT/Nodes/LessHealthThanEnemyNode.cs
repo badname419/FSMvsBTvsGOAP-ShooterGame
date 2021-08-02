@@ -16,9 +16,17 @@ public class LessHealthThanEnemyNode : Node
     public override NodeState Evaluate()
     {
         KnownEnemiesBlackboard blackboard = ai.knownEnemiesBlackboard;
-        GameObject theClosestEnemy = blackboard.DetermineTheClosestEnemy(ai.transform.position);
-        int index = blackboard.FindEnemyIndex(theClosestEnemy.transform);
+        GameObject theClosestEnemy = blackboard.DetermineTheClosestEnemyObject(ai.transform.position);
+        int index;
+        if (theClosestEnemy != null)
+        {
+            index = blackboard.FindEnemyIndex(theClosestEnemy.transform);
+        }
+        else
+        {
+            return NodeState.FAILURE;
+        }
 
-        return ai.currentHealth < blackboard.knownEnemiesList[index].hp ? NodeState.SUCCESS : NodeState.FAILURE;
+        return ai.enemyThinker.currentHP < blackboard.knownEnemiesList[index].hp ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

@@ -22,6 +22,7 @@ public class FieldOfView : MonoBehaviour
     public bool seesEnemy;
     public Vector3 closestEnemyPosition;
     public Vector3 lastKnownEnemyPosition;
+    public GameObject closestEnemyObject;
 
     public class VisibleEnemy
     {
@@ -46,8 +47,7 @@ public class FieldOfView : MonoBehaviour
         if (!this.CompareTag(playerTag))
         {
             enemyStats = GetComponent<EnemyThinker>().enemyStats;
-            Debug.Log("Test");
-            StartCoroutine("FindEnemiesWithDelay", .2f);
+            StartCoroutine("FindEnemiesWithDelay", .1f);
         }
     }
 
@@ -112,6 +112,7 @@ public class FieldOfView : MonoBehaviour
         {
             closestEnemyPosition = visibleEnemies[0].transform.position;
             lastKnownEnemyPosition = closestEnemyPosition;
+            closestEnemyObject = visibleEnemies[0].transform.gameObject;
         }
         else
         {
@@ -136,15 +137,18 @@ public class FieldOfView : MonoBehaviour
             {
                 closestEnemyPosition = visibleEnemies[index].transform.position;
                 lastKnownEnemyPosition = closestEnemyPosition;
+                closestEnemyObject = visibleEnemies[index].transform.gameObject;
             }
             else
             {
                 closestEnemyPosition = Vector3.zero;
+                closestEnemyObject = null;
             }
         }
 
     }
 
+    /*
     //Use OverlapSphere first to determine all colliders around the object, then limit only to those between the viewing angles
     public List<Transform> FindVisibleObjects(float viewRadius, float viewAngle, LayerMask coverMask, LayerMask targetObjects, List<Transform> visibleObjects, GameObject ai)
     {
@@ -152,16 +156,39 @@ public class FieldOfView : MonoBehaviour
         Collider[] objectsInViewRadius = Physics.OverlapSphere(ai.transform.position, viewRadius, targetObjects);
 
         return IterateThroughRadius(objectsInViewRadius, viewAngle, ai, coverMask, visibleObjects);
-    }
+    }*/
 
     //If the list of colliders is already available, use this one
-    public List<Transform> FindVisibleObjects(float viewAngle, LayerMask coverMask, Collider[] targetObjects, List<Transform> visibleObjects, GameObject ai)
+    /*public List<Transform> FindVisibleObjects(float viewAngle, LayerMask coverMask, Collider[] targetObjects, GameObject ai)
     {
-        return IterateThroughRadius(targetObjects, viewAngle, ai, coverMask, visibleObjects);
+        return IterateThroughRadius(targetObjects, viewAngle, ai, coverMask);
+    }*/
+
+    public List<Transform> FindVisibleObjects(float viewAngle, LayerMask coverMask, Collider[] targetObjects, GameObject ai)
+    {
+        List<Transform> visibleObjects = new List<Transform>();
+        for (int i = 0; i < targetObjects.Length; i++)
+        {
+            Transform spot = targetObjects[i].transform;
+            Vector3 spotPosition = new Vector3(spot.position.x, 1f, spot.position.z);
+            Vector3 dirToSpot = (spotPosition - ai.transform.position).normalized;
+            if (Vector3.Angle(ai.transform.forward, dirToSpot) < viewAngle / 2)
+            {
+                float distToSpot = Vector3.Distance(ai.transform.position, spotPosition);
+
+                if (!Physics.Raycast(ai.transform.position, dirToSpot, distToSpot, coverMask))
+                {
+                    visibleObjects.Add(spot);
+                }
+            }
+        }
+        return visibleObjects;
     }
 
-    private List<Transform> IterateThroughRadius(Collider[] objectsInViewRadius, float viewAngle, GameObject ai, LayerMask coverMask, List<Transform> visibleObjects)
+    /*
+    private List<Transform> IterateThroughRadius(Collider[] objectsInViewRadius, float viewAngle, GameObject ai, LayerMask coverMask)
     {
+        List<Transform> visibleObjects = new List<Transform>();
         for (int i = 0; i < objectsInViewRadius.Length; i++)
         {
             Transform enemy = objectsInViewRadius[i].transform;
@@ -177,5 +204,5 @@ public class FieldOfView : MonoBehaviour
             }
         }
         return visibleObjects;
-    }
+    }*/
 }

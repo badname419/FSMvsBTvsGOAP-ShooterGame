@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class EnemyThinker : MonoBehaviour
 {
@@ -12,6 +13,10 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public float distanceToEnemy;
     [HideInInspector] public float stateTimeElapsed;
     [HideInInspector] public float lastShotTime;
+
+    #region
+    [HideInInspector] public float currentHP;
+    #endregion
 
     #region Chasing and searching
     [HideInInspector] public Transform closestEnemy;
@@ -28,6 +33,15 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public Vector3 leftRotationTarget;    //What point to the left of the agent they should rotate towards
     [HideInInspector] public Vector3[] targetArray;         //And array storying the points the agent should rotate towards
     #endregion
+
+    private Image healthBar;
+
+    private void Start()
+    {
+        currentHP = enemyStats.maxHp;
+        healthBar = transform.Find("Canvas/HealthBG/HealthBar").GetComponent<Image>();
+        //healthBar = GameObject.Find("HealthBar").GetComponent<Image>();
+    }
 
     public void Setup(Transform spawnPoint, Pathfinding pathfinding, KnownEnemiesBlackboard knownEnemies)
     {
@@ -49,5 +63,27 @@ public class EnemyThinker : MonoBehaviour
         {
             stateController.SetupAI(aiActivation, spawnPoints);
         }
+    }
+
+    public void LowerHP(int value)
+    {
+        currentHP -= value;
+        UpdateHPBar();
+    }
+
+    public void RestoreHP(int value)
+    {
+        currentHP += value;
+
+        if(currentHP > enemyStats.maxHp)
+        {
+            currentHP = enemyStats.maxHp;
+        }
+        UpdateHPBar();
+    }
+
+    private void UpdateHPBar()
+    {
+        healthBar.fillAmount = currentHP / enemyStats.maxHp;
     }
 }

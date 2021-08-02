@@ -14,12 +14,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lookRange: 40
   shootingRange: 55
-  attackRate: 0.6
-  shootingDamage: 30
-  viewRadius: 68
+  hearingRange: 20
+  dashRange: 15
+  viewRadius: 72
   viewAngle: 138
+  kitGrabingRange: 30
+  meleeRange: 5
+  shootingDamage: 5
+  attackRate: 0.6
+  shootingWaitTime: 0.45
+  combatDuration: 10
+  dashForce: 78
+  dashDuration: 0.23
+  dashCooldown: 10
   maxHp: 100
-  hpThreshold: 30
+  hpThreshold: 0.3
+  hpRestoreRate: 5
   enemyLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -27,3 +37,9 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   rotationSpeed: 10
+  rotationAngle: 120
+  maxRotations: 5
+  aggroDistance: 1000
+  arrivalDistance: 1.5
+  hpPerSecond: 1
+  hpFromKit: 40

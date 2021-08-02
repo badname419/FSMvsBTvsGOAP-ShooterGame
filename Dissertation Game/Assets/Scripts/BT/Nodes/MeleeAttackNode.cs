@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-public class ShootNode : Node
+
+public class MeleeAttackNode : Node
 {
 
     private NavMeshAgent agent;
@@ -14,7 +15,7 @@ public class ShootNode : Node
     private Vector3 currentVelocity;
     private float smoothDamp;
 
-    public ShootNode(NavMeshAgent agent, EnemyAI ai, float wait, GameObject gameObject)
+    public MeleeAttackNode(NavMeshAgent agent, EnemyAI ai, float wait, GameObject gameObject)
     {
         this.agent = agent;
         this.ai = ai;
@@ -26,19 +27,19 @@ public class ShootNode : Node
 
     public override NodeState Evaluate()
     {
-        /*
-        Vector3 target = ai.fieldOfView.lastKnownEnemyPosition;
-        agent.isStopped = true;
-        ai.SetColor(Color.green);
-        Vector3 direction = target - ai.transform.position;
-        Vector3 currentDirection = Vector3.SmoothDamp(ai.transform.forward, direction, ref currentVelocity, smoothDamp);
-        Quaternion rotation = Quaternion.LookRotation(currentDirection, Vector3.up);
-        ai.transform.rotation = rotation;*/
+        Debug.Log("Melee!");
+        //Vector3 target = ai.fieldOfView.lastKnownEnemyPosition;
+        //agent.isStopped = true;
+        ai.SetColor(Color.black);
+        //Vector3 direction = target - ai.transform.position;
+        //Vector3 currentDirection = Vector3.SmoothDamp(ai.transform.forward, direction, ref currentVelocity, smoothDamp);
+        //Quaternion rotation = Quaternion.LookRotation(currentDirection, Vector3.up);
+        //ai.transform.rotation = rotation;
 
         shooting.Shoot(wait, ai.enemyStats.shootingDamage, ai.transform);
         //shooting.Shoot(bulletSpawnPoint, bullet, wait, ai);
 
-        return NodeState.RUNNING;
+        return NodeState.SUCCESS;
     }
 
 }

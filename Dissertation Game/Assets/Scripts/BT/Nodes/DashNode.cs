@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class GoToNode: Node
+public class DashNode: Node
 {
     private NavMeshAgent navMeshAgent;
     private EnemyStats enemyStats;
@@ -13,9 +13,13 @@ public class GoToNode: Node
     private EnemyAI ai;
     private EnemyAI.Target target;
 
-    public GoToNode(EnemyAI ai, EnemyAI.Target target)
+    private Rigidbody rigidbody;
+
+    public DashNode(EnemyAI ai, EnemyAI.Target target)
     {
         this.ai = ai;
+        this.rigidbody = ai.gameObject.GetComponent<Rigidbody>();
+
         this.navMeshAgent = ai.gameObject.GetComponent<NavMeshAgent>();
         this.enemyStats = ai.enemyStats;
         this.fieldOfView = ai.fieldOfView;
@@ -29,34 +33,46 @@ public class GoToNode: Node
         Vector3 targetPosition = new Vector3();
         if (target.Equals(EnemyAI.Target.Enemy))
         {
-            targetPosition = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(ai.transform.position);
+            targetPosition = ai.fieldOfView.lastKnownEnemyPosition;
         }
-        else if (target.Equals(EnemyAI.Target.Kit))
-        {
-            return NodeState.FAILURE;
-        }
-        else if(target.Equals(EnemyAI.Target.Cover))
-        {
-            targetPosition = ai.GetBestCoverSpot().position;
-        }
-
-
         if (targetPosition == Vector3.zero)
         {
             return NodeState.FAILURE;
         }
 
-        float distance = Vector3.Distance(targetPosition, navMeshAgent.transform.position);
-        if (distance > enemyStats.arrivalDistance)
+        float dashDuration = 0f;
+        if (ai.isDashing)
         {
-            navMeshAgent.isStopped = false;
-            navMeshAgent.SetDestination(targetPosition);
+            dashDuration = ai.timer - ai.dashStartTime;
+        }
+
+        if(!ai.isDashing || dashDuration < enemyStats.dashDuration)
+        {
+            if (!ai.isDashing)
+            {
+                ai.isDashing = true;
+                ai.dashStartTime = ai.timer;
+            }
+            else
+            {
+                float velocityX = rigidbody.velocity.x;
+                float velocityZ = rigidbody.velocity.z;
+                if(velocityX == 0 && velocityZ == 0) //If it has hit something
+                {
+                    ai.isDashing = false;
+                    ai.dashEndTime = ai.timer;
+                    return NodeState.SUCCESS;
+                }
+            }
+
+            rigidbody.velocity = new Vector3(ai.transform.forward.x * enemyStats.dashForce, 0f, ai.transform.forward.z * enemyStats.dashForce);
             return NodeState.RUNNING;
         }
         else
         {
-            navMeshAgent.isStopped = true;
-            fieldOfView.lastKnownEnemyPosition = Vector3.zero;
+            ai.isDashing = false;
+            rigidbody.velocity = Vector3.zero;
+            ai.dashEndTime = ai.timer;
             return NodeState.SUCCESS;
         }
 

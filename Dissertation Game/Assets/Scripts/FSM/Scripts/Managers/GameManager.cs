@@ -11,7 +11,7 @@ public class GameManager : MonoBehaviour
     //public GameObject cameraObject;
 
     private Pathfinding pathfinding;
-    private KnownEnemiesBlackboard knownEnemies;
+    public KnownEnemiesBlackboard knownEnemies;
     private string cameraTag = "MainCamera";
 
 

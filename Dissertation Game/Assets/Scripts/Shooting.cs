@@ -38,18 +38,21 @@ public class Shooting : MonoBehaviour
 			EnemyAI ai = hit.collider.GetComponent<EnemyAI>();
 			if (ai != null)
 			{
-				ai.TakeDamage(damage);
+				ai.LowerHP((int)damage);
 			}
 		}
 	}
 
-	public void Shoot(float wait)
+	public void Shoot(float wait, int damage, Transform transform)
     {
 		if (timePassed - wait >= timeShot)
 		{
 			Vector3 offset = new Vector3(xOffset, yOffset, zOffset);
 			Vector3 spawnPosition = bulletSpawnPoint.transform.TransformPoint(offset);
-			Instantiate(bullet.transform, spawnPosition, this.transform.rotation);
+			Transform bulletTransform = Instantiate(bullet.transform, spawnPosition, this.transform.rotation);
+			Bullet bulletScript = bulletTransform.GetComponent<Bullet>();
+			bulletScript.SetBulletDamage(damage);
+			bulletScript.SetBulletOwner(transform);
 
 			timeShot = timePassed;
 		}
@@ -59,7 +62,7 @@ public class Shooting : MonoBehaviour
 	{
 		if (timePassed - wait >= timeShot)
 		{
-			Instantiate(bullet.transform, bulletSpawnPoint.transform.position, ai.transform.rotation);
+			Transform bulletObject = Instantiate(bullet.transform, bulletSpawnPoint.transform.position, ai.transform.rotation);
 			timeShot = timePassed;
 		}
 	}

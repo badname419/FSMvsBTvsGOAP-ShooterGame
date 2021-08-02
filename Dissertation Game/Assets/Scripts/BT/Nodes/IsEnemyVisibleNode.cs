@@ -18,11 +18,11 @@ public class IsEnemyVisibleNode : Node
 
     public override NodeState Evaluate()
     {
-        //visibleEnemies = fieldOfView.GetVisibleEnemyTransforms();
-        Debug.Log(fieldOfView.seesEnemy);
+        if (fieldOfView.seesEnemy)
+        {
+            ai.SetCombat(true);
+            ai.closestEnemy = fieldOfView.closestEnemyObject;
+        }
         return (fieldOfView.seesEnemy) ? NodeState.SUCCESS : NodeState.FAILURE;
-        //visibleEnemies = fieldOfView.FindVisibleEnemies(enemyStats.viewRadius, enemyStats.viewAngle, enemyStats.enemyLayer, enemyStats.coverMask, visibleEnemies, ai);
-        //Debug.Log(visibleEnemies.Count);
-        //return (visibleEnemies.Count != 0) ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

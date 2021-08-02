@@ -4,17 +4,25 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour
 {
+    [SerializeField] private string enemyTag = "Enemy";
+    [SerializeField] private string playerTag = "Player";
+    [SerializeField] private string bulletTag = "Bullet";
 
     [SerializeField] private float bulletVelocity = 10f;
     [SerializeField] private float maxDistance;
 
     private GameObject triggeringEnemy;
     private Rigidbody rigidbody;
-    private float damage;
+    private int damage;
+    private Transform bulletOwner;
+
+    //Debug
+    private Vector3 hitPoint;
 
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
+        hitPoint = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -33,16 +41,38 @@ public class Bullet : MonoBehaviour
 
     public void OnTriggerEnter(Collider other)
     {
+        Debug.Log("Hit1");
         if(other.tag == "Enemy")
         {
+            Debug.Log("HIT");
             triggeringEnemy = other.gameObject;
-            triggeringEnemy.GetComponent<EnemyAI>().TakeDamage(damage);
+            triggeringEnemy.GetComponent<EnemyThinker>().LowerHP(damage);
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        //Debug.Log("Hit");
+        if (collision.collider.tag.Equals(enemyTag))
+        {
+            triggeringEnemy = collision.collider.gameObject;
+            triggeringEnemy.GetComponent<EnemyThinker>().LowerHP(damage);
+            triggeringEnemy.GetComponent<SensingSystem>().RegisterHit(bulletOwner);
+        }
+        else if (collision.collider.tag.Equals(playerTag))
+        {
+            triggeringEnemy = collision.collider.gameObject;
+            triggeringEnemy.GetComponent<PlayerLogic>().LowerHP(damage);
+        }
         Destroy(this.gameObject);
+    }
+
+    public void SetBulletDamage(int value)
+    {
+        damage = value;
+    }
+
+    public void SetBulletOwner(Transform transform)
+    {
+        bulletOwner = transform;
     }
 }

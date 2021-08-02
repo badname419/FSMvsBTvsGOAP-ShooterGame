@@ -15,7 +15,7 @@ MonoBehaviour:
   interval: 50
   minPrefRange: 35
   maxPrefRange: 49.5
-  closeWallThreshold: 7
-  waypointNotSeenModifier: 10
+  closeWallThreshold: 10
+  waypointNotSeenModifier: 15
   waypointInPrefRangeModifier: 7
   waypointWallCloseModifier: 15

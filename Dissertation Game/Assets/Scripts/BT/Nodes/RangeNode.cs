@@ -21,9 +21,10 @@ public class RangeNode : Node
     public override NodeState Evaluate()
     {
         Vector3 targetPosition = new Vector3();
+        Vector3 aiPosition = ai.transform.position;
         if (target.Equals(EnemyAI.Target.Enemy))
         {
-            targetPosition = fieldOfView.lastKnownEnemyPosition;
+            targetPosition = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         }
         else if(target.Equals(EnemyAI.Target.Kit))
         {
@@ -35,7 +36,7 @@ public class RangeNode : Node
             return NodeState.FAILURE;
         }
 
-        float distance = Vector3.Distance(targetPosition, ai.transform.position);
+        float distance = Vector3.Distance(targetPosition, aiPosition);
         return distance <= range ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

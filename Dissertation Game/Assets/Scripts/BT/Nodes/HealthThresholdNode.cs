@@ -17,6 +17,6 @@ public class HealthThresholdNode : Node
 
     public override NodeState Evaluate()
     {
-        return ai.currentHealth <= enemyStats.maxHp * enemyStats.hpThreshold ? NodeState.SUCCESS : NodeState.FAILURE;
+        return ai.enemyThinker.currentHP <= enemyStats.maxHp * enemyStats.hpThreshold ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

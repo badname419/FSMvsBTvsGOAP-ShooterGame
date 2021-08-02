@@ -20,9 +20,10 @@ public class IsCoverAvailableNode : Node
     public override NodeState Evaluate()
     {
         //Add check to see if the cover hasn't been taken by someone else
-        GameObject bestCoverSpot = ai.coverSystem.FindBestCover();
+        GameObject bestCoverSpot = ai.coverSystem.FindBestCoveringSpot();
         ai.SetBestCoverSpot(bestCoverSpot.transform);
-        return IsSpotValid(bestCoverSpot) ? NodeState.SUCCESS : NodeState.FAILURE;
+        bool valid = IsSpotValid(bestCoverSpot);
+        return valid ? NodeState.SUCCESS : NodeState.FAILURE;
 
         /*
         Transform bestSpot = FindBestCoverSpot();
@@ -82,9 +83,10 @@ public class IsCoverAvailableNode : Node
         }
 
         RaycastHit hit;
-        Vector3 direction = (ai.fieldOfView.closestEnemyPosition - spot.transform.position).normalized;
-        float distance = Vector3.Distance(spot.transform.position, ai.fieldOfView.closestEnemyPosition);
-        if(!Physics.Raycast(spot.transform.position, direction, distance, ai.enemyStats.coverMask))
+        Vector3 spotPosition = new Vector3(spot.transform.position.x, 1f, spot.transform.position.z);
+        Vector3 direction = (ai.fieldOfView.closestEnemyPosition - spotPosition).normalized;
+        float distance = Vector3.Distance(spotPosition, ai.fieldOfView.closestEnemyPosition);
+        if(!Physics.Raycast(spotPosition, direction, distance, ai.enemyStats.coverMask))
         {
             return false;
         }
@@ -94,8 +96,9 @@ public class IsCoverAvailableNode : Node
     private bool CheckIfSpotIsValid(Transform spot)
     {
         RaycastHit hit;
-        Vector3 direction = target.position - spot.position;
-        if(Physics.Raycast(spot.position, direction, out hit))
+        Vector3 spotPosition = new Vector3(spot.position.x, 1f, spot.position.z);
+        Vector3 direction = target.position - spotPosition;
+        if(Physics.Raycast(spotPosition, direction, out hit))
         {
             if(hit.collider.transform != target)
             {

@@ -19,7 +19,7 @@ public class ShootAction : Action
         {
             Debug.LogWarning("Shoot 2");
             controller.enemyThinker.lastShotTime = controller.enemyThinker.stateTimeElapsed;
-            controller.enemyShooting.Shoot(controller.enemyStats.shootingWaitTime);
+            controller.enemyShooting.Shoot(controller.enemyStats.shootingWaitTime, controller.enemyStats.shootingDamage, controller.transform);
         }
     }
 }

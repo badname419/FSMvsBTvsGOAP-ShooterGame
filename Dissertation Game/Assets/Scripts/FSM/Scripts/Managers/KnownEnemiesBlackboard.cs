@@ -97,39 +97,98 @@ public class KnownEnemiesBlackboard
 
     private void AddEnemy(Transform transform)
     {
-        PlayerLogic playerLogic = transform.gameObject.GetComponent<PlayerLogic>();
-        KnownEnemy enemy = new KnownEnemy(transform, transform.position, transform.position, playerLogic.CurrentHealth);
+        int currentHealth = 0;
+
+        if (transform.tag.Equals("Player"))
+        {
+            PlayerLogic playerLogic = transform.gameObject.GetComponent<PlayerLogic>();
+            currentHealth = playerLogic.CurrentHealth;
+        }
+        else if (transform.tag.Equals("Enemy"))
+        {
+            EnemyThinker enemyThinker = transform.gameObject.GetComponent<EnemyThinker>();
+            currentHealth = (int)enemyThinker.currentHP;
+        }
+        KnownEnemy enemy = new KnownEnemy(transform, transform.position, transform.position, currentHealth);
         knownEnemiesList.Add(enemy);
     }
 
-    public GameObject DetermineTheClosestEnemy(Vector3 origin)
+    public GameObject DetermineTheClosestEnemyObject(Vector3 origin)
     {
-        int index = -1;
-        float shortestDistance = 0;
-        if(knownEnemiesList.Count == 1)
+        int index = FindTheClosestEnemy(origin);
+        if(index == -1)
         {
-            return knownEnemiesList[0].transform.gameObject;
+            return null;
         }
         else
         {
-            for(int i=0; i < knownEnemiesList.Count; i++)
+            return knownEnemiesList[index].transform.gameObject;
+        }
+    }
+
+    public int DetermineTheClosestEnemyIndex(Vector3 origin)
+    {
+        return FindTheClosestEnemy(origin);
+    }
+
+    public Vector3 GetClosestPreviousPosition(Vector3 origin)
+    {
+        int index = FindTheClosestEnemy(origin);
+        if(index == -1)
+        {
+            return Vector3.zero;
+        }
+        else
+        {
+            return knownEnemiesList[index].previousPosition;
+        }
+    }
+
+    public Vector3 GetClosestCurrentPosition(Vector3 origin)
+    {
+        int index = FindTheClosestEnemy(origin);
+        if (index == -1)
+        {
+            return Vector3.zero;
+        }
+        else
+        {
+            return knownEnemiesList[index].currentPosition;
+        }
+    }
+
+    private int FindTheClosestEnemy(Vector3 origin)
+    {
+        int index = -1;
+        float shortestDistance = 0;
+        if (knownEnemiesList.Count == 1)
+        {
+            return 0;
+        }
+        else if (knownEnemiesList.Count == 0)
+        {
+            return index;
+        }
+        else
+        {
+            for (int i = 0; i < knownEnemiesList.Count; i++)
             {
                 float distance = Vector3.Distance(origin, knownEnemiesList[i].currentPosition);
-                if(i == 0)
+                if (i == 0)
                 {
                     shortestDistance = distance;
                     index = 0;
                 }
                 else
                 {
-                    if(distance < shortestDistance)
+                    if (distance < shortestDistance)
                     {
                         shortestDistance = distance;
                         index = i;
                     }
                 }
             }
-            return knownEnemiesList[index].transform.gameObject;
+            return index;
         }
     }
 
@@ -149,5 +208,23 @@ public class KnownEnemiesBlackboard
     {
         int index = FindEnemyIndex(transform);
         knownEnemiesList[index].hp = newHP;
+    }
+
+    public void RemoveEnemy(Vector3 knownPosition)
+    {
+        for(int i=0; i<knownEnemiesList.Count; i++)
+        {
+            if(knownEnemiesList[i].currentPosition.Equals(knownPosition) ||
+                knownEnemiesList[i].previousPosition.Equals(knownPosition))
+            {
+                knownEnemiesList.RemoveAt(i);
+            }
+            break;
+        }
+    }
+
+    public bool AnyEnemiesSeen()
+    {
+        return knownEnemiesList.Count > 0;
     }
 }

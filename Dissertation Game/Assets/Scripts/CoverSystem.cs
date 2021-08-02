@@ -21,6 +21,7 @@ public class CoverSystem : MonoBehaviour
     private int waypointInPrefRangeModifier;
     private int waypointWallCloseModifier;
 
+    [SerializeField] bool distanceModifier;
     [SerializeField] bool seenModifier;
     [SerializeField] bool rangeModifier;
     [SerializeField] bool wallClosenessModifier;
@@ -97,15 +98,7 @@ public class CoverSystem : MonoBehaviour
         //Make it so that the list of waypoints the player sees at the time is stored globally and can be accessed by the enemies at all times.  
         if (Time.frameCount % interval == 0)
         {
-            DestroyFloatingText();
-            bestCover = FindBestCover();
-            DrawFloatingText();
-
-            //Debug
-            if (updateWallsBounds)
-            {
-                CalculateExpandedWallBounds();
-            }
+            bestCover = FindBestCoveringSpot();
         }
     }
 
@@ -171,26 +164,25 @@ public class CoverSystem : MonoBehaviour
         }
     }
 
-    public GameObject FindBestCover()
+    public GameObject FindBestCoveringSpot()
     {
+        //Debug
+        DestroyFloatingText();
+
         waypointList.Clear();
         FindNearbyWaypoints();
+        EvaluateWaypoints();
 
-        int highestValue = -10000;
-        int targetIndex = 0;
+        //Debug
+        DrawFloatingText();
 
-        //TO DO: Check if this spot has already been taken by someone else
-        for (int i = 0; i < waypointList.Count; i++)
+        //Debug
+        if (updateWallsBounds)
         {
-            int value = waypointList[i].value;
-            if (value > highestValue)
-            {
-                highestValue = value;
-                targetIndex = i;
-            }
+            CalculateExpandedWallBounds();
         }
 
-        return waypointList[targetIndex].waypointCollider.gameObject;
+        return DetermineBestWaypoint();
     }
 
     private void FindNearbyWaypoints()
@@ -203,16 +195,25 @@ public class CoverSystem : MonoBehaviour
 
         waypointColliders = Physics.OverlapSphere(gameObject.transform.position, radius, waypointMask);
 
+    }
+
+    private void EvaluateWaypoints()
+    {
         int k = 0;
         foreach (Collider nearbyWaypoint in waypointColliders)
         {
             waypointGizmoScript = nearbyWaypoint.GetComponent<WaypointGizmo>();
             waypointGizmoScript.SetColor(Color.cyan);
 
-            int distance = CalculateDistances(nearbyWaypoint);
-            int value = CalculateDistanceValue(distance);
+            int value = 0;
+            int distance = 0;
 
             //Debug
+            if (distanceModifier)
+            {
+                distance = CalculateDistances(nearbyWaypoint);
+                value = CalculateDistanceValue(distance);
+            }
             if (seenModifier)
             {
                 if (IsWaypointSeen(nearbyWaypoint))
@@ -246,6 +247,25 @@ public class CoverSystem : MonoBehaviour
         }
     }
 
+    private GameObject DetermineBestWaypoint()
+    {
+        int highestValue = 0;
+        int targetIndex = 0;
+
+        //TO DO: Check if this spot has already been taken by someone else
+        for (int i = 0; i < waypointList.Count; i++)
+        {
+            int value = waypointList[i].value;
+            if (i == 0 || value > highestValue)
+            {
+                highestValue = value;
+                targetIndex = i;
+            }
+        }
+
+        return waypointList[targetIndex].waypointCollider.gameObject;
+    }
+
     private int CalculateDistances(Collider waypoint)
     {
         Vector3 waypointPosition = waypoint.transform.position;
@@ -273,7 +293,7 @@ public class CoverSystem : MonoBehaviour
     private bool IsWaypointSeen(Collider waypoint)
     {
         enemyVisibleWaypoints.Clear();
-        enemyVisibleWaypoints = fieldOfView.FindVisibleObjects(enemyStats.viewAngle, coverMask, waypointColliders, enemyVisibleWaypoints, enemyPlayer);
+        enemyVisibleWaypoints = fieldOfView.FindVisibleObjects(enemyStats.viewAngle, coverMask, waypointColliders, enemyPlayer);
 
         for (int i = 0; i < enemyVisibleWaypoints.Count; i++)
         {
