@@ -9,7 +9,6 @@ public class IsDashingNode: Node
     private EnemyStats enemyStats;
     private EnemyAI ai;
     private Rigidbody rigidbody;
-    private KnownEnemiesBlackboard blackboard;
     private EnemyThinker enemyThinker;
 
     public IsDashingNode(EnemyAI ai)
@@ -22,8 +21,6 @@ public class IsDashingNode: Node
 
     public override NodeState Evaluate()
     {
-        Vector3 aiPosition = ai.transform.position;
-
         if (!enemyThinker.isDashing)
         {
             return NodeState.FAILURE;

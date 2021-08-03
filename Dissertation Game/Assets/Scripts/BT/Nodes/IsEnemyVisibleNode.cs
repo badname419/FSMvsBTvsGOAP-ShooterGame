@@ -9,18 +9,20 @@ public class IsEnemyVisibleNode : Node
 
     private FieldOfView fieldOfView;
     private EnemyAI ai;
+    private EnemyThinker enemyThinker;
 
     public IsEnemyVisibleNode(EnemyAI ai)
     {
         this.ai = ai;
         fieldOfView = ai.fieldOfView;
+        this.enemyThinker = ai.enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
         if (fieldOfView.seesEnemy)
         {
-            ai.SetCombat(true);
+            enemyThinker.SetCombat(true);
             ai.closestEnemy = fieldOfView.closestEnemyObject;
         }
         return (fieldOfView.seesEnemy) ? NodeState.SUCCESS : NodeState.FAILURE;

@@ -8,24 +8,26 @@ public class IsInCombatNode: Node
 {
     private EnemyStats enemyStats;
     private EnemyAI ai;
+    private EnemyThinker enemyThinker;
 
     public IsInCombatNode(EnemyAI ai)
     {
         this.ai = ai;
         this.enemyStats = ai.enemyStats;
+        this.enemyThinker = ai.enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
-        if (!ai.inCombat)
+        if (!enemyThinker.inCombat)
         {
             return NodeState.FAILURE;
         }
         else
         {
-            if(ai.timer - ai.combatStartTime > enemyStats.combatDuration)
+            if(enemyThinker.timer - enemyThinker.combatStartTime > enemyStats.combatDuration)
             {
-                ai.SetCombat(false);
+                enemyThinker.SetCombat(false);
                 return NodeState.FAILURE;
             }
             else

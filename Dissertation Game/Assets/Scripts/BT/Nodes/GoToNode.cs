@@ -9,6 +9,7 @@ public class GoToNode: Node
     private NavMeshAgent navMeshAgent;
     private EnemyStats enemyStats;
     private FieldOfView fieldOfView;
+    private EnemyThinker enemyThinker;
     //private int target;
     private EnemyAI ai;
     private EnemyAI.Target target;
@@ -19,6 +20,7 @@ public class GoToNode: Node
         this.navMeshAgent = ai.gameObject.GetComponent<NavMeshAgent>();
         this.enemyStats = ai.enemyStats;
         this.fieldOfView = ai.fieldOfView;
+        this.enemyThinker = ai.enemyThinker;
         this.target = target;
     }
 
@@ -38,6 +40,11 @@ public class GoToNode: Node
         else if(target.Equals(EnemyAI.Target.Cover))
         {
             targetPosition = ai.GetBestCoverSpot().position;
+        }
+        else if (target.Equals(EnemyAI.Target.SearchPoint))
+        {
+            int currentSpot = enemyThinker.currentSearchPoint;
+            targetPosition = enemyThinker.searchPoints[enemyThinker.randomizedRoute[currentSpot]].position;
         }
 
 
@@ -59,6 +66,10 @@ public class GoToNode: Node
             if (target.Equals(EnemyAI.Target.Enemy))
             {
                 ai.knownEnemiesBlackboard.RemoveEnemy(targetPosition);
+            }
+            else if (target.Equals(EnemyAI.Target.SearchPoint))
+            {
+                enemyThinker.currentSearchPoint++;
             }
             return NodeState.SUCCESS;
         }

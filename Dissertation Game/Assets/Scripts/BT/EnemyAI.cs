@@ -27,14 +27,12 @@ public class EnemyAI : MonoBehaviour
     public float dashStartTime;
     public float dashEndTime;
     public float timer;
-    public bool inCombat;
-    public float combatStartTime;
     public GameObject closestEnemy;
 
     private Node topNode;
 
     private float _currentHealth;
-    public enum Target { Enemy, Kit, Cover};
+    public enum Target { Enemy, Kit, Cover, SearchPoint};
 
     public float currentHealth
     {
@@ -68,10 +66,7 @@ public class EnemyAI : MonoBehaviour
         isDashing = false;
         dashStartTime = 0f;
         dashEndTime = 0f;
-        timer = 0f;
-        inCombat = false;
-        combatStartTime = 0f;
-        
+        timer = 0f;  
     }
 
     private void ConstructBehaviourTree()
@@ -88,6 +83,7 @@ public class EnemyAI : MonoBehaviour
         LookAtNode lookAtEnemyNode = new LookAtNode(this, Target.Enemy);
         AnyEnemiesSeenNode anyEnemiesSeenNode = new AnyEnemiesSeenNode(this);
         IsDashingNode isDashingNode = new IsDashingNode(this);
+        GoToNode goToSearchPointNode = new GoToNode(this, Target.SearchPoint);
 
 
         Sequence chaseSequence = new Sequence(new List<Node> { anyEnemiesSeenNode, goToLastPositionNode, lookAtEnemyNode});
@@ -131,7 +127,12 @@ public class EnemyAI : MonoBehaviour
         #endregion
 
         #region Search
-        Selector shouldSearchSelector = new Selector(new List<Node> { healSequence, chaseSequence});
+        RandomizeSearchRoute randomizeRouteNode = new RandomizeSearchRoute(this);
+        IsRouteAvailable isRouteAvailableNode = new IsRouteAvailable(this);
+        Selector establishRouteSelector = new Selector(new List<Node> { isRouteAvailableNode, randomizeRouteNode});
+        Sequence randomSearchSequence = new Sequence(new List<Node> { establishRouteSelector, goToSearchPointNode});
+
+        Selector shouldSearchSelector = new Selector(new List<Node> { healSequence, chaseSequence, randomSearchSequence});
 
         IsInCombatNode inCombatNode = new IsInCombatNode(this);
         IsEnemyAlive enemyAliveNode = new IsEnemyAlive(this);
@@ -173,8 +174,6 @@ public class EnemyAI : MonoBehaviour
             SetColor(Color.red);
             agent.isStopped = true;
         }
-
-        Debug.Log(enemyThinker.isDashing);
     }
 
     public void SetColor(Color color)
@@ -190,15 +189,6 @@ public class EnemyAI : MonoBehaviour
     public Transform GetBestCoverSpot()
     {
         return bestCoverSpot;
-    }
-
-    public void SetCombat(bool inCombat)
-    {
-        this.inCombat = inCombat;
-        if (inCombat)
-        {
-            combatStartTime = timer;
-        }
     }
 
     //To be removed

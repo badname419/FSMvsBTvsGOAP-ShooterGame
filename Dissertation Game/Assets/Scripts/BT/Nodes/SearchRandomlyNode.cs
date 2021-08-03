@@ -15,6 +15,7 @@ public class SearchRandomlyNode: Node
 
     public override NodeState Evaluate()
     {
+
         Debug.Log("searching");
         return NodeState.RUNNING;
     }

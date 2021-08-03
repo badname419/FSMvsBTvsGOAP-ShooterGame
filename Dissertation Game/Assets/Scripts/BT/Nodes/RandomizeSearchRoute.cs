@@ -17,6 +17,7 @@ public class RandomizeSearchRoute : Node
     public override NodeState Evaluate()
     {
         int n = enemyThinker.searchPoints.Count;
+        enemyThinker.randomizedRoute.Clear();
 
         var random = new System.Random();
         var randomizedResult = new int[n];
@@ -28,6 +29,11 @@ public class RandomizeSearchRoute : Node
                 randomizedResult[i] = randomizedResult[j];
             }
             randomizedResult[j] = i;
+        }
+
+        for (int i = 0; i < randomizedResult.Length; i++) 
+        {
+            enemyThinker.randomizedRoute.Add(randomizedResult[i]);
         }
 
         return NodeState.SUCCESS;

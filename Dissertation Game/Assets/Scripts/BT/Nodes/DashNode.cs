@@ -27,57 +27,20 @@ public class DashNode: Node
     {
         Vector3 aiPosition = ai.transform.position;
 
-        if (!enemyThinker.isDashing)
+        Vector3 targetPosition = new Vector3();
+        if (target.Equals(EnemyAI.Target.Enemy))
         {
-            Vector3 targetPosition = new Vector3();
-            if (target.Equals(EnemyAI.Target.Enemy))
-            {
-                targetPosition = blackboard.GetClosestCurrentPosition(aiPosition);
-            }
-            if (targetPosition == Vector3.zero)
-            {
-                return NodeState.FAILURE;
-            }
+            targetPosition = blackboard.GetClosestCurrentPosition(aiPosition);
         }
-        
-        float dashDuration = 0f;
-        if (enemyThinker.isDashing)
+        if (targetPosition == Vector3.zero)
         {
-            dashDuration = ai.timer - enemyThinker.dashStartTime;
+            return NodeState.FAILURE;
         }
 
-        if (!enemyThinker.isDashing || dashDuration < enemyStats.dashDuration)
-        {
-            if (!enemyThinker.isDashing)
-            {
-                ai.SetColor(Color.magenta);
-                enemyThinker.isDashing = true;
-                enemyThinker.dashStartTime = ai.timer;
-            }
-            else
-            {
-                float velocityX = rigidbody.velocity.x;
-                float velocityZ = rigidbody.velocity.z;
-                if (velocityX == 0 && velocityZ == 0) //If it has hit something
-                {
-                    ai.SetColor(Color.white);
-                    enemyThinker.isDashing = false;
-                    enemyThinker.dashEndTime = ai.timer;
-                    return NodeState.SUCCESS;
-                }
-            }
-
-            rigidbody.velocity = new Vector3(ai.transform.forward.x * enemyStats.dashForce, 0f, ai.transform.forward.z * enemyStats.dashForce);
-            return NodeState.RUNNING;
-        }
-        else
-        {
-            ai.SetColor(Color.white);
-            enemyThinker.isDashing = false;
-            rigidbody.velocity = Vector3.zero;
-            enemyThinker.dashEndTime = ai.timer;
-            return NodeState.SUCCESS;
-        }
+        ai.SetColor(Color.magenta);
+        enemyThinker.isDashing = true;
+        enemyThinker.dashStartTime = ai.timer;
+        return NodeState.SUCCESS;
         
     }
 }

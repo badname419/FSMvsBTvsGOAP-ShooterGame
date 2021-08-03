@@ -46,6 +46,7 @@ public class SensingSystem : MonoBehaviour
 
             if (isMoving)
             {
+                enemyThinker.SetCombat(true);
                 knownEnemiesBlackboard.UpdateEnemyList(enemy);
             }
         }

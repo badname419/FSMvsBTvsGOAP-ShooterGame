@@ -1189,7 +1189,20 @@ MonoBehaviour:
   - {fileID: 1238480171}
   - {fileID: 659440901}
   - {fileID: 1387698070}
-  searchPoints: []
+  searchPoints:
+  - {fileID: 1829999045}
+  - {fileID: 895781598}
+  - {fileID: 702385502}
+  - {fileID: 451328727}
+  - {fileID: 420478937}
+  - {fileID: 2129357118}
+  - {fileID: 907069471}
+  - {fileID: 1488621804}
+  - {fileID: 314962048}
+  - {fileID: 192571404}
+  - {fileID: 2125614555}
+  - {fileID: 730949522}
+  - {fileID: 1107166555}
   enemyObject: {fileID: 470787981240711513, guid: be9ba07bc467ab747993afb0196d32c0, type: 3}
   playerObject: {fileID: 325436660790668543, guid: 350318d27c65875488128822e3f9bb60, type: 3}
 --- !u!4 &208505161
@@ -1504,8 +1517,6 @@ MonoBehaviour:
   dashStartTime: 0
   dashEndTime: 0
   timer: 0
-  inCombat: 0
-  combatStartTime: 0
   closestEnemy: {fileID: 0}
 --- !u!114 &257762467
 MonoBehaviour:
@@ -1688,12 +1699,19 @@ MonoBehaviour:
   stateTimeElapsed: 0
   lastShotTime: 0
   currentHP: 0
+  inCombat: 0
+  combatStartTime: 0
   closestEnemy: {fileID: 0}
   closestEnemyIndex: 0
   walkingTarget: {x: 0, y: 0, z: 0}
   lastKnownEnemyLoc: {x: 0, y: 0, z: 0}
   searchPoints: []
   randomizedRoute: 
+  maximumSearchPoints: 0
+  currentSearchPoint: 0
+  isDashing: 0
+  dashStartTime: 0
+  dashEndTime: 0
   numOfRotations: 0
   totalRotations: 0
   forwardRotationTarget: {x: 0, y: 0, z: 0}
@@ -1701,6 +1719,7 @@ MonoBehaviour:
   leftRotationTarget: {x: 0, y: 0, z: 0}
   targetArray: []
   enemyStats: {fileID: 11400000, guid: 3200733487427174c8eea3bdc71c907a, type: 2}
+  timer: 0
 --- !u!1 &260368297 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 4679247325785446874, guid: 4186b5eeabcb16041a6ade5b42e47afd, type: 3}

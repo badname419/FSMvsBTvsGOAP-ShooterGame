@@ -52,18 +52,22 @@ public class Bullet : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.collider.tag.Equals(enemyTag))
+
+        if (!collision.transform.Equals(bulletOwner))
         {
-            triggeringEnemy = collision.collider.gameObject;
-            triggeringEnemy.GetComponent<EnemyThinker>().LowerHP(damage);
-            triggeringEnemy.GetComponent<SensingSystem>().RegisterHit(bulletOwner);
+            if (collision.collider.tag.Equals(enemyTag))
+            {
+                triggeringEnemy = collision.collider.gameObject;
+                triggeringEnemy.GetComponent<EnemyThinker>().LowerHP(damage);
+                triggeringEnemy.GetComponent<SensingSystem>().RegisterHit(bulletOwner);
+            }
+            else if (collision.collider.tag.Equals(playerTag))
+            {
+                triggeringEnemy = collision.collider.gameObject;
+                triggeringEnemy.GetComponent<PlayerLogic>().LowerHP(damage);
+            }
+            Destroy(this.gameObject);
         }
-        else if (collision.collider.tag.Equals(playerTag))
-        {
-            triggeringEnemy = collision.collider.gameObject;
-            triggeringEnemy.GetComponent<PlayerLogic>().LowerHP(damage);
-        }
-        Destroy(this.gameObject);
     }
 
     public void SetBulletDamage(int value)

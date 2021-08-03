@@ -37,7 +37,7 @@ MonoBehaviour:
   coverMask:
     serializedVersion: 2
     m_Bits: 64
-  rotationSpeed: 10
+  rotationSpeed: 20
   rotationAngle: 120
   maxRotations: 5
   aggroDistance: 1000
