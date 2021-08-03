@@ -22,6 +22,7 @@ public class PlayerMovement : MonoBehaviour
     private Vector3 moveInput;
     private Shooting shooting;
     private int shootingDamage;
+    private bool isMoving;
 
     //Dashing
     private bool isDashing;
@@ -31,6 +32,7 @@ public class PlayerMovement : MonoBehaviour
     Vector3 distantForward;
     Vector3 distantRight;
     Vector3 distantLeft;
+    
 
 
 
@@ -43,6 +45,7 @@ public class PlayerMovement : MonoBehaviour
         dashStart = 0f;
         timer = 0f;
         shootingDamage = 5;
+        isMoving = false;
     }
 
     // Update is called once per frame
@@ -62,23 +65,6 @@ public class PlayerMovement : MonoBehaviour
             targetRotation.z = 0;
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
-        /*
-        if (Input.GetKey(leftKey))
-        {
-            transform.Translate(-moveSpeed * Time.deltaTime, 0, 0, Space.World);
-        }
-        if (Input.GetKey(rightKey))
-        {
-            transform.Translate(moveSpeed * Time.deltaTime, 0, 0, Space.World);
-        }
-        if (Input.GetKey(forwardKey))
-        {
-            transform.Translate(0, 0, moveSpeed * Time.deltaTime, Space.World);
-        }
-        if (Input.GetKey(backKey))
-        {
-            transform.Translate(0, 0, -moveSpeed * Time.deltaTime, Space.World);
-        }*/
 
         //Debug
         Vector3 forward = transform.forward;
@@ -128,6 +114,8 @@ public class PlayerMovement : MonoBehaviour
             rigidbody.velocity = moveInput * moveSpeed; //multiply the direction by an appropriate speed, Vector3(0,1,0) is straight up.
         }
 
+        isMoving = moveInput != Vector3.zero;
+
         //if (moveInput.sqrMagnitude > 0)
         //{
             //Quaternion rotation = Quaternion.LookRotation(moveInput, Vector3.up);
@@ -146,6 +134,11 @@ public class PlayerMovement : MonoBehaviour
 
         Gizmos.color = Color.green;
         Gizmos.DrawLine(transform.position, distantLeft);
+    }
+
+    public bool IsMoving()
+    {
+        return isMoving;
     }
 
 }

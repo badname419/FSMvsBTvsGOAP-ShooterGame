@@ -7,7 +7,6 @@ public class ControlCanvas : MonoBehaviour
     private Transform target;
     private Canvas canvas;
 
-    // Use this for initialization
     void Start()
     {
         target = UnityEngine.Camera.main.transform;

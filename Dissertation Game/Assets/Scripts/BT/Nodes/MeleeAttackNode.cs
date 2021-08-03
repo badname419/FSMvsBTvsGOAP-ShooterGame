@@ -27,7 +27,6 @@ public class MeleeAttackNode : Node
 
     public override NodeState Evaluate()
     {
-        Debug.Log("Melee!");
         //Vector3 target = ai.fieldOfView.lastKnownEnemyPosition;
         //agent.isStopped = true;
         ai.SetColor(Color.black);

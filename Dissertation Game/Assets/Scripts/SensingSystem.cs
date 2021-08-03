@@ -42,7 +42,12 @@ public class SensingSystem : MonoBehaviour
         for(int i=0; i<enemiesInHearingRadius.Length; i++)
         {
             Transform enemy = enemiesInHearingRadius[i].transform;
-            knownEnemiesBlackboard.UpdateEnemyList(enemy);
+            bool isMoving = enemy.GetComponent<PlayerMovement>().IsMoving();
+
+            if (isMoving)
+            {
+                knownEnemiesBlackboard.UpdateEnemyList(enemy);
+            }
         }
     }
 

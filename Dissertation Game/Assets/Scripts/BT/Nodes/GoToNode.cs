@@ -56,7 +56,10 @@ public class GoToNode: Node
         else
         {
             navMeshAgent.isStopped = true;
-            fieldOfView.lastKnownEnemyPosition = Vector3.zero;
+            if (target.Equals(EnemyAI.Target.Enemy))
+            {
+                ai.knownEnemiesBlackboard.RemoveEnemy(targetPosition);
+            }
             return NodeState.SUCCESS;
         }
 

@@ -14,6 +14,7 @@ public class EnemyStats : ScriptableObject
     public float viewAngle = 108f;
     public float kitGrabingRange = 30f;
     public float meleeRange = 5f;
+    public float minimumLookingAngle = 1.5f;
 
     [Header("Combat")]
     public int shootingDamage = 5;

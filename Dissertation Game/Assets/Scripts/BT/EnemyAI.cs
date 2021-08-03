@@ -11,6 +11,7 @@ public class EnemyAI : MonoBehaviour
     [HideInInspector] public CoverSystem coverSystem;
     [HideInInspector] public FieldOfView fieldOfView;
     [HideInInspector] public KnownEnemiesBlackboard knownEnemiesBlackboard;
+    [HideInInspector] public Shooting shooting;
 
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Cover[] availableCovers;
@@ -53,8 +54,7 @@ public class EnemyAI : MonoBehaviour
         fieldOfView = GetComponent<FieldOfView>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         knownEnemiesBlackboard = gameManager.knownEnemies;
-
-        
+        shooting = GetComponent<Shooting>();
     }
 
     private void Start()
@@ -82,11 +82,12 @@ public class EnemyAI : MonoBehaviour
         GoToLastKnownPositionNode goToLastPositionNode = new GoToLastKnownPositionNode(this);
         RangeNode inViewRangeNode = new RangeNode(enemyStats.viewRadius, this, Target.Enemy);
         RangeNode shootingRangeNode = new RangeNode(enemyStats.shootingRange, this, Target.Enemy);
-        ShootNode shootNode = new ShootNode(agent, this, enemyStats.shootingWaitTime, gameObject);
+        ShootNode shootNode = new ShootNode(this);
         IsEnemyVisibleNode enemyVisibleNode = new IsEnemyVisibleNode(this);
         IsLastEnemyPositionKnownNode lastKnownPositionNode = new IsLastEnemyPositionKnownNode(this);
         LookAtNode lookAtEnemyNode = new LookAtNode(this, Target.Enemy);
         AnyEnemiesSeenNode anyEnemiesSeenNode = new AnyEnemiesSeenNode(this);
+        IsDashingNode isDashingNode = new IsDashingNode(this);
 
 
         Sequence chaseSequence = new Sequence(new List<Node> { anyEnemiesSeenNode, goToLastPositionNode, lookAtEnemyNode});
@@ -101,7 +102,7 @@ public class EnemyAI : MonoBehaviour
         DashCooldownNode dashCooldownNode = new DashCooldownNode(this);
         DashNode dashNode = new DashNode(this, Target.Enemy);
 
-        Sequence dashMeleeSequence = new Sequence(new List<Node> { inDashRangeNode, dashCooldownNode, lookAtEnemyNode, dashNode, meleeSequence });
+        Sequence dashMeleeSequence = new Sequence(new List<Node> { inDashRangeNode, dashCooldownNode, lookAtEnemyNode, enemyVisibleNode, dashNode, meleeSequence });
 
         Selector attackSelector = new Selector(new List<Node> { dashMeleeSequence, /*grenade*/ shootSequence });
         #endregion
@@ -124,7 +125,7 @@ public class EnemyAI : MonoBehaviour
         Selector tryToHealSelector = new Selector(new List<Node> { grabKitSequence, tryToTakeCoverSelector });
 
         Sequence healSequence = new Sequence(new List<Node> { hpThresholdNode, lessHealthNode, tryToHealSelector });
-        Selector combatChoiceSelector = new Selector(new List<Node> { healSequence, attackSelector, chaseSequence });
+        Selector combatChoiceSelector = new Selector(new List<Node> {healSequence, attackSelector, chaseSequence });
 
         Sequence seesEnemySequence = new Sequence(new List<Node> { enemyVisibleNode, combatChoiceSelector });
         #endregion
@@ -159,7 +160,7 @@ public class EnemyAI : MonoBehaviour
         //Sequence isLastPositionKnown = new Sequence(new List<Node> { lastKnownPositionNode, goToLastPositionNode });
         //Selector searchForEnemySelector = new Selector(new List<Node> { isLastPositionKnown});
 
-        topNode = new Selector(new List<Node> { /*mainCoverSequence,*/ seesEnemySequence, searchSelector /*shootSequence, chaseSequence/*, searchForEnemySelector*/});
+        topNode = new Selector(new List<Node> { /*mainCoverSequence,*/isDashingNode, seesEnemySequence, searchSelector /*shootSequence, chaseSequence/*, searchForEnemySelector*/});
     }
 
     private void Update()
@@ -172,6 +173,8 @@ public class EnemyAI : MonoBehaviour
             SetColor(Color.red);
             agent.isStopped = true;
         }
+
+        Debug.Log(enemyThinker.isDashing);
     }
 
     public void SetColor(Color color)

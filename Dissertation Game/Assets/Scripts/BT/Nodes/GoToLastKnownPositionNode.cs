@@ -22,6 +22,7 @@ public class GoToLastKnownPositionNode : Node
     {
         Vector3 aiPosition = ai.transform.position;
         Vector3 target = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
+
         if (target.Equals(Vector3.zero))
         {
             navMeshAgent.isStopped = true;
@@ -38,6 +39,7 @@ public class GoToLastKnownPositionNode : Node
         }
         else
         {
+            ai.knownEnemiesBlackboard.RemoveEnemy(target);
             navMeshAgent.isStopped = true;
             return NodeState.SUCCESS;
         }

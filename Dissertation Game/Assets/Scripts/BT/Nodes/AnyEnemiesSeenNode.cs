@@ -15,6 +15,8 @@ public class AnyEnemiesSeenNode: Node
 
     public override NodeState Evaluate()
     {
+        //Debug.Log("enemies seen: ");
+        //Debug.Log(ai.knownEnemiesBlackboard.AnyEnemiesSeen());
         return ai.knownEnemiesBlackboard.AnyEnemiesSeen() ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

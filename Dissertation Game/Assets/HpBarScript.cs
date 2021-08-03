@@ -9,7 +9,6 @@ public class HpBarScript : MonoBehaviour
     private Text healthText;
     private PlayerLogic playerLogic;
 
-    // Start is called before the first frame update
     void Start()
     {
         healthBar = GameObject.Find("HP").GetComponent<Image>();

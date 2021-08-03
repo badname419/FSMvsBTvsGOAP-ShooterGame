@@ -6,61 +6,63 @@ using UnityEngine.AI;
 
 public class DashNode: Node
 {
-    private NavMeshAgent navMeshAgent;
     private EnemyStats enemyStats;
-    private FieldOfView fieldOfView;
-    //private int target;
     private EnemyAI ai;
     private EnemyAI.Target target;
-
     private Rigidbody rigidbody;
+    private KnownEnemiesBlackboard blackboard;
+    private EnemyThinker enemyThinker;
 
     public DashNode(EnemyAI ai, EnemyAI.Target target)
     {
         this.ai = ai;
         this.rigidbody = ai.gameObject.GetComponent<Rigidbody>();
-
-        this.navMeshAgent = ai.gameObject.GetComponent<NavMeshAgent>();
         this.enemyStats = ai.enemyStats;
-        this.fieldOfView = ai.fieldOfView;
         this.target = target;
+        this.blackboard = ai.knownEnemiesBlackboard;
+        this.enemyThinker = ai.enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
-        //Vector3 target = fieldOfView.lastKnownEnemyPosition;
+        Vector3 aiPosition = ai.transform.position;
 
-        Vector3 targetPosition = new Vector3();
-        if (target.Equals(EnemyAI.Target.Enemy))
+        if (!enemyThinker.isDashing)
         {
-            targetPosition = ai.fieldOfView.lastKnownEnemyPosition;
-        }
-        if (targetPosition == Vector3.zero)
-        {
-            return NodeState.FAILURE;
-        }
-
-        float dashDuration = 0f;
-        if (ai.isDashing)
-        {
-            dashDuration = ai.timer - ai.dashStartTime;
-        }
-
-        if(!ai.isDashing || dashDuration < enemyStats.dashDuration)
-        {
-            if (!ai.isDashing)
+            Vector3 targetPosition = new Vector3();
+            if (target.Equals(EnemyAI.Target.Enemy))
             {
-                ai.isDashing = true;
-                ai.dashStartTime = ai.timer;
+                targetPosition = blackboard.GetClosestCurrentPosition(aiPosition);
+            }
+            if (targetPosition == Vector3.zero)
+            {
+                return NodeState.FAILURE;
+            }
+        }
+        
+        float dashDuration = 0f;
+        if (enemyThinker.isDashing)
+        {
+            dashDuration = ai.timer - enemyThinker.dashStartTime;
+        }
+
+        if (!enemyThinker.isDashing || dashDuration < enemyStats.dashDuration)
+        {
+            if (!enemyThinker.isDashing)
+            {
+                ai.SetColor(Color.magenta);
+                enemyThinker.isDashing = true;
+                enemyThinker.dashStartTime = ai.timer;
             }
             else
             {
                 float velocityX = rigidbody.velocity.x;
                 float velocityZ = rigidbody.velocity.z;
-                if(velocityX == 0 && velocityZ == 0) //If it has hit something
+                if (velocityX == 0 && velocityZ == 0) //If it has hit something
                 {
-                    ai.isDashing = false;
-                    ai.dashEndTime = ai.timer;
+                    ai.SetColor(Color.white);
+                    enemyThinker.isDashing = false;
+                    enemyThinker.dashEndTime = ai.timer;
                     return NodeState.SUCCESS;
                 }
             }
@@ -70,16 +72,12 @@ public class DashNode: Node
         }
         else
         {
-            ai.isDashing = false;
+            ai.SetColor(Color.white);
+            enemyThinker.isDashing = false;
             rigidbody.velocity = Vector3.zero;
-            ai.dashEndTime = ai.timer;
+            enemyThinker.dashEndTime = ai.timer;
             return NodeState.SUCCESS;
         }
-
-        //bool lastPositionKnown = fieldOfView.lastKnownEnemyPosition != Vector3.zero;
-        //return (lastPositionKnown) ? NodeState.SUCCESS : NodeState.FAILURE;
-        //visibleEnemies = fieldOfView.FindVisibleEnemies(enemyStats.viewRadius, enemyStats.viewAngle, enemyStats.enemyLayer, enemyStats.coverMask, visibleEnemies, ai);
-        //Debug.Log(visibleEnemies.Count);
-        //return (visibleEnemies.Count != 0) ? NodeState.SUCCESS : NodeState.FAILURE;
+        
     }
 }

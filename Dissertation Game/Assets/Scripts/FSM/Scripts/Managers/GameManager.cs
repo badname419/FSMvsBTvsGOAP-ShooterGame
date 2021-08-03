@@ -4,15 +4,15 @@ using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    private Pathfinding pathfinding;
+    private string cameraTag = "MainCamera";
+
     public int numOfEnemies = 1;
     public List<Transform> spawnPoints;
+    public List<Transform> searchPoints;
     public GameObject enemyObject;
     public GameObject playerObject;
-    //public GameObject cameraObject;
-
-    private Pathfinding pathfinding;
     public KnownEnemiesBlackboard knownEnemies;
-    private string cameraTag = "MainCamera";
 
 
     // Start is called before the first frame update
@@ -32,7 +32,7 @@ public class GameManager : MonoBehaviour
             var enemy = Instantiate(enemyObject);
 
             var enemyThinker = enemy.GetComponent<EnemyThinker>();
-            enemyThinker.Setup(spawnPoints[pointIndex], pathfinding, knownEnemies);
+            enemyThinker.Setup(spawnPoints[pointIndex], pathfinding, knownEnemies, searchPoints);
             enemyThinker.SetupUI(true, spawnPoints);
         }
     }

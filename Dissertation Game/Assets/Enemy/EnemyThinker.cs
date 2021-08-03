@@ -6,23 +6,26 @@ using UnityEngine.UI;
 public class EnemyThinker : MonoBehaviour
 {
     [HideInInspector] public Pathfinding pathfinding;
-    public KnownEnemiesBlackboard knownEnemies;
-    public EnemyStats enemyStats;
-
+    [HideInInspector] public KnownEnemiesBlackboard knownEnemies;
     [HideInInspector] public int nextWayPoint;
     [HideInInspector] public float distanceToEnemy;
     [HideInInspector] public float stateTimeElapsed;
     [HideInInspector] public float lastShotTime;
-
-    #region
     [HideInInspector] public float currentHP;
-    #endregion
 
     #region Chasing and searching
     [HideInInspector] public Transform closestEnemy;
     [HideInInspector] public int closestEnemyIndex;
     [HideInInspector] public Vector3 walkingTarget;
     [HideInInspector] public Vector3 lastKnownEnemyLoc;
+    [HideInInspector] public List<Transform> searchPoints;
+    [HideInInspector] public int[] randomizedRoute;
+    #endregion
+
+    #region Dashing
+    [HideInInspector] public bool isDashing;
+    [HideInInspector] public float dashStartTime;
+    [HideInInspector] public float dashEndTime;
     #endregion
 
     #region Rotations
@@ -35,15 +38,19 @@ public class EnemyThinker : MonoBehaviour
     #endregion
 
     private Image healthBar;
+    public EnemyStats enemyStats;
 
     private void Start()
     {
         currentHP = enemyStats.maxHp;
         healthBar = transform.Find("Canvas/HealthBG/HealthBar").GetComponent<Image>();
+        searchPoints = new List<Transform>();
+        isDashing = false;
+        
         //healthBar = GameObject.Find("HealthBar").GetComponent<Image>();
     }
 
-    public void Setup(Transform spawnPoint, Pathfinding pathfinding, KnownEnemiesBlackboard knownEnemies)
+    public void Setup(Transform spawnPoint, Pathfinding pathfinding, KnownEnemiesBlackboard knownEnemies, List<Transform> searchPoints)
     {
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
@@ -54,6 +61,9 @@ public class EnemyThinker : MonoBehaviour
         this.numOfRotations = 0;
         this.totalRotations = enemyStats.maxRotations;
         this.targetArray = new Vector3[totalRotations];
+
+        this.searchPoints = searchPoints;
+        randomizedRoute = new int[searchPoints.Count];
     }
 
     public void SetupUI(bool aiActivation, List<Transform> spawnPoints)
