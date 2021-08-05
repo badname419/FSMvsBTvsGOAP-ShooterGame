@@ -32,7 +32,8 @@ public class EnemyAI : MonoBehaviour
     private Node topNode;
 
     private float _currentHealth;
-    public enum Target { Enemy, Kit, Cover, SearchPoint};
+    public enum Target { Enemy, Kit, Cover, SearchPoint, Around};
+    public enum EventType { Dash, Melee};
 
     public float currentHealth
     {
@@ -84,23 +85,45 @@ public class EnemyAI : MonoBehaviour
         AnyEnemiesSeenNode anyEnemiesSeenNode = new AnyEnemiesSeenNode(this);
         IsDashingNode isDashingNode = new IsDashingNode(this);
         GoToNode goToSearchPointNode = new GoToNode(this, Target.SearchPoint);
+        GoToNode goToLastEnemyLocation = new GoToNode(this, Target.Enemy);
 
-
-        Sequence chaseSequence = new Sequence(new List<Node> { anyEnemiesSeenNode, goToLastPositionNode, lookAtEnemyNode});
+        Sequence chaseSequence = new Sequence(new List<Node> { anyEnemiesSeenNode, goToLastEnemyLocation/*, lookAroundSequence*/});
         Sequence shootSequence = new Sequence(new List<Node> { enemyVisibleNode, shootingRangeNode, lookAtEnemyNode, shootNode });
 
+        #region Chasing
+        AtRotationPositionNode atRotationPositionNode = new AtRotationPositionNode(this);
+        //IsAtLastKnownLocationNode atLastKnownLocationNode = new IsAtLastKnownLocationNode(this);
+        LookAtNode lookAroundNode = new LookAtNode(this, Target.Around);
+        EstablishLookAroundNode establishLookAroundNode = new EstablishLookAroundNode(this);
+        IsLookAroundEstablishedNode isLookEstablishedNode = new IsLookAroundEstablishedNode(this);
+        Selector isLookAroundEstablishedSelector = new Selector(new List<Node> {isLookEstablishedNode, establishLookAroundNode});
+        Sequence lookAroundSequence = new Sequence(new List<Node> { isLookAroundEstablishedSelector, lookAroundNode});
+
+        Selector chaseSelector = new Selector(new List<Node> {goToLastEnemyLocation, lookAroundSequence });
+       
+        Selector shouldChaseSelector = new Selector(new List<Node> { anyEnemiesSeenNode, atRotationPositionNode});
+
+        Sequence chaseDecisionSequence = new Sequence(new List<Node> { shouldChaseSelector, chaseSelector});
+        #endregion
+
+
+
         #region Attack
+        CooldownNode meleeCooldownNode = new CooldownNode(this, EventType.Melee);
         RangeNode inMeleeRange = new RangeNode(enemyStats.meleeRange, this, Target.Enemy);
-        MeleeAttackNode meleeNode = new MeleeAttackNode(agent, this, enemyStats.shootingWaitTime, gameObject);
-        Sequence meleeSequence = new Sequence(new List<Node> { inMeleeRange, meleeNode });
+        MeleeAttackNode meleeAttackNode = new MeleeAttackNode(this);
+        Sequence meleeSequence = new Sequence(new List<Node> { inMeleeRange, meleeCooldownNode, enemyVisibleNode, lookAtEnemyNode, meleeAttackNode });
 
         RangeNode inDashRangeNode = new RangeNode(enemyStats.dashRange, this, Target.Enemy);
-        DashCooldownNode dashCooldownNode = new DashCooldownNode(this);
+        CooldownNode dashCooldownNode = new CooldownNode(this, EventType.Dash);
+        
         DashNode dashNode = new DashNode(this, Target.Enemy);
 
-        Sequence dashMeleeSequence = new Sequence(new List<Node> { inDashRangeNode, dashCooldownNode, lookAtEnemyNode, enemyVisibleNode, dashNode, meleeSequence });
+        Sequence dashMeleeSequence = new Sequence(new List<Node> { inDashRangeNode, dashCooldownNode, lookAtEnemyNode, enemyVisibleNode, dashNode});
 
-        Selector attackSelector = new Selector(new List<Node> { dashMeleeSequence, /*grenade*/ shootSequence });
+        Selector meleeDashSelector = new Selector(new List<Node> { meleeSequence, dashMeleeSequence});
+
+        Selector attackSelector = new Selector(new List<Node> { meleeDashSelector, /*grenade*/ shootSequence });
         #endregion
 
         #region SeesEnemySelector
@@ -121,7 +144,7 @@ public class EnemyAI : MonoBehaviour
         Selector tryToHealSelector = new Selector(new List<Node> { grabKitSequence, tryToTakeCoverSelector });
 
         Sequence healSequence = new Sequence(new List<Node> { hpThresholdNode, lessHealthNode, tryToHealSelector });
-        Selector combatChoiceSelector = new Selector(new List<Node> {healSequence, attackSelector, chaseSequence });
+        Selector combatChoiceSelector = new Selector(new List<Node> {healSequence, attackSelector, chaseDecisionSequence });
 
         Sequence seesEnemySequence = new Sequence(new List<Node> { enemyVisibleNode, combatChoiceSelector });
         #endregion
@@ -132,7 +155,7 @@ public class EnemyAI : MonoBehaviour
         Selector establishRouteSelector = new Selector(new List<Node> { isRouteAvailableNode, randomizeRouteNode});
         Sequence randomSearchSequence = new Sequence(new List<Node> { establishRouteSelector, goToSearchPointNode});
 
-        Selector shouldSearchSelector = new Selector(new List<Node> { healSequence, chaseSequence, randomSearchSequence});
+        Selector shouldSearchSelector = new Selector(new List<Node> { healSequence, chaseDecisionSequence, randomSearchSequence});
 
         IsInCombatNode inCombatNode = new IsInCombatNode(this);
         IsEnemyAlive enemyAliveNode = new IsEnemyAlive(this);
@@ -166,6 +189,7 @@ public class EnemyAI : MonoBehaviour
 
     private void Update()
     {
+        agent.isStopped = true;
         timer += Time.deltaTime;
 
         topNode.Evaluate();
@@ -174,6 +198,16 @@ public class EnemyAI : MonoBehaviour
             SetColor(Color.red);
             agent.isStopped = true;
         }
+
+        if (enemyThinker.swordObject.activeSelf)
+        {
+            if(enemyThinker.timer - enemyThinker.meleeAttackTime > enemyStats.meleeAttackDuration)
+            {
+                enemyThinker.swordObject.SetActive(false);
+                enemyThinker.pistolObject.SetActive(true);
+            }
+        }
+
     }
 
     public void SetColor(Color color)

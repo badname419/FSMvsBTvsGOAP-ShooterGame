@@ -54,6 +54,9 @@ public class SensingSystem : MonoBehaviour
 
     public void RegisterHit(Transform bulletOwner)
     {
-        knownEnemiesBlackboard.UpdateEnemyList(bulletOwner);
+        if (!bulletOwner.CompareTag(transform.tag))
+        {
+            knownEnemiesBlackboard.UpdateEnemyList(bulletOwner);
+        }
     }
 }

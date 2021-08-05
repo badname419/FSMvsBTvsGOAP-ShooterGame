@@ -25,6 +25,9 @@ MonoBehaviour:
   attackRate: 0.6
   shootingWaitTime: 0.45
   combatDuration: 10
+  meleeAttackDuration: 0.2
+  meleeWaitTime: 0.5
+  meleeDamage: 12
   dashForce: 78
   dashDuration: 0.23
   dashCooldown: 3

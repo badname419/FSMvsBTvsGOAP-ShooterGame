@@ -21,6 +21,9 @@ public class EnemyStats : ScriptableObject
     public float attackRate = 1f;
     public float shootingWaitTime = 0.45f;
     public float combatDuration = 10f;
+    public float meleeAttackDuration = 0.2f;
+    public float meleeWaitTime = 0.5f;
+    public int meleeDamage = 12;
 
     [Header("Dashing")]
     public float dashForce = 78f;

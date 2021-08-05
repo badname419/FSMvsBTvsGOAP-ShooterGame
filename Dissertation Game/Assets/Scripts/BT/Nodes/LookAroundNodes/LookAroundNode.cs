@@ -4,29 +4,21 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-public class LookAtNode: Node
+public class LookAroundNode: Node
 {
     private EnemyAI ai;
     private EnemyAI.Target target;
     private EnemyStats enemyStats;
     private EnemyThinker enemyThinker;
-    private float rotationSpeed;
+    private KnownEnemiesBlackboard knownEnemiesBlackboard;
 
-    public LookAtNode(EnemyAI ai, EnemyAI.Target target)
+    public LookAroundNode(EnemyAI ai, EnemyAI.Target target)
     {
         this.ai = ai;
         this.target = target;
         this.enemyStats = ai.enemyStats;
         this.enemyThinker = ai.enemyThinker;
-
-        if (target.Equals(EnemyAI.Target.Around))
-        {
-            this.rotationSpeed = enemyStats.rotationSpeed / 2;
-        }
-        else
-        {
-            this.rotationSpeed = enemyStats.rotationSpeed;
-        }
+        this.knownEnemiesBlackboard = ai.knownEnemiesBlackboard;
     }
 
     public override NodeState Evaluate()
@@ -37,14 +29,9 @@ public class LookAtNode: Node
             Vector3 targetPosition = new Vector3();
             Vector3 aiPosition = ai.transform.position;
 
-
             if (target.Equals(EnemyAI.Target.Enemy))
             {
                 targetPosition = ai.knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
-            }
-            else if (target.Equals(EnemyAI.Target.Around))
-            {
-                targetPosition = enemyThinker.targetArray[enemyThinker.numOfRotations];
             }
             if (targetPosition == Vector3.zero)
             {
@@ -60,25 +47,12 @@ public class LookAtNode: Node
             if (angle > enemyStats.minimumLookingAngle)
             {
                 var targetRotation = Quaternion.LookRotation(targetPosition - aiPosition);
-                var str = Mathf.Min(rotationSpeed * Time.deltaTime, 1);
+                var str = Mathf.Min(enemyStats.rotationSpeed * Time.deltaTime, 1);
                 ai.transform.rotation = Quaternion.Lerp(ai.transform.rotation, targetRotation, str);
                 return NodeState.RUNNING;
             }
             else
             {
-                if (target.Equals(EnemyAI.Target.Around))
-                {
-                    if(enemyThinker.numOfRotations < enemyThinker.totalRotations - 1)
-                    {
-                        enemyThinker.numOfRotations++;
-                        return NodeState.RUNNING;
-                    }
-                    else
-                    {
-                        enemyThinker.aiRotatingPosition = Vector3.zero;
-                        ai.knownEnemiesBlackboard.RemoveEnemy(targetPosition);
-                    }
-                }
                 //ai.knownEnemiesBlackboard.RemoveEnemy(targetPosition);  //The spot has been visited and no enemy spoted, thus removed
                 return NodeState.SUCCESS;
             }
@@ -87,5 +61,27 @@ public class LookAtNode: Node
         {
             return NodeState.SUCCESS;
         }
+    }
+
+    private Vector3[] FindRotationTargets(Vector3 currentPosition, float radius)
+    {
+        Vector3[] targetArray = new Vector3[enemyThinker.totalRotations];
+        Vector3 lastKnownPosition = knownEnemiesBlackboard.GetClosestPreviousPosition(ai.transform.position);
+         Vector3 forwardVector = (lastKnownPosition - currentPosition).normalized;
+        forwardVector.y = 0;
+        float rotationAngle = enemyStats.rotationAngle;
+
+        enemyThinker.forwardRotationTarget = currentPosition + forwardVector * radius;
+
+        Vector3 rightVector = Quaternion.Euler(0, rotationAngle, 0) * forwardVector;
+        Vector3 leftVector = Quaternion.Euler(0, 360 - rotationAngle, 0) * forwardVector;
+
+        enemyThinker.rightRotationTarget = currentPosition + rightVector * radius;
+        enemyThinker.leftRotationTarget = currentPosition + leftVector * radius;
+
+        targetArray[0] = targetArray[2] = targetArray[4] = enemyThinker.forwardRotationTarget;
+        targetArray[1] = enemyThinker.leftRotationTarget;
+        targetArray[3] = enemyThinker.rightRotationTarget;
+        return targetArray;
     }
 }

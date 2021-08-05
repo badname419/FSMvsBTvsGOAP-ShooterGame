@@ -54,6 +54,7 @@ public class FieldOfView : MonoBehaviour
     public void FindVisibleEnemies(float viewRadius, float viewAngle, LayerMask enemyMask, LayerMask coverMask, Transform transform)
     {
         visibleEnemies.Clear();
+        LayerMask thisMask = gameObject.layer;
 
         Collider[] enemiesInViewRadius = Physics.OverlapSphere(transform.position, viewRadius, enemyMask);
 
@@ -65,12 +66,44 @@ public class FieldOfView : MonoBehaviour
             {
                 float distToEnemy = Vector3.Distance(transform.position, enemy.position);
 
+                Debug.DrawRay(transform.position, enemy.position - transform.position, Color.green, 0.1f);
+
+
+                RaycastHit hit;
+                if (Physics.SphereCast(transform.position, 0.3f, dirToEnemy, out hit))
+                {
+                    Debug.Log(hit.collider.CompareTag(transform.tag));
+                    if (!hit.collider.CompareTag("Wall") && !hit.collider.CompareTag(transform.tag))
+                    {
+                        VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);
+                        visibleEnemies.Add(visibleEnemy);
+                        knownEnemiesBlackboard.UpdateEnemyList(enemy);
+                    }
+                }
+
+                /*
+                if (Physics.Raycast(transform.position, dirToEnemy, out hit, distToEnemy))
+                {
+                    Debug.Log(hit.collider.CompareTag(transform.tag));
+                    if (!hit.collider.CompareTag("Wall") && !hit.collider.CompareTag(transform.tag))
+                    {
+                        VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);
+                        visibleEnemies.Add(visibleEnemy);
+                        knownEnemiesBlackboard.UpdateEnemyList(enemy);
+                    }
+                        
+                }
+
+                /*
                 if (!Physics.Raycast(transform.position, dirToEnemy, distToEnemy, coverMask))
                 {
-                    VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);
-                    visibleEnemies.Add(visibleEnemy);
-                    knownEnemiesBlackboard.UpdateEnemyList(enemy);
-                }
+                    if (!Physics.Raycast(transform.position, dirToEnemy, distToEnemy, thisMask))
+                    {
+                        VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);
+                        visibleEnemies.Add(visibleEnemy);
+                        knownEnemiesBlackboard.UpdateEnemyList(enemy);
+                    }
+                }*/
             }
         }     
         seesEnemy = visibleEnemies.Count != 0;

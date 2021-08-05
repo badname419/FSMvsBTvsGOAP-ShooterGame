@@ -8,14 +8,12 @@ public class GoToLastKnownPositionNode : Node
     private NavMeshAgent navMeshAgent;
     private EnemyStats enemyStats;
     private EnemyAI ai;
-    private KnownEnemiesBlackboard blackboard;
 
     public GoToLastKnownPositionNode(EnemyAI ai)
     {
         this.ai = ai;
         this.navMeshAgent = ai.gameObject.GetComponent<NavMeshAgent>();
         this.enemyStats = ai.enemyStats;
-        this.blackboard = ai.knownEnemiesBlackboard;
     }
 
     public override NodeState Evaluate()

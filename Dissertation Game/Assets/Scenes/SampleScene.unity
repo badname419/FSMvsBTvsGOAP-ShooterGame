@@ -1183,7 +1183,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52bff80e6fa398740a9967a7882a43a3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numOfEnemies: 1
+  numOfEnemies: 3
   spawnPoints:
   - {fileID: 1853110326}
   - {fileID: 1238480171}
@@ -1699,8 +1699,11 @@ MonoBehaviour:
   stateTimeElapsed: 0
   lastShotTime: 0
   currentHP: 0
+  swordObject: {fileID: 0}
+  pistolObject: {fileID: 0}
   inCombat: 0
   combatStartTime: 0
+  meleeAttackTime: 0
   closestEnemy: {fileID: 0}
   closestEnemyIndex: 0
   walkingTarget: {x: 0, y: 0, z: 0}
@@ -1718,6 +1721,7 @@ MonoBehaviour:
   rightRotationTarget: {x: 0, y: 0, z: 0}
   leftRotationTarget: {x: 0, y: 0, z: 0}
   targetArray: []
+  aiRotatingPosition: {x: 0, y: 0, z: 0}
   enemyStats: {fileID: 11400000, guid: 3200733487427174c8eea3bdc71c907a, type: 2}
   timer: 0
 --- !u!1 &260368297 stripped
@@ -7025,9 +7029,9 @@ GameObject:
   - component: {fileID: 1083388435}
   - component: {fileID: 1083388434}
   - component: {fileID: 1083388433}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Wall
-  m_TagString: Untagged
+  m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 4294967295

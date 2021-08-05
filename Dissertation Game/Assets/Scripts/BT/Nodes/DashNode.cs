@@ -40,6 +40,7 @@ public class DashNode: Node
         ai.SetColor(Color.magenta);
         enemyThinker.isDashing = true;
         enemyThinker.dashStartTime = ai.timer;
+        Debug.LogError("Dash");
         return NodeState.SUCCESS;
         
     }

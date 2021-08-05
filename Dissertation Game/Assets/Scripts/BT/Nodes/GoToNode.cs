@@ -8,9 +8,8 @@ public class GoToNode: Node
 {
     private NavMeshAgent navMeshAgent;
     private EnemyStats enemyStats;
-    private FieldOfView fieldOfView;
     private EnemyThinker enemyThinker;
-    //private int target;
+    private KnownEnemiesBlackboard knownEnemiesBlackboard;
     private EnemyAI ai;
     private EnemyAI.Target target;
 
@@ -19,19 +18,19 @@ public class GoToNode: Node
         this.ai = ai;
         this.navMeshAgent = ai.gameObject.GetComponent<NavMeshAgent>();
         this.enemyStats = ai.enemyStats;
-        this.fieldOfView = ai.fieldOfView;
         this.enemyThinker = ai.enemyThinker;
+        this.knownEnemiesBlackboard = ai.knownEnemiesBlackboard;
         this.target = target;
     }
 
     public override NodeState Evaluate()
     {
         //Vector3 target = fieldOfView.lastKnownEnemyPosition;
-
+        Vector3 aiPosition = ai.transform.position;
         Vector3 targetPosition = new Vector3();
         if (target.Equals(EnemyAI.Target.Enemy))
         {
-            targetPosition = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(ai.transform.position);
+            targetPosition = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         }
         else if (target.Equals(EnemyAI.Target.Kit))
         {
@@ -50,10 +49,11 @@ public class GoToNode: Node
 
         if (targetPosition == Vector3.zero)
         {
+            navMeshAgent.isStopped = true;
             return NodeState.FAILURE;
         }
 
-        float distance = Vector3.Distance(targetPosition, navMeshAgent.transform.position);
+        float distance = Vector3.Distance(targetPosition, aiPosition);
         if (distance > enemyStats.arrivalDistance)
         {
             navMeshAgent.isStopped = false;
@@ -65,6 +65,8 @@ public class GoToNode: Node
             navMeshAgent.isStopped = true;
             if (target.Equals(EnemyAI.Target.Enemy))
             {
+                enemyThinker.lastKnownEnemyLoc = knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
+                enemyThinker.aiRotatingPosition = aiPosition;
                 ai.knownEnemiesBlackboard.RemoveEnemy(targetPosition);
             }
             else if (target.Equals(EnemyAI.Target.SearchPoint))

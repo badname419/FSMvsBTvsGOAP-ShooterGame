@@ -13,9 +13,15 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public float lastShotTime;
     [HideInInspector] public float currentHP;
 
+    #region Prefab elements;
+    [HideInInspector] public GameObject swordObject;
+    [HideInInspector] public GameObject pistolObject;
+    #endregion
+
     #region Combat
     [HideInInspector] public bool inCombat;
     [HideInInspector] public float combatStartTime;
+    [HideInInspector] public float meleeAttackTime;
     #endregion
 
     #region Chasing and searching
@@ -42,6 +48,7 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public Vector3 rightRotationTarget;   //What point to the right of the agent they should rotate towards
     [HideInInspector] public Vector3 leftRotationTarget;    //What point to the left of the agent they should rotate towards
     [HideInInspector] public Vector3[] targetArray;         //And array storying the points the agent should rotate towards
+    [HideInInspector] public Vector3 aiRotatingPosition;
     #endregion
 
     private Image healthBar;
@@ -53,8 +60,13 @@ public class EnemyThinker : MonoBehaviour
     {
         currentHP = enemyStats.maxHp;
         healthBar = transform.Find("Canvas/HealthBG/HealthBar").GetComponent<Image>();
+        swordObject = transform.Find("Sword").gameObject;
+        pistolObject = transform.Find("PistolHolder").gameObject;
         searchPoints = new List<Transform>();
         isDashing = false;
+        dashEndTime = 0f;
+        dashStartTime = 0f;
+        meleeAttackTime = 0f;
         timer = 0f;
         currentSearchPoint = 0;
         maximumSearchPoints = 0;

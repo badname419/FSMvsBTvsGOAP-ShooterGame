@@ -5,39 +5,41 @@ using UnityEngine.AI;
 
 public class MeleeAttackNode : Node
 {
-
-    private NavMeshAgent agent;
     private EnemyAI ai;
-    private Transform target;
-    private Shooting shooting;
-    private float wait;
+    private EnemyThinker enemyThinker;
+    private KnownEnemiesBlackboard knownEnemiesBlackboard;
+    private EnemyStats enemyStats;
 
-    private Vector3 currentVelocity;
-    private float smoothDamp;
-
-    public MeleeAttackNode(NavMeshAgent agent, EnemyAI ai, float wait, GameObject gameObject)
+    public MeleeAttackNode(EnemyAI ai)
     {
-        this.agent = agent;
         this.ai = ai;
-        this.wait = wait;
-        shooting = gameObject.GetComponent<Shooting>();
-        //shooting = new Shooting();
-        smoothDamp = 1f;
+        this.enemyThinker = ai.enemyThinker;
+        this.knownEnemiesBlackboard = ai.knownEnemiesBlackboard;
+        this.enemyStats = ai.enemyStats;
     }
 
     public override NodeState Evaluate()
     {
-        //Vector3 target = ai.fieldOfView.lastKnownEnemyPosition;
-        //agent.isStopped = true;
-        ai.SetColor(Color.black);
-        //Vector3 direction = target - ai.transform.position;
-        //Vector3 currentDirection = Vector3.SmoothDamp(ai.transform.forward, direction, ref currentVelocity, smoothDamp);
-        //Quaternion rotation = Quaternion.LookRotation(currentDirection, Vector3.up);
-        //ai.transform.rotation = rotation;
+        Vector3 aiPosition = ai.transform.position;
+        enemyThinker.pistolObject.gameObject.SetActive(false);
+        enemyThinker.swordObject.gameObject.SetActive(true);
 
-        shooting.Shoot(wait, ai.enemyStats.shootingDamage, ai.transform);
-        //shooting.Shoot(bulletSpawnPoint, bullet, wait, ai);
+        GameObject closestEnemy = knownEnemiesBlackboard.DetermineTheClosestEnemyObject(aiPosition);
 
+        PlayerLogic playerLogic = closestEnemy.GetComponent<PlayerLogic>();
+
+        if(playerLogic != null)
+        {
+            Debug.Log("Melee!");
+            playerLogic.LowerHP(enemyStats.meleeDamage);
+        }
+        else
+        {
+            EnemyThinker thinker = closestEnemy.GetComponent<EnemyThinker>();
+            thinker.LowerHP(enemyStats.meleeDamage);
+        }
+
+        enemyThinker.meleeAttackTime = enemyThinker.timer;
         return NodeState.SUCCESS;
     }
 
