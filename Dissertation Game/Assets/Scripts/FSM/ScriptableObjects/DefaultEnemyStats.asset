@@ -18,7 +18,7 @@ MonoBehaviour:
   dashRange: 15
   viewRadius: 72
   viewAngle: 138
-  kitGrabingRange: 30
+  kitDetectionRange: 50
   meleeRange: 5
   minimumLookingAngle: 1.5
   shootingDamage: 5
@@ -40,6 +40,9 @@ MonoBehaviour:
   coverMask:
     serializedVersion: 2
     m_Bits: 64
+  kitMask:
+    serializedVersion: 2
+    m_Bits: 1024
   rotationSpeed: 20
   rotationAngle: 120
   maxRotations: 5

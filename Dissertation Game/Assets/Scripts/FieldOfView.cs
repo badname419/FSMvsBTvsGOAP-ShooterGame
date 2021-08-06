@@ -72,7 +72,6 @@ public class FieldOfView : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.SphereCast(transform.position, 0.3f, dirToEnemy, out hit))
                 {
-                    Debug.Log(hit.collider.CompareTag(transform.tag));
                     if (!hit.collider.CompareTag("Wall") && !hit.collider.CompareTag(transform.tag))
                     {
                         VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);

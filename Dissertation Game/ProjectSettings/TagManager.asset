@@ -8,6 +8,7 @@ TagManager:
   - Enemy
   - Bullet
   - Weapon
+  - Kit
   layers:
   - Default
   - TransparentFX
@@ -19,7 +20,7 @@ TagManager:
   - Enemies
   - Player
   - CoverWaypoints
-  - 
+  - Kit
   - 
   - 
   - 

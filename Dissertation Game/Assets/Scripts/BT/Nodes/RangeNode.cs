@@ -5,9 +5,7 @@ using UnityEngine;
 public class RangeNode : Node
 {
     private float range;
-    //private int target;
     private EnemyAI ai;
-    private FieldOfView fieldOfView;
     private EnemyAI.Target target;
 
     public RangeNode(float range, EnemyAI ai, EnemyAI.Target target)
@@ -15,7 +13,12 @@ public class RangeNode : Node
         this.range = range;
         this.target = target;
         this.ai = ai;
-        this.fieldOfView = ai.fieldOfView;
+    }
+
+    public RangeNode(EnemyAI ai, EnemyAI.Target target)
+    {
+        this.target = target;
+        this.ai = ai;
     }
 
     public override NodeState Evaluate()
@@ -28,7 +31,7 @@ public class RangeNode : Node
         }
         else if(target.Equals(EnemyAI.Target.Kit))
         {
-            return NodeState.FAILURE;
+            return ai.sensingSystem.KitsInRange() ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         if(targetPosition == Vector3.zero)

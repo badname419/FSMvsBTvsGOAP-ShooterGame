@@ -12,6 +12,7 @@ public class EnemyAI : MonoBehaviour
     [HideInInspector] public FieldOfView fieldOfView;
     [HideInInspector] public KnownEnemiesBlackboard knownEnemiesBlackboard;
     [HideInInspector] public Shooting shooting;
+    [HideInInspector] public SensingSystem sensingSystem;
 
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Cover[] availableCovers;
@@ -54,6 +55,7 @@ public class EnemyAI : MonoBehaviour
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
         knownEnemiesBlackboard = gameManager.knownEnemies;
         shooting = GetComponent<Shooting>();
+        sensingSystem = GetComponent<SensingSystem>();
     }
 
     private void Start()
@@ -131,7 +133,7 @@ public class EnemyAI : MonoBehaviour
         GoToNode goToCoverNode = new GoToNode(this, Target.Cover);
         Sequence goToCoverSequence = new Sequence(new List<Node> { coverAvailableNode, goToCoverNode });
 
-        RangeNode kitInRangeNode = new RangeNode(enemyStats.kitGrabingRange, this, Target.Kit);
+        RangeNode kitInRangeNode = new RangeNode(enemyStats.kitDetectionRange, this, Target.Kit);
         GoToNode goToKit = new GoToNode(this, Target.Kit);
         Sequence grabKitSequence = new Sequence(new List<Node> { kitInRangeNode, goToKit });
 

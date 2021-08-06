@@ -30,7 +30,6 @@ public class MeleeAttackNode : Node
 
         if(playerLogic != null)
         {
-            Debug.Log("Melee!");
             playerLogic.LowerHP(enemyStats.meleeDamage);
         }
         else

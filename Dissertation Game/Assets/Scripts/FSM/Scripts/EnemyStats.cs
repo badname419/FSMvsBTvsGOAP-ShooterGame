@@ -12,7 +12,7 @@ public class EnemyStats : ScriptableObject
     public float dashRange = 15f;
     public float viewRadius = 72f;
     public float viewAngle = 108f;
-    public float kitGrabingRange = 30f;
+    public float kitDetectionRange = 30f;
     public float meleeRange = 5f;
     public float minimumLookingAngle = 1.5f;
 
@@ -38,6 +38,7 @@ public class EnemyStats : ScriptableObject
     [Header("Masks")]
     public LayerMask enemyLayer;
     public LayerMask coverMask;
+    public LayerMask kitMask;
 
     [Header("Rotations")]
     public float rotationSpeed = 10f;

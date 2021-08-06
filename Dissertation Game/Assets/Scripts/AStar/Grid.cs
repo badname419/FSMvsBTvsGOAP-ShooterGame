@@ -107,4 +107,24 @@ public class Grid : MonoBehaviour
             }
         }
     }
+
+    public int GetGridSizeX()
+    {
+        return gridSizeX;
+    }
+
+    public int GetGridSizeZ()
+    {
+        return gridSizeY;
+    }
+
+    public bool IsValid(int posX, int posY)
+    {
+        return !grid[posX, posY].isCover;
+    }
+
+    public Vector3 GetNodePosition(int posX, int posY)
+    {
+        return grid[posX, posY].position;
+    }
 }

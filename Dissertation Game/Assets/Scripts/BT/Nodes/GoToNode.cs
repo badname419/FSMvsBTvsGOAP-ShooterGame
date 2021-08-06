@@ -25,7 +25,6 @@ public class GoToNode: Node
 
     public override NodeState Evaluate()
     {
-        //Vector3 target = fieldOfView.lastKnownEnemyPosition;
         Vector3 aiPosition = ai.transform.position;
         Vector3 targetPosition = new Vector3();
         if (target.Equals(EnemyAI.Target.Enemy))
@@ -34,7 +33,7 @@ public class GoToNode: Node
         }
         else if (target.Equals(EnemyAI.Target.Kit))
         {
-            return NodeState.FAILURE;
+            targetPosition = ai.sensingSystem.DetermineClosestKit(aiPosition).position;
         }
         else if(target.Equals(EnemyAI.Target.Cover))
         {

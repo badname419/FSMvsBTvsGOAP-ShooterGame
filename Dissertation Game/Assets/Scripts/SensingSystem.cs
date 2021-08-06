@@ -7,6 +7,7 @@ public class SensingSystem : MonoBehaviour
     private EnemyThinker enemyThinker;
     private EnemyStats enemyStats;
     private KnownEnemiesBlackboard knownEnemiesBlackboard;
+    private List<Transform> foundKitsList;
 
     // Start is called before the first frame update
     void Start()
@@ -14,6 +15,7 @@ public class SensingSystem : MonoBehaviour
         enemyThinker = GetComponent<EnemyThinker>();
         enemyStats = enemyThinker.enemyStats;
         knownEnemiesBlackboard = enemyThinker.knownEnemies;
+        foundKitsList = new List<Transform>();
 
         StartCoroutine("FindEnemiesWithDelay", .2f);
     }
@@ -30,6 +32,7 @@ public class SensingSystem : MonoBehaviour
         {
             yield return new WaitForSeconds(delay);
             ListenForEnemies();
+            DetectKits();
         }
     }
 
@@ -49,6 +52,56 @@ public class SensingSystem : MonoBehaviour
                 enemyThinker.SetCombat(true);
                 knownEnemiesBlackboard.UpdateEnemyList(enemy);
             }
+        }
+    }
+
+    private void DetectKits()
+    {
+        foundKitsList.Clear();
+
+        LayerMask kitMask = enemyStats.kitMask;
+        float kitDetectionRadius = enemyStats.kitDetectionRange;
+        Collider[] kitsInRadius = Physics.OverlapSphere(transform.position, kitDetectionRadius, kitMask);
+
+        foreach(Collider kit in kitsInRadius)
+        {
+            foundKitsList.Add(kit.transform);
+        }
+    }
+
+    public bool KitsInRange()
+    {
+        return foundKitsList.Count != 0;
+    }
+
+    public Transform DetermineClosestKit(Vector3 origin)
+    {
+        if (foundKitsList.Count.Equals(1))
+        {
+            return foundKitsList[0].transform;
+        }
+        else
+        {
+            float shortestDistance = 0f;
+            int index = 0;
+
+            for(int i=0; i<foundKitsList.Count; i++)
+            {
+                float distance = Vector3.Distance(origin, foundKitsList[i].transform.position);
+                if(i == 0)
+                {
+                    shortestDistance = distance;
+                }
+                else
+                {
+                    if(distance < shortestDistance)
+                    {
+                        shortestDistance = distance;
+                        index = i;
+                    }
+                }
+            }
+            return foundKitsList[index].transform;
         }
     }
 

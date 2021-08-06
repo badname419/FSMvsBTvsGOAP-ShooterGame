@@ -6,7 +6,7 @@ using UnityEngine;
 public class Pathfinding : MonoBehaviour
 {
     [SerializeField] GameObject plane;
-    Grid grid;
+    private Grid grid;
     private Transform startPosition;
     private Transform targetPosition;
 
@@ -107,5 +107,10 @@ public class Pathfinding : MonoBehaviour
     public int GetPathLength()
     {
         return grid.finalPath.Count;
+    }
+
+    public Grid GetGrid()
+    {
+        return grid;
     }
 }

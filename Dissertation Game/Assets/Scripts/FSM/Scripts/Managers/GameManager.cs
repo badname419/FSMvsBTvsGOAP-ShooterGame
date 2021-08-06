@@ -12,7 +12,12 @@ public class GameManager : MonoBehaviour
     public List<Transform> searchPoints;
     public GameObject enemyObject;
     public GameObject playerObject;
+    public GameObject firstAidKitObject;
     public KnownEnemiesBlackboard knownEnemies;
+    [SerializeField] private int maximumNumOfKits;
+    [SerializeField] private int currentNumOfKits;
+    [SerializeField] private int kitSpawnRate;
+    private List<Vector3> kitLocationList;
 
 
     // Start is called before the first frame update
@@ -20,8 +25,91 @@ public class GameManager : MonoBehaviour
     {
         knownEnemies = new KnownEnemiesBlackboard();
         pathfinding = GetComponent<Pathfinding>();
+        kitLocationList = new List<Vector3>();
         SpawnPlayer();
         SpawnEnemies();
+    }
+
+    private void Start()
+    {
+        StartCoroutine(KitCoroutine(kitSpawnRate));
+    }
+
+    private void Update()
+    {
+
+    }
+
+    IEnumerator KitCoroutine(int waitTime)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(waitTime);
+            if (KitCanBeSpawned())
+            {
+                SpawnKit();
+            }
+        }
+    }
+
+    private bool KitCanBeSpawned()
+    {
+        return currentNumOfKits < maximumNumOfKits;
+    }
+
+    private void SpawnKit()
+    {
+        Debug.Log("Kit");
+        GameObject kitObject = Instantiate(firstAidKitObject, RandomizePosition(), Quaternion.identity);
+        kitObject.transform.Rotate(-90f, 0f, 0f);
+        KitScript kitScript = kitObject.GetComponent<KitScript>();
+        kitScript.SetGameManager(this);
+        kitLocationList.Add(kitObject.transform.position);
+        currentNumOfKits++;
+    }
+
+    private Vector3 RandomizePosition()
+    {
+        Grid grid = pathfinding.GetGrid();
+        int minX = 0;
+        int minZ = 0;
+        int maxX = grid.GetGridSizeX();
+        int maxZ = grid.GetGridSizeZ();
+        int posX = 0;
+        int posZ = 0;
+        bool valid = false;
+
+        while (!valid)
+        {
+            posX = Random.Range(minX, maxX - 1);
+            posZ = Random.Range(minZ, maxZ - 1);
+            if (IsKitLocationValid(grid, posX, posZ));
+            {
+                valid = true;
+            }
+        }
+
+        return grid.GetNodePosition(posX, posZ);
+    }
+
+    private bool IsKitLocationValid(Grid grid, int posX, int posZ)
+    {
+        if(grid.IsValid(posX, posZ))
+        {
+            for(int i=0; i<kitLocationList.Count; i++)
+            {
+                Vector3 searchedLocation = grid.GetNodePosition(posX, posZ);
+                if (searchedLocation.Equals(kitLocationList[i]))
+                {
+                    return false;
+                }
+            }
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     private void SpawnEnemies()
@@ -51,5 +139,10 @@ public class GameManager : MonoBehaviour
         GameObject mainCamera = GameObject.FindGameObjectsWithTag(cameraTag)[0];
         Camera cameraScript = mainCamera.GetComponent<Camera>();
         cameraScript.player = playerObject.transform;
+    }
+
+    public void ReduceNumOfKits()
+    {
+        currentNumOfKits--;
     }
 }

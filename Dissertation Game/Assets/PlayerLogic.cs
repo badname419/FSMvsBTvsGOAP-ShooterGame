@@ -34,6 +34,10 @@ public class PlayerLogic : MonoBehaviour
     public void LowerHP(int value)
     {
         currentHealth -= value;
+        if(currentHealth < 0)
+        {
+            currentHealth = 0;
+        }
         enemiesBlackboard.UpdateEnemyHP(transform, currentHealth);
         hpBarScript.UpdateHealthBar();
     }
