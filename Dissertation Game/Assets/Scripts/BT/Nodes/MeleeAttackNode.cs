@@ -5,26 +5,22 @@ using UnityEngine.AI;
 
 public class MeleeAttackNode : Node
 {
-    private EnemyAI ai;
     private EnemyThinker enemyThinker;
-    private KnownEnemiesBlackboard knownEnemiesBlackboard;
     private EnemyStats enemyStats;
 
-    public MeleeAttackNode(EnemyAI ai)
+    public MeleeAttackNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.enemyThinker = ai.enemyThinker;
-        this.knownEnemiesBlackboard = ai.knownEnemiesBlackboard;
-        this.enemyStats = ai.enemyStats;
+        this.enemyThinker = enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
     }
 
     public override NodeState Evaluate()
     {
-        Vector3 aiPosition = ai.transform.position;
+        Vector3 aiPosition = enemyThinker.transform.position;
         enemyThinker.pistolObject.gameObject.SetActive(false);
         enemyThinker.swordObject.gameObject.SetActive(true);
 
-        GameObject closestEnemy = knownEnemiesBlackboard.DetermineTheClosestEnemyObject(aiPosition);
+        GameObject closestEnemy = enemyThinker.knownEnemiesBlackboard.DetermineTheClosestEnemyObject(aiPosition);
 
         PlayerLogic playerLogic = closestEnemy.GetComponent<PlayerLogic>();
 

@@ -6,17 +6,17 @@ using UnityEngine.AI;
 
 public class AnyEnemiesSeenNode: Node
 {
-    private EnemyAI ai;
+    private EnemyThinker enemyThinker;
 
-    public AnyEnemiesSeenNode(EnemyAI ai)
+    public AnyEnemiesSeenNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
+        this.enemyThinker = enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
         //Debug.Log("enemies seen: ");
         //Debug.Log(ai.knownEnemiesBlackboard.AnyEnemiesSeen());
-        return ai.knownEnemiesBlackboard.AnyEnemiesSeen() ? NodeState.SUCCESS : NodeState.FAILURE;
+        return enemyThinker.knownEnemiesBlackboard.AnyEnemiesSeen() ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

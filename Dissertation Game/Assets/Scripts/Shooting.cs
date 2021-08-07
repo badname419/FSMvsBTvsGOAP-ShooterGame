@@ -30,19 +30,6 @@ public class Shooting : MonoBehaviour
 		timePassed += Time.deltaTime;
 	}
 
-	private void Shoot()
-    {
-		RaycastHit hit;
-		if (Physics.Raycast(transform.position, transform.forward, out hit, mask))
-		{
-			EnemyAI ai = hit.collider.GetComponent<EnemyAI>();
-			if (ai != null)
-			{
-				ai.LowerHP((int)damage);
-			}
-		}
-	}
-
 	public void Shoot(float wait, int damage, Transform transform)
     {
 		if (timePassed - wait >= timeShot)
@@ -57,13 +44,4 @@ public class Shooting : MonoBehaviour
 			timeShot = timePassed;
 		}
     }
-
-	public void Shoot(GameObject bulletSpawnPoint, GameObject bullet, float wait, EnemyAI ai)
-	{
-		if (timePassed - wait >= timeShot)
-		{
-			Transform bulletObject = Instantiate(bullet.transform, bulletSpawnPoint.transform.position, ai.transform.rotation);
-			timeShot = timePassed;
-		}
-	}
 }

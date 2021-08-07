@@ -6,25 +6,23 @@ using UnityEngine;
 public class IsEnemyVisibleNode : Node
 {
     public List<Transform> visibleEnemies = new List<Transform>();
-
     private FieldOfView fieldOfView;
-    private EnemyAI ai;
     private EnemyThinker enemyThinker;
 
-    public IsEnemyVisibleNode(EnemyAI ai)
+    public IsEnemyVisibleNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        fieldOfView = ai.fieldOfView;
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
+        this.fieldOfView = enemyThinker.fieldOfView;
     }
 
     public override NodeState Evaluate()
     {
-        if (fieldOfView.seesEnemy)
+        bool seesEnemy = fieldOfView.seesEnemy;
+        if (seesEnemy)
         {
             enemyThinker.SetCombat(true);
-            ai.closestEnemy = fieldOfView.closestEnemyObject;
+            enemyThinker.closestEnemyObject = fieldOfView.closestEnemyObject;
         }
-        return (fieldOfView.seesEnemy) ? NodeState.SUCCESS : NodeState.FAILURE;
+        return seesEnemy ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

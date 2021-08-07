@@ -12,11 +12,11 @@ public class CooldownNode: Node
     private float eventTime;
     private float eventCooldown;
 
-    public CooldownNode(EnemyAI ai, EnemyAI.EventType eventType)
+    public CooldownNode(EnemyThinker enemyThinker, EnemyAI.EventType eventType)
     {
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
         this.eventType = eventType;
-        this.enemyStats = ai.enemyStats;
+        this.enemyStats = enemyThinker.enemyStats;
         eventTime = 0f;
         eventCooldown = 0f;
     }

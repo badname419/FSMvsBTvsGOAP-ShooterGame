@@ -7,20 +7,20 @@ using UnityEngine.AI;
 public class IsAtLastKnownLocationNode: Node
 {
     private EnemyAI ai;
-    private KnownEnemiesBlackboard knownEnemiesBlackboard;
     private EnemyStats enemyStats;
+    private EnemyThinker enemyThinker;
 
     public IsAtLastKnownLocationNode(EnemyAI ai)
     {
         this.ai = ai;
-        this.knownEnemiesBlackboard = ai.knownEnemiesBlackboard;
-        this.enemyStats = ai.enemyStats;
+        this.enemyThinker = ai.enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
     }
 
     public override NodeState Evaluate()
     {
         Vector3 aiPosition = ai.transform.position;
-        Vector3 targetPosition = knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
+        Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         float distance = Vector3.Distance(aiPosition, targetPosition);
 
         if(distance < enemyStats.arrivalDistance)

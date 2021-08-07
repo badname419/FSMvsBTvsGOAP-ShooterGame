@@ -4,19 +4,17 @@ using UnityEngine;
 
 public class HealthThresholdNode : Node
 {
-    private EnemyAI ai;
-    private float threshold;
     private EnemyStats enemyStats;
+    private EnemyThinker enemyThinker;
 
-    public HealthThresholdNode(EnemyAI ai, float threshold)
+    public HealthThresholdNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.threshold = threshold;
-        this.enemyStats = ai.enemyStats;
+        this.enemyThinker = enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
     }
 
     public override NodeState Evaluate()
     {
-        return ai.enemyThinker.currentHP <= enemyStats.maxHp * enemyStats.hpThreshold ? NodeState.SUCCESS : NodeState.FAILURE;
+        return enemyThinker.currentHP <= enemyStats.maxHp * enemyStats.hpThreshold ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

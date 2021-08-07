@@ -6,20 +6,17 @@ using UnityEngine;
 public class IsLastEnemyPositionKnownNode: Node
 {
     public List<Transform> visibleEnemies = new List<Transform>();
+    private EnemyThinker enemyThinker;
 
-    private FieldOfView fieldOfView;
-    private EnemyAI ai;
-    private EnemyAI enemyAI;
-
-    public IsLastEnemyPositionKnownNode(EnemyAI ai)
+    public IsLastEnemyPositionKnownNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
+        this.enemyThinker = enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
-        Vector3 aiPosition = ai.transform.position;
-        int targetIndex = ai.knownEnemiesBlackboard.DetermineTheClosestEnemyIndex(aiPosition);
+        Vector3 aiPosition = enemyThinker.transform.position;
+        int targetIndex = enemyThinker.knownEnemiesBlackboard.DetermineTheClosestEnemyIndex(aiPosition);
 
         return (targetIndex != -1) ? NodeState.SUCCESS : NodeState.FAILURE;
     }

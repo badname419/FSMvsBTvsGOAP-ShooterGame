@@ -3,8 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
-[CreateAssetMenu(menuName = "AI/Decisions/Look")]
-public class LookDecision : Decision
+[CreateAssetMenu(menuName = "AI/Decisions/EnemiesVisible")]
+public class EnemiesVisibleDecision : Decision
 {
 
     public override bool Decide(StateController controller)
@@ -15,7 +15,17 @@ public class LookDecision : Decision
 
     private bool Look(StateController controller)
     {
+        EnemyThinker enemyThinker = controller.enemyThinker;
+        FieldOfView fieldOfView = enemyThinker.fieldOfView;
+        bool enemyVisible = fieldOfView.seesEnemy;
+        if (enemyVisible)
+        {
+            enemyThinker.closestEnemyTransform = fieldOfView.closestEnemyObject.transform;
+            enemyThinker.walkingTarget = fieldOfView.closestEnemyPosition;
+        }
+        return enemyVisible;
 
+        /*
         Vector3 position = controller.gameObject.transform.position;
         Collider[] enemiesInViewRadius = Physics.OverlapSphere(position, controller.enemyStats.viewRadius, controller.enemyStats.enemyLayer);
 
@@ -32,21 +42,21 @@ public class LookDecision : Decision
                 if (!Physics.Raycast(controller.gameObject.transform.position, dirToEnemy, distToEnemy, controller.enemyStats.coverMask))
                 {
                     visibleEnemiesList.Add(enemy);
-                    controller.enemyThinker.knownEnemies.UpdateEnemyList(enemy);
+                    controller.enemyThinker.knownEnemiesBlackboard.UpdateEnemyList(enemy);
                 }
             }
         }
 
         if (visibleEnemiesList.Count != 0)
         {
-            controller.enemyThinker.closestEnemy = ChooseTarget(controller, visibleEnemiesList);
-            controller.enemyThinker.walkingTarget = controller.enemyThinker.closestEnemy.position;
+            controller.enemyThinker.closestEnemyTransform = ChooseTarget(controller, visibleEnemiesList);
+            controller.enemyThinker.walkingTarget = controller.enemyThinker.closestEnemyTransform.position;
             return true;
         }
         else
         {
             return false;
-        }
+        }*/
  
     }
 

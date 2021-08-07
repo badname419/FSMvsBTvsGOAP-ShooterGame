@@ -7,16 +7,14 @@ using UnityEngine.AI;
 public class IsDashingNode: Node
 {
     private EnemyStats enemyStats;
-    private EnemyAI ai;
     private Rigidbody rigidbody;
     private EnemyThinker enemyThinker;
 
-    public IsDashingNode(EnemyAI ai)
+    public IsDashingNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.rigidbody = ai.gameObject.GetComponent<Rigidbody>();
-        this.enemyStats = ai.enemyStats;
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
+        this.rigidbody = enemyThinker.gameObject.GetComponent<Rigidbody>();
+        this.enemyStats = enemyThinker.enemyStats;
     }
 
     public override NodeState Evaluate()
@@ -27,19 +25,18 @@ public class IsDashingNode: Node
         }
         else
         {
-            float dashDuration = ai.timer - enemyThinker.dashStartTime;
+            float dashDuration = enemyThinker.timer - enemyThinker.dashStartTime;
 
             if (dashDuration > enemyStats.dashDuration)
             {
-                ai.SetColor(Color.white);
                 enemyThinker.isDashing = false;
-                enemyThinker.dashEndTime = ai.timer;
+                enemyThinker.dashEndTime = enemyThinker.timer;
                 rigidbody.velocity = Vector3.zero;
                 return NodeState.FAILURE;
             }
             else
             {
-                rigidbody.velocity = new Vector3(ai.transform.forward.x * enemyStats.dashForce, 0f, ai.transform.forward.z * enemyStats.dashForce);
+                rigidbody.velocity = new Vector3(enemyThinker.transform.forward.x * enemyStats.dashForce, 0f, enemyThinker.transform.forward.z * enemyStats.dashForce);
                 return NodeState.RUNNING;
             }
         }

@@ -115,13 +115,6 @@ public class PlayerMovement : MonoBehaviour
         }
 
         isMoving = moveInput != Vector3.zero;
-
-        //if (moveInput.sqrMagnitude > 0)
-        //{
-            //Quaternion rotation = Quaternion.LookRotation(moveInput, Vector3.up);
-
-            //rigidbody.rotation = Quaternion.Lerp(rigidbody.rotation, rotation, Time.fixedDeltaTime * rotationRate);
-        //}
     }
 
     private void OnDrawGizmos()

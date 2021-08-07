@@ -15,14 +15,10 @@ public class KnownEnemiesDecision : Decision
 
     private bool CheckIfEnemiesKnown(StateController controller)
     {
-        KnownEnemiesBlackboard knownEnemies = controller.enemyThinker.knownEnemies;
-        if(knownEnemies.knownEnemiesList.Count > 0)
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        EnemyThinker enemyThinker = controller.enemyThinker;
+        Vector3 aiPosition = enemyThinker.transform.position;
+        int targetIndex = enemyThinker.knownEnemiesBlackboard.DetermineTheClosestEnemyIndex(aiPosition);
+
+        return targetIndex != -1;
     }
 }

@@ -10,15 +10,15 @@ public class LookAroundNode: Node
     private EnemyAI.Target target;
     private EnemyStats enemyStats;
     private EnemyThinker enemyThinker;
-    private KnownEnemiesBlackboard knownEnemiesBlackboard;
+    private KnownEnemiesBlackboard blackboard;
 
     public LookAroundNode(EnemyAI ai, EnemyAI.Target target)
     {
         this.ai = ai;
         this.target = target;
-        this.enemyStats = ai.enemyStats;
+        this.enemyStats = enemyThinker.enemyStats;
         this.enemyThinker = ai.enemyThinker;
-        this.knownEnemiesBlackboard = ai.knownEnemiesBlackboard;
+        this.blackboard = enemyThinker.knownEnemiesBlackboard;
     }
 
     public override NodeState Evaluate()
@@ -31,18 +31,15 @@ public class LookAroundNode: Node
 
             if (target.Equals(EnemyAI.Target.Enemy))
             {
-                targetPosition = ai.knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
+                targetPosition = blackboard.GetClosestCurrentPosition(aiPosition);
             }
             if (targetPosition == Vector3.zero)
             {
                 return NodeState.FAILURE;
             }
 
-            float dot = Vector3.Dot(ai.transform.forward, (targetPosition - aiPosition).normalized);
-
             Vector3 targetDir = targetPosition - aiPosition;
             float angle = Vector3.Angle(targetDir, ai.transform.forward);
-            //Debug.Log(angle);
 
             if (angle > enemyStats.minimumLookingAngle)
             {
@@ -61,27 +58,5 @@ public class LookAroundNode: Node
         {
             return NodeState.SUCCESS;
         }
-    }
-
-    private Vector3[] FindRotationTargets(Vector3 currentPosition, float radius)
-    {
-        Vector3[] targetArray = new Vector3[enemyThinker.totalRotations];
-        Vector3 lastKnownPosition = knownEnemiesBlackboard.GetClosestPreviousPosition(ai.transform.position);
-         Vector3 forwardVector = (lastKnownPosition - currentPosition).normalized;
-        forwardVector.y = 0;
-        float rotationAngle = enemyStats.rotationAngle;
-
-        enemyThinker.forwardRotationTarget = currentPosition + forwardVector * radius;
-
-        Vector3 rightVector = Quaternion.Euler(0, rotationAngle, 0) * forwardVector;
-        Vector3 leftVector = Quaternion.Euler(0, 360 - rotationAngle, 0) * forwardVector;
-
-        enemyThinker.rightRotationTarget = currentPosition + rightVector * radius;
-        enemyThinker.leftRotationTarget = currentPosition + leftVector * radius;
-
-        targetArray[0] = targetArray[2] = targetArray[4] = enemyThinker.forwardRotationTarget;
-        targetArray[1] = enemyThinker.leftRotationTarget;
-        targetArray[3] = enemyThinker.rightRotationTarget;
-        return targetArray;
     }
 }

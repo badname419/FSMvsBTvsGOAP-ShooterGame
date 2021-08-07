@@ -6,18 +6,16 @@ using UnityEngine.AI;
 
 public class LookAtNode: Node
 {
-    private EnemyAI ai;
     private EnemyAI.Target target;
     private EnemyStats enemyStats;
     private EnemyThinker enemyThinker;
     private float rotationSpeed;
 
-    public LookAtNode(EnemyAI ai, EnemyAI.Target target)
+    public LookAtNode(EnemyThinker enemyThinker, EnemyAI.Target target)
     {
-        this.ai = ai;
         this.target = target;
-        this.enemyStats = ai.enemyStats;
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
 
         if (target.Equals(EnemyAI.Target.Around))
         {
@@ -35,12 +33,13 @@ public class LookAtNode: Node
         if (!enemyThinker.isDashing)
         {
             Vector3 targetPosition = new Vector3();
-            Vector3 aiPosition = ai.transform.position;
+            Vector3 aiPosition = enemyThinker.transform.position;
+            Transform aiTransform = enemyThinker.transform;
 
 
             if (target.Equals(EnemyAI.Target.Enemy))
             {
-                targetPosition = ai.knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
+                targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
             }
             else if (target.Equals(EnemyAI.Target.Around))
             {
@@ -51,17 +50,15 @@ public class LookAtNode: Node
                 return NodeState.FAILURE;
             }
 
-            float dot = Vector3.Dot(ai.transform.forward, (targetPosition - aiPosition).normalized);
 
             Vector3 targetDir = targetPosition - aiPosition;
-            float angle = Vector3.Angle(targetDir, ai.transform.forward);
-            //Debug.Log(angle);
+            float angle = Vector3.Angle(targetDir, aiTransform.forward); 
 
             if (angle > enemyStats.minimumLookingAngle)
             {
                 var targetRotation = Quaternion.LookRotation(targetPosition - aiPosition);
                 var str = Mathf.Min(rotationSpeed * Time.deltaTime, 1);
-                ai.transform.rotation = Quaternion.Lerp(ai.transform.rotation, targetRotation, str);
+                enemyThinker.transform.rotation = Quaternion.Lerp(aiTransform.rotation, targetRotation, str);
                 return NodeState.RUNNING;
             }
             else
@@ -76,7 +73,7 @@ public class LookAtNode: Node
                     else
                     {
                         enemyThinker.aiRotatingPosition = Vector3.zero;
-                        ai.knownEnemiesBlackboard.RemoveEnemy(targetPosition);
+                        enemyThinker.knownEnemiesBlackboard.RemoveEnemy(targetPosition);
                     }
                 }
                 //ai.knownEnemiesBlackboard.RemoveEnemy(targetPosition);  //The spot has been visited and no enemy spoted, thus removed

@@ -13,6 +13,33 @@ public class HPAboveThresholdDecision : Decision
 
     private bool checkHP(StateController controller)
     {
-        return (controller.enemyStats.hpThreshold <= controller.currentHP);
+        EnemyThinker enemyThinker = controller.enemyThinker;
+        EnemyStats enemyStats = enemyThinker.enemyStats;
+        KnownEnemiesBlackboard blackboard = enemyThinker.knownEnemiesBlackboard;
+        Vector3 aiPosition = enemyThinker.transform.position;
+        GameObject theClosestEnemy = blackboard.DetermineTheClosestEnemyObject(aiPosition);
+        
+        int index;
+        bool hpAboveEnemy;
+        if(theClosestEnemy != null)
+        {
+            index = blackboard.FindEnemyIndex(theClosestEnemy.transform);
+            hpAboveEnemy = enemyThinker.currentHP > blackboard.knownEnemiesList[index].hp;
+        }
+        else
+        {
+            hpAboveEnemy = true;
+        }
+
+        bool hpAboveThreshold = enemyThinker.currentHP > enemyStats.maxHp * enemyStats.hpThreshold;
+
+        if (hpAboveThreshold)
+        {
+            return true;
+        }
+        else
+        {
+            return hpAboveEnemy;
+        }
     }
 }

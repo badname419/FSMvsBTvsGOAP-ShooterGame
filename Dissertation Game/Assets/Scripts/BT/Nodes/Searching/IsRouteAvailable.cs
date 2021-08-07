@@ -4,13 +4,11 @@ using UnityEngine;
 
 public class IsRouteAvailable : Node
 {
-    private EnemyAI ai;
     private EnemyThinker enemyThinker;
 
-    public IsRouteAvailable(EnemyAI ai)
+    public IsRouteAvailable(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
     }
 
     public override NodeState Evaluate()

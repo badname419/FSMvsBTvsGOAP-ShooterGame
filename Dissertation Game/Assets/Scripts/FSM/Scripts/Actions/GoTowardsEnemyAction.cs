@@ -8,35 +8,15 @@ public class GoTowardsEnemyAction : Action
 {
     public override void Act(StateController controller)
     {
-        NavMeshAgent agent = controller.navMeshAgent;
+        EnemyThinker enemyThinker = controller.enemyThinker;
+        NavMeshAgent agent = enemyThinker.navMeshAgent;
+        Vector3 aiPosition = enemyThinker.transform.position;
+        Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
 
-        int closestEnemyIndex = ChooseTarget(controller);
-        controller.enemyThinker.closestEnemyIndex = closestEnemyIndex;
-        controller.enemyThinker.walkingTarget = controller.enemyThinker.knownEnemies.knownEnemiesList[closestEnemyIndex].previousPosition;
+        enemyThinker.walkingTarget = targetPosition;
 
+        controller.walkingTargetEnum = StateController.Target.Enemy;
         agent.isStopped = false;
-        agent.SetDestination(controller.enemyThinker.walkingTarget);
-    }
-
-    private int ChooseTarget(StateController controller)
-    {
-
-        int index = 0;
-        float shortestDistance = Mathf.Infinity;
-        Vector3 position1 = controller.transform.position;
-        KnownEnemiesBlackboard knownEnemies = controller.enemyThinker.knownEnemies;
-
-        // Compare distances to the known enemies
-        for(int i=0; i<knownEnemies.knownEnemiesList.Count; i++)
-        {
-            float distance = Vector3.Distance(position1, knownEnemies.knownEnemiesList[i].previousPosition);
-            if (distance < shortestDistance)
-            {
-                shortestDistance = distance;
-                index = i;
-            }
-        }
-
-        return index;
+        agent.SetDestination(targetPosition);
     }
 }

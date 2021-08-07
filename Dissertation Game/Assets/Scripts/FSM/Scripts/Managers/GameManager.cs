@@ -117,11 +117,9 @@ public class GameManager : MonoBehaviour
         for(int i=0; i<numOfEnemies; i++)
         {
             int pointIndex = i % spawnPoints.Count;
-            var enemy = Instantiate(enemyObject);
-
-            var enemyThinker = enemy.GetComponent<EnemyThinker>();
+            GameObject enemy = Instantiate(enemyObject);
+            EnemyThinker enemyThinker = enemy.GetComponent<EnemyThinker>();
             enemyThinker.Setup(spawnPoints[pointIndex], pathfinding, knownEnemies, searchPoints);
-            enemyThinker.SetupUI(true, spawnPoints);
         }
     }
 

@@ -4,21 +4,19 @@ using UnityEngine;
 
 public class IsCoveredNode : Node
 {
-    private Transform target;
-    private Transform origin;
-    private EnemyAI ai;
+    private EnemyThinker enemyThinker;
 
-    public IsCoveredNode(EnemyAI ai)
+    public IsCoveredNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
+        this.enemyThinker = enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
         bool covered;
-        Vector3 aiPosition = ai.transform.position;
+        Vector3 aiPosition = enemyThinker.transform.position;
         
-        Vector3 targetPosition = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
+        Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         if (targetPosition.Equals(Vector3.zero))
         {
             return NodeState.SUCCESS;
@@ -26,7 +24,7 @@ public class IsCoveredNode : Node
 
         Vector3 direction = (targetPosition - aiPosition).normalized;
         float distance = Vector3.Distance(aiPosition, targetPosition);
-        if (!Physics.Raycast(aiPosition, direction, distance, ai.enemyStats.coverMask))
+        if (!Physics.Raycast(aiPosition, direction, distance, enemyThinker.enemyStats.coverMask))
         {
             covered = false;
         }

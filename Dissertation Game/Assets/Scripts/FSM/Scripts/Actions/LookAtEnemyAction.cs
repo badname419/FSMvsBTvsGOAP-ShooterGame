@@ -12,11 +12,20 @@ public class LookAtEnemyAction : Action
 
     private void LookAt(StateController controller)
     {
-        Vector3 current = controller.transform.position;
-        Vector3 target = controller.enemyThinker.closestEnemy.position;
+        EnemyThinker enemyThinker = controller.enemyThinker;
+        EnemyStats enemyStats = enemyThinker.enemyStats;
+        Vector3 aiPosition = enemyThinker.transform.position;
+        Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
+        Transform aiTransform = enemyThinker.transform;
 
-        var targetRotation = Quaternion.LookRotation(target - current);
-        var str = Mathf.Min(controller.enemyStats.rotationSpeed * Time.deltaTime, 1);
-        controller.transform.rotation = Quaternion.Lerp(controller.transform.rotation, targetRotation, str);
+        Vector3 targetDir = targetPosition - aiPosition;
+        float angle = Vector3.Angle(targetDir, aiTransform.forward);
+
+        if (angle > enemyStats.minimumLookingAngle)
+        {
+            var targetRotation = Quaternion.LookRotation(targetPosition - aiPosition);
+            var str = Mathf.Min(enemyStats.rotationSpeed * Time.deltaTime, 1);
+            enemyThinker.transform.rotation = Quaternion.Lerp(aiTransform.rotation, targetRotation, str);
+        }
     }
 }

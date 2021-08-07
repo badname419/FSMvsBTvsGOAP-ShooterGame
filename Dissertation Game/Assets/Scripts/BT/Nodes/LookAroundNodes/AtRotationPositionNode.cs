@@ -8,20 +8,18 @@ public class AtRotationPositionNode: Node
 {
     private EnemyStats enemyStats;
     private EnemyThinker enemyThinker;
-    private EnemyAI ai;
 
-    public AtRotationPositionNode(EnemyAI ai)
+    public AtRotationPositionNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.enemyStats = ai.enemyStats;
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
     }
 
     public override NodeState Evaluate()
     {
         if (!enemyThinker.aiRotatingPosition.Equals(Vector3.zero))
         {
-            Vector3 aiPosition = ai.transform.position;
+            Vector3 aiPosition = enemyThinker.transform.position;
             float distance = Vector3.Distance(aiPosition, enemyThinker.aiRotatingPosition);
 
             if(distance < enemyStats.arrivalDistance)

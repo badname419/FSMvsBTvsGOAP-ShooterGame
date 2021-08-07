@@ -7,19 +7,19 @@ public class GoToLastKnownPositionNode : Node
 {
     private NavMeshAgent navMeshAgent;
     private EnemyStats enemyStats;
-    private EnemyAI ai;
+    private EnemyThinker enemyThinker;
 
-    public GoToLastKnownPositionNode(EnemyAI ai)
+    public GoToLastKnownPositionNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.navMeshAgent = ai.gameObject.GetComponent<NavMeshAgent>();
-        this.enemyStats = ai.enemyStats;
+        this.enemyThinker = enemyThinker;
+        this.navMeshAgent = enemyThinker.navMeshAgent;
+        this.enemyStats = enemyThinker.enemyStats;
     }
 
     public override NodeState Evaluate()
     {
-        Vector3 aiPosition = ai.transform.position;
-        Vector3 target = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
+        Vector3 aiPosition = enemyThinker.transform.position;
+        Vector3 target = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
 
         if (target.Equals(Vector3.zero))
         {
@@ -27,7 +27,6 @@ public class GoToLastKnownPositionNode : Node
             return NodeState.FAILURE;
         }
 
-        ai.SetColor(Color.yellow);
         float distance = Vector3.Distance(target, navMeshAgent.transform.position);
         if(distance > enemyStats.arrivalDistance)
         {
@@ -37,7 +36,7 @@ public class GoToLastKnownPositionNode : Node
         }
         else
         {
-            ai.knownEnemiesBlackboard.RemoveEnemy(target);
+            enemyThinker.knownEnemiesBlackboard.RemoveEnemy(target);
             navMeshAgent.isStopped = true;
             return NodeState.SUCCESS;
         }

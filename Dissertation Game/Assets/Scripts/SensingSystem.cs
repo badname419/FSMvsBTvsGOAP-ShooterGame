@@ -14,7 +14,7 @@ public class SensingSystem : MonoBehaviour
     {
         enemyThinker = GetComponent<EnemyThinker>();
         enemyStats = enemyThinker.enemyStats;
-        knownEnemiesBlackboard = enemyThinker.knownEnemies;
+        knownEnemiesBlackboard = enemyThinker.knownEnemiesBlackboard;
         foundKitsList = new List<Transform>();
 
         StartCoroutine("FindEnemiesWithDelay", .2f);

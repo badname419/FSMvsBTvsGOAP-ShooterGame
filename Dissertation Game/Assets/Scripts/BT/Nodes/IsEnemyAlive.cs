@@ -6,16 +6,16 @@ using UnityEngine.AI;
 
 public class IsEnemyAlive: Node
 {
-    private EnemyAI ai;
+    private EnemyThinker enemyThinker;
 
-    public IsEnemyAlive(EnemyAI ai)
+    public IsEnemyAlive(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
+        this.enemyThinker = enemyThinker;       
     }
 
     public override NodeState Evaluate()
     {
-        bool enemyAlive = (ai.closestEnemy != null);
+        bool enemyAlive = (enemyThinker.closestEnemyObject != null);
         return enemyAlive ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

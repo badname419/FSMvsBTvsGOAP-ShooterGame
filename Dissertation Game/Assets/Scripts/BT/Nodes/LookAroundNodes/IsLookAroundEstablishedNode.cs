@@ -6,18 +6,16 @@ using UnityEngine.AI;
 
 public class IsLookAroundEstablishedNode: Node
 {
-    private EnemyAI ai;
     private EnemyThinker enemyThinker;
 
-    public IsLookAroundEstablishedNode(EnemyAI ai)
+    public IsLookAroundEstablishedNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
-        Vector3 aiPosition = ai.transform.position;
+        Vector3 aiPosition = enemyThinker.transform.position;
 
         return aiPosition.Equals(enemyThinker.aiRotatingPosition) ? NodeState.SUCCESS : NodeState.FAILURE;
     }

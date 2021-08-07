@@ -5,33 +5,33 @@ using UnityEngine;
 public class RangeNode : Node
 {
     private float range;
-    private EnemyAI ai;
     private EnemyAI.Target target;
+    private EnemyThinker enemyThinker;
 
-    public RangeNode(float range, EnemyAI ai, EnemyAI.Target target)
+    public RangeNode(EnemyThinker enemyThinker, float range, EnemyAI.Target target)
     {
         this.range = range;
         this.target = target;
-        this.ai = ai;
+        this.enemyThinker = enemyThinker;
     }
 
-    public RangeNode(EnemyAI ai, EnemyAI.Target target)
+    public RangeNode(EnemyThinker enemyThinker, EnemyAI.Target target)
     {
+        this.enemyThinker = enemyThinker;
         this.target = target;
-        this.ai = ai;
     }
 
     public override NodeState Evaluate()
     {
         Vector3 targetPosition = new Vector3();
-        Vector3 aiPosition = ai.transform.position;
+        Vector3 aiPosition = enemyThinker.transform.position;
         if (target.Equals(EnemyAI.Target.Enemy))
         {
-            targetPosition = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
+            targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         }
         else if(target.Equals(EnemyAI.Target.Kit))
         {
-            return ai.sensingSystem.KitsInRange() ? NodeState.SUCCESS : NodeState.FAILURE;
+            return enemyThinker.sensingSystem.KitsInRange() ? NodeState.SUCCESS : NodeState.FAILURE;
         }
 
         if(targetPosition == Vector3.zero)

@@ -6,27 +6,22 @@ using UnityEngine.AI;
 
 public class EstablishLookAroundNode: Node
 {
-    private EnemyAI ai;
     private EnemyStats enemyStats;
     private EnemyThinker enemyThinker;
-    private KnownEnemiesBlackboard knownEnemiesBlackboard;
-
     private Vector3[] targetArray;
     private float radius;
 
-    public EstablishLookAroundNode(EnemyAI ai)
+    public EstablishLookAroundNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.enemyThinker = ai.enemyThinker;
-        this.knownEnemiesBlackboard = ai.knownEnemiesBlackboard;
-        this.enemyStats = ai.enemyStats;
+        this.enemyThinker = enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
         this.targetArray = new Vector3[enemyThinker.totalRotations];
         radius = 10f;
     }
 
     public override NodeState Evaluate()
     {
-        Vector3 aiPosition = ai.transform.position;
+        Vector3 aiPosition = enemyThinker.transform.position;
         Vector3 lastKnownPosition = enemyThinker.lastKnownEnemyLoc;
         Vector3 forwardVector = (lastKnownPosition - aiPosition).normalized;     
         float rotationAngle = enemyStats.rotationAngle;

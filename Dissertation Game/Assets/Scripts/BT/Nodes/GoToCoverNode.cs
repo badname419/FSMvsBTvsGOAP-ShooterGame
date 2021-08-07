@@ -7,16 +7,18 @@ public class GoToCoverNode : Node
 {
     private NavMeshAgent agent;
     private EnemyAI ai;
+    private EnemyThinker enemyThinker;
 
     public GoToCoverNode( NavMeshAgent agent, EnemyAI ai)
     {
         this.agent = agent;
         this.ai = ai;
+        this.enemyThinker = ai.enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
-        Transform coverSpot = ai.GetBestCoverSpot();
+        Transform coverSpot = enemyThinker.GetBestCoverSpot();
         if(coverSpot == null)
         {
             return NodeState.FAILURE;

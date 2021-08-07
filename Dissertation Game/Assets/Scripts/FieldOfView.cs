@@ -30,7 +30,7 @@ public class FieldOfView : MonoBehaviour
     {
         closestEnemyPosition = Vector3.zero;
         lastKnownEnemyPosition = closestEnemyPosition;
-        knownEnemiesBlackboard = GetComponent<EnemyThinker>().knownEnemies;
+        knownEnemiesBlackboard = GetComponent<EnemyThinker>().knownEnemiesBlackboard;
 
         visibleEnemies = new List<VisibleEnemy>();
         seesEnemy = false;

@@ -2,16 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI;
 
 public class EnemyThinker : MonoBehaviour
 {
     [HideInInspector] public Pathfinding pathfinding;
-    [HideInInspector] public KnownEnemiesBlackboard knownEnemies;
-    [HideInInspector] public int nextWayPoint;
-    [HideInInspector] public float distanceToEnemy;
+    [HideInInspector] public KnownEnemiesBlackboard knownEnemiesBlackboard;
+    [HideInInspector] public NavMeshAgent navMeshAgent;
+    [HideInInspector] public Shooting shooting;
+    [HideInInspector] public FieldOfView fieldOfView;
+    [HideInInspector] public CoverSystem coverSystem;
+    [HideInInspector] public SensingSystem sensingSystem;
+
     [HideInInspector] public float stateTimeElapsed;
-    [HideInInspector] public float lastShotTime;
     [HideInInspector] public float currentHP;
+    [HideInInspector] public float timer;
 
     #region Prefab elements;
     [HideInInspector] public GameObject swordObject;
@@ -22,10 +27,12 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public bool inCombat;
     [HideInInspector] public float combatStartTime;
     [HideInInspector] public float meleeAttackTime;
+    [HideInInspector] public float lastShotTime;
     #endregion
 
     #region Chasing and searching
-    [HideInInspector] public Transform closestEnemy;
+    [HideInInspector] public Transform closestEnemyTransform;
+    [HideInInspector] public GameObject closestEnemyObject;
     [HideInInspector] public int closestEnemyIndex;
     [HideInInspector] public Vector3 walkingTarget;
     [HideInInspector] public Vector3 lastKnownEnemyLoc;
@@ -51,31 +58,44 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public Vector3 aiRotatingPosition;
     #endregion
 
+    private IEnumerator coroutine;
     private Image healthBar;
-    public EnemyStats enemyStats;
-    public float timer;
     private GameManager gameManager;
+    private Transform bestCoverSpot;
+    public EnemyStats enemyStats;
 
-    private void Start()
+
+    private void Awake()
     {
-        currentHP = enemyStats.maxHp;
         healthBar = transform.Find("Canvas/HealthBG/HealthBar").GetComponent<Image>();
         swordObject = transform.Find("Sword").gameObject;
         pistolObject = transform.Find("PistolHolder").gameObject;
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        navMeshAgent = GetComponent<NavMeshAgent>();
+        shooting = GetComponent<Shooting>();
+        fieldOfView = GetComponent<FieldOfView>();
+        coverSystem = GetComponent<CoverSystem>();
+        sensingSystem = GetComponent<SensingSystem>();
         searchPoints = new List<Transform>();
+        searchPoints = gameManager.searchPoints;
+        maximumSearchPoints = searchPoints.Count;
+        randomizedRoute = new List<int>();
+        currentHP = enemyStats.maxHp;
         isDashing = false;
+
+        timer = 0f;
         dashEndTime = 0f;
         dashStartTime = 0f;
         meleeAttackTime = 0f;
-        timer = 0f;
         currentSearchPoint = 0;
-        maximumSearchPoints = 0;
 
-        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
-        searchPoints = gameManager.searchPoints;
-        maximumSearchPoints = searchPoints.Count;
+        coroutine = HealEverySecond(1.0f);
+        StartCoroutine(coroutine);
+    }
 
-        //healthBar = GameObject.Find("HealthBar").GetComponent<Image>();
+    private void Start()
+    {     
+        
     }
 
     private void Update()
@@ -89,23 +109,11 @@ public class EnemyThinker : MonoBehaviour
         transform.rotation = spawnPoint.rotation;
 
         this.pathfinding = pathfinding;
-        this.knownEnemies = knownEnemies;
+        this.knownEnemiesBlackboard = knownEnemies;
 
         this.numOfRotations = 0;
         this.totalRotations = enemyStats.maxRotations;
         this.targetArray = new Vector3[totalRotations];
-
-        //this.searchPoints = searchPoints;
-        //maximumSearchPoints = searchPoints.Count;
-    }
-
-    public void SetupUI(bool aiActivation, List<Transform> spawnPoints)
-    {
-        StateController stateController = GetComponent<StateController>();
-        if (stateController != null)
-        {
-            stateController.SetupAI(aiActivation, spawnPoints);
-        }
     }
 
     public void LowerHP(int value)
@@ -140,5 +148,24 @@ public class EnemyThinker : MonoBehaviour
         {
             combatStartTime = timer;
         }
+    }
+
+    private IEnumerator HealEverySecond(float waitTime)
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(waitTime);
+            RestoreHP((int)enemyStats.hpPerSecond);
+        }
+    }
+
+    public void SetBestCoverSpot(Transform bestCoverSpot)
+    {
+        this.bestCoverSpot = bestCoverSpot;
+    }
+
+    public Transform GetBestCoverSpot()
+    {
+        return bestCoverSpot;
     }
 }

@@ -4,20 +4,20 @@ using UnityEngine;
 using UnityEngine.AI;
 public class ShootNode : Node
 {
-    private EnemyAI ai;
     private Shooting shooting;
     private EnemyStats enemyStats;
+    private EnemyThinker enemyThinker;
 
-    public ShootNode(EnemyAI ai)
+    public ShootNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.enemyStats = ai.enemyStats;
-        shooting = ai.shooting;
+        this.enemyThinker = enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
+        this.shooting = enemyThinker.shooting;
     }
 
     public override NodeState Evaluate()
     {
-        shooting.Shoot(enemyStats.shootingWaitTime, ai.enemyStats.shootingDamage, ai.transform);
+        shooting.Shoot(enemyStats.shootingWaitTime, enemyStats.shootingDamage, enemyThinker.transform);
 
         return NodeState.RUNNING;
     }

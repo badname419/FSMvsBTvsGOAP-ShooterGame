@@ -5,13 +5,11 @@ using UnityEngine;
 
 public class RandomizeSearchRoute : Node
 {
-    private EnemyAI ai;
     private EnemyThinker enemyThinker;
 
-    public RandomizeSearchRoute(EnemyAI ai)
+    public RandomizeSearchRoute(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
     }
 
     public override NodeState Evaluate()

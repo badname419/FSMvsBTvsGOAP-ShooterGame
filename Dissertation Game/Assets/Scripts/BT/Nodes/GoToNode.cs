@@ -9,35 +9,31 @@ public class GoToNode: Node
     private NavMeshAgent navMeshAgent;
     private EnemyStats enemyStats;
     private EnemyThinker enemyThinker;
-    private KnownEnemiesBlackboard knownEnemiesBlackboard;
-    private EnemyAI ai;
     private EnemyAI.Target target;
 
-    public GoToNode(EnemyAI ai, EnemyAI.Target target)
+    public GoToNode(EnemyThinker enemyThinker, EnemyAI.Target target)
     {
-        this.ai = ai;
-        this.navMeshAgent = ai.gameObject.GetComponent<NavMeshAgent>();
-        this.enemyStats = ai.enemyStats;
-        this.enemyThinker = ai.enemyThinker;
-        this.knownEnemiesBlackboard = ai.knownEnemiesBlackboard;
+        this.enemyThinker = enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
+        this.navMeshAgent = enemyThinker.navMeshAgent;
         this.target = target;
     }
 
     public override NodeState Evaluate()
     {
-        Vector3 aiPosition = ai.transform.position;
+        Vector3 aiPosition = enemyThinker.transform.position;
         Vector3 targetPosition = new Vector3();
         if (target.Equals(EnemyAI.Target.Enemy))
         {
-            targetPosition = ai.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
+            targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         }
         else if (target.Equals(EnemyAI.Target.Kit))
         {
-            targetPosition = ai.sensingSystem.DetermineClosestKit(aiPosition).position;
+            targetPosition = enemyThinker.sensingSystem.DetermineClosestKit(aiPosition).position;
         }
         else if(target.Equals(EnemyAI.Target.Cover))
         {
-            targetPosition = ai.GetBestCoverSpot().position;
+            targetPosition = enemyThinker.GetBestCoverSpot().position;
         }
         else if (target.Equals(EnemyAI.Target.SearchPoint))
         {
@@ -64,9 +60,9 @@ public class GoToNode: Node
             navMeshAgent.isStopped = true;
             if (target.Equals(EnemyAI.Target.Enemy))
             {
-                enemyThinker.lastKnownEnemyLoc = knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
+                enemyThinker.lastKnownEnemyLoc = enemyThinker.knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
                 enemyThinker.aiRotatingPosition = aiPosition;
-                ai.knownEnemiesBlackboard.RemoveEnemy(targetPosition);
+                enemyThinker.knownEnemiesBlackboard.RemoveEnemy(targetPosition);
             }
             else if (target.Equals(EnemyAI.Target.SearchPoint))
             {
@@ -74,11 +70,5 @@ public class GoToNode: Node
             }
             return NodeState.SUCCESS;
         }
-
-        //bool lastPositionKnown = fieldOfView.lastKnownEnemyPosition != Vector3.zero;
-        //return (lastPositionKnown) ? NodeState.SUCCESS : NodeState.FAILURE;
-        //visibleEnemies = fieldOfView.FindVisibleEnemies(enemyStats.viewRadius, enemyStats.viewAngle, enemyStats.enemyLayer, enemyStats.coverMask, visibleEnemies, ai);
-        //Debug.Log(visibleEnemies.Count);
-        //return (visibleEnemies.Count != 0) ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

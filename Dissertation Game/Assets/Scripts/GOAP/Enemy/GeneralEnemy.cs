@@ -150,7 +150,7 @@ public abstract class GeneralEnemy : MonoBehaviour, IGOAP
 				if (!Physics.Raycast(transform.position, dirToEnemy, distToEnemy, enemyStats.coverMask))
 				{
 					visibleEnemiesList.Add(enemy);
-					enemyThinker.knownEnemies.UpdateEnemyList(enemy);
+					enemyThinker.knownEnemiesBlackboard.UpdateEnemyList(enemy);
 				}
 			}
 		}

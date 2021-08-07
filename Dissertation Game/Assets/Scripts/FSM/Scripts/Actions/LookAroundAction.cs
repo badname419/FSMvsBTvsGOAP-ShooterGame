@@ -11,49 +11,54 @@ public class LookAroundAction : Action
     }
 
     private void LookAround(StateController controller)
-    { 
-        Vector3 current = controller.transform.position;       
+    {
+        EnemyThinker enemyThinker = controller.enemyThinker;
+        EnemyStats enemyStats = enemyThinker.enemyStats;
+        Vector3 aiPosition = enemyThinker.transform.position;       
         float radius = 10f;
         
         //If the values are zero it means this script is run for the first time
-        if(controller.enemyThinker.forwardRotationTarget == Vector3.zero)
+        if(enemyThinker.forwardRotationTarget == Vector3.zero)
         {
-           controller.enemyThinker.targetArray = FindRotationTargets(controller, current, radius);
+           enemyThinker.targetArray = FindRotationTargets(enemyThinker, enemyStats, aiPosition, radius);
         }
-        Vector3 target = controller.enemyThinker.targetArray[controller.enemyThinker.numOfRotations];
 
-        var targetRotation = Quaternion.LookRotation(target - current);
-        var str = Mathf.Min(controller.enemyStats.rotationSpeed * Time.deltaTime, 1);
-        controller.transform.rotation = Quaternion.Lerp(controller.transform.rotation, targetRotation, 0.3f * str);
+        Vector3 targetPosition = enemyThinker.targetArray[enemyThinker.numOfRotations];
+        Vector3 targetDir = targetPosition - aiPosition;
+        float angle = Vector3.Angle(targetDir, controller.transform.forward);
 
-        Vector3 targetDir = target - current;
-        float angleToTarget = Vector3.Angle(controller.transform.forward, targetDir);
-
-        if(angleToTarget <= 4f)
+        if(angle > enemyStats.minimumLookingAngle)
         {
-            controller.enemyThinker.numOfRotations++;
+            var targetRotation = Quaternion.LookRotation(targetPosition - aiPosition);
+            var str = Mathf.Min(enemyStats.rotationSpeed / 2 * Time.deltaTime, 1);
+            enemyThinker.transform.rotation = Quaternion.Lerp(controller.transform.rotation, targetRotation, str);
+        }
+        else
+        {
+            enemyThinker.numOfRotations++;
         }
 
     }
 
-    private Vector3[] FindRotationTargets(StateController controller, Vector3 currentPosition, float radius)
+    private Vector3[] FindRotationTargets(EnemyThinker enemyThinker, EnemyStats enemyStats, Vector3 currentPosition, float radius)
     {
-        Vector3[] targetArray = new Vector3[controller.enemyThinker.totalRotations];
-        Vector3 forwardVector = (controller.enemyThinker.lastKnownEnemyLoc - currentPosition).normalized;
+        Vector3[] targetArray = new Vector3[enemyThinker.totalRotations];
+        Vector3 lastKnownPosition = enemyThinker.lastKnownEnemyLoc;
+        Vector3 forwardVector = (enemyThinker.lastKnownEnemyLoc - currentPosition).normalized;
+        float rotationAngle = enemyStats.rotationAngle;
         forwardVector.y = 0;
-        float rotationAngle = controller.enemyStats.rotationAngle;
-
-        controller.enemyThinker.forwardRotationTarget = currentPosition + forwardVector * radius;
+        
+        enemyThinker.forwardRotationTarget = currentPosition + forwardVector * radius;
 
         Vector3 rightVector = Quaternion.Euler(0, rotationAngle, 0) * forwardVector;
         Vector3 leftVector = Quaternion.Euler(0, 360 - rotationAngle, 0) * forwardVector;
 
-        controller.enemyThinker.rightRotationTarget = currentPosition + rightVector * radius;
-        controller.enemyThinker.leftRotationTarget = currentPosition + leftVector * radius;
+        enemyThinker.rightRotationTarget = currentPosition + rightVector * radius;
+        enemyThinker.leftRotationTarget = currentPosition + leftVector * radius;
 
-        targetArray[0] = targetArray[2] = targetArray[4] = controller.enemyThinker.forwardRotationTarget;
-        targetArray[1] = controller.enemyThinker.leftRotationTarget;
-        targetArray[3] = controller.enemyThinker.rightRotationTarget;
+        targetArray[0] = targetArray[2] = targetArray[4] = enemyThinker.forwardRotationTarget;
+        targetArray[1] = enemyThinker.leftRotationTarget;
+        targetArray[3] = enemyThinker.rightRotationTarget;
         return targetArray;
     }
 }

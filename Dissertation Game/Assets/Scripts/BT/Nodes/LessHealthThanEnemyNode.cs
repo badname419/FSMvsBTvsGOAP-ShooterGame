@@ -4,19 +4,18 @@ using UnityEngine;
 
 public class LessHealthThanEnemyNode : Node
 {
-    private EnemyAI ai;
-    //private KnownEnemiesBlackboard blackboard;
+    private EnemyThinker enemyThinker;
 
-    public LessHealthThanEnemyNode(EnemyAI ai)
+    public LessHealthThanEnemyNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        //this.blackboard = ai.knownEnemiesBlackboard;
+        this.enemyThinker = enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
-        KnownEnemiesBlackboard blackboard = ai.knownEnemiesBlackboard;
-        GameObject theClosestEnemy = blackboard.DetermineTheClosestEnemyObject(ai.transform.position);
+        KnownEnemiesBlackboard blackboard = enemyThinker.knownEnemiesBlackboard;
+        Vector3 aiPosition = enemyThinker.transform.position;
+        GameObject theClosestEnemy = blackboard.DetermineTheClosestEnemyObject(aiPosition);
         int index;
         if (theClosestEnemy != null)
         {
@@ -27,6 +26,6 @@ public class LessHealthThanEnemyNode : Node
             return NodeState.FAILURE;
         }
 
-        return ai.enemyThinker.currentHP < blackboard.knownEnemiesList[index].hp ? NodeState.SUCCESS : NodeState.FAILURE;
+        return enemyThinker.currentHP < blackboard.knownEnemiesList[index].hp ? NodeState.SUCCESS : NodeState.FAILURE;
     }
 }

@@ -5,78 +5,27 @@ using UnityEngine;
 
 public class IsCoverAvailableNode : Node
 {
-    private Cover[] availableCovers;
     private Transform target;
-    private EnemyAI ai;
+    private EnemyThinker enemyThinker;
 
     //Clean this up by removing the unused variables and functions.
-    public IsCoverAvailableNode(EnemyAI ai)
+    public IsCoverAvailableNode(EnemyThinker enemyThinker)
     {
-        //this.availableCovers = availableCovers;
-        //this.target = target;
-        this.ai = ai;
+        this.enemyThinker = enemyThinker;
     }
 
     public override NodeState Evaluate()
     {
         //Add check to see if the cover hasn't been taken by someone else
-        GameObject bestCoverSpot = ai.coverSystem.FindBestCoveringSpot();
-        ai.SetBestCoverSpot(bestCoverSpot.transform);
+        GameObject bestCoverSpot = enemyThinker.coverSystem.FindBestCoveringSpot();
+        enemyThinker.SetBestCoverSpot(bestCoverSpot.transform);
         bool valid = IsSpotValid(bestCoverSpot);
         return valid ? NodeState.SUCCESS : NodeState.FAILURE;
-
-        /*
-        Transform bestSpot = FindBestCoverSpot();
-        ai.SetBestCoverSpot(bestSpot);
-        return bestSpot != null ? NodeState.SUCCESS : NodeState.FAILURE;*/
-    }
-
-    private Transform FindBestCoverSpot()
-    {
-        if(ai.GetBestCoverSpot() != null)
-        {
-            if (CheckIfSpotIsValid(ai.GetBestCoverSpot()))
-            {
-                return ai.GetBestCoverSpot();
-            }
-        }
-
-        float minAngle = 90;
-        Transform bestSpot = null;
-        for(int i=0; i <availableCovers.Length; i++)
-        {
-            Transform bestSpotInCover = FindBestSpotInCover(availableCovers[i], ref minAngle);
-            if(bestSpotInCover != null)
-            {
-                bestSpot = bestSpotInCover;
-            }
-        }
-        return bestSpot;
-    }
-
-    private Transform FindBestSpotInCover(Cover cover, ref float minAngle)
-    {
-        Transform[] availableSpots = cover.GetCoverSpots();
-        Transform bestSpot = null;
-        for(int i = 0; i < availableSpots.Length; i++)
-        {
-            Vector3 direction = target.position - availableSpots[i].position;
-            if (CheckIfSpotIsValid(availableSpots[i]))
-            {
-                float angle = Vector3.Angle(availableSpots[i].forward, direction);
-                if(angle < minAngle)
-                {
-                    minAngle = angle;
-                    bestSpot = availableSpots[i];
-                }
-            }
-        }
-        return bestSpot;
     }
 
     private bool IsSpotValid(GameObject spot)
     {
-        bool isEnemyVisible = ai.fieldOfView.seesEnemy;
+        bool isEnemyVisible = enemyThinker.fieldOfView.seesEnemy;
         if(isEnemyVisible == false)
         {
             return true;
@@ -84,9 +33,9 @@ public class IsCoverAvailableNode : Node
 
         RaycastHit hit;
         Vector3 spotPosition = new Vector3(spot.transform.position.x, 1f, spot.transform.position.z);
-        Vector3 direction = (ai.fieldOfView.closestEnemyPosition - spotPosition).normalized;
-        float distance = Vector3.Distance(spotPosition, ai.fieldOfView.closestEnemyPosition);
-        if(!Physics.Raycast(spotPosition, direction, distance, ai.enemyStats.coverMask))
+        Vector3 direction = (enemyThinker.fieldOfView.closestEnemyPosition - spotPosition).normalized;
+        float distance = Vector3.Distance(spotPosition, enemyThinker.fieldOfView.closestEnemyPosition);
+        if(!Physics.Raycast(spotPosition, direction, distance, enemyThinker.enemyStats.coverMask))
         {
             return false;
         }

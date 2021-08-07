@@ -6,51 +6,23 @@ using UnityEngine.AI;
 
 public class StateController : MonoBehaviour
 {
-    public State currentState;
-    public EnemyStats enemyStats;
-    public Blackboard enemyBlackboard;
-    public GameObject bulletSpawnPoint;
-    public State remainState;
-    public float currentHP;
-    public float targetProximityThreshold;
-
-
-    [HideInInspector] public NavMeshAgent navMeshAgent;
-    [HideInInspector] public Shooting enemyShooting;
-    [HideInInspector] public List<Transform> wayPointList;
     [HideInInspector] public EnemyThinker enemyThinker;
+    [HideInInspector] public EnemyStats enemyStats;
 
-    
-    private bool aiActive;
+    public State currentState;
+    public State remainState;
 
+    public enum Target { Enemy, Kit, Cover, SearchPoint, Around };
+    public Target walkingTargetEnum;
 
     void Awake()
     {
-        enemyShooting = GetComponent<Shooting>();
-        navMeshAgent = GetComponent<NavMeshAgent>();
         enemyThinker = GetComponent<EnemyThinker>();
-        currentHP = enemyStats.maxHp;
-    }
-
-    public void SetupAI(bool aiActivationFromTankManager, List<Transform> wayPointsFromTankManager)
-    {
-        //Waypoints list is useless because the tank doesn't patrol
-        wayPointList = wayPointsFromTankManager;
-        aiActive = aiActivationFromTankManager;
-        if (aiActive)
-        {
-            navMeshAgent.enabled = true;
-        }
-        else
-        {
-            navMeshAgent.enabled = false;
-        }
+        enemyStats = enemyThinker.enemyStats;
     }
 
     void Update()
     {
-        if (!aiActive)
-            return;
         currentState.UpdateState(this);
     }
 
@@ -87,7 +59,7 @@ public class StateController : MonoBehaviour
 
     private void OnExitState()
     {
-        navMeshAgent.isStopped = true;
+        enemyThinker.navMeshAgent.isStopped = true;
         if(enemyThinker.forwardRotationTarget != Vector3.zero)
         {
             enemyThinker.forwardRotationTarget = Vector3.zero;

@@ -7,14 +7,12 @@ using UnityEngine.AI;
 public class IsInCombatNode: Node
 {
     private EnemyStats enemyStats;
-    private EnemyAI ai;
     private EnemyThinker enemyThinker;
 
-    public IsInCombatNode(EnemyAI ai)
+    public IsInCombatNode(EnemyThinker enemyThinker)
     {
-        this.ai = ai;
-        this.enemyStats = ai.enemyStats;
-        this.enemyThinker = ai.enemyThinker;
+        this.enemyThinker = enemyThinker;
+        this.enemyStats = enemyThinker.enemyStats;
     }
 
     public override NodeState Evaluate()
