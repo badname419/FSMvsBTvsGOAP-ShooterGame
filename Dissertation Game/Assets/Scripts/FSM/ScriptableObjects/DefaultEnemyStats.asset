@@ -47,6 +47,6 @@ MonoBehaviour:
   rotationAngle: 120
   maxRotations: 5
   aggroDistance: 1000
-  arrivalDistance: 1.5
+  arrivalDistance: 2
   hpPerSecond: 1
   hpFromKit: 40

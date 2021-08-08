@@ -62,7 +62,8 @@ public class FieldOfView : MonoBehaviour
         {
             Transform enemy = enemiesInViewRadius[i].transform;
             Vector3 dirToEnemy = (enemy.position - transform.position).normalized;
-            if (Vector3.Angle(transform.forward, dirToEnemy) < viewAngle / 2)
+            Vector3 fromVision = new Vector3(transform.forward.x, transform.forward.y, transform.forward.z - 1);
+            if (Vector3.Angle(fromVision , dirToEnemy) < viewAngle / 2)
             {
                 float distToEnemy = Vector3.Distance(transform.position, enemy.position);
 

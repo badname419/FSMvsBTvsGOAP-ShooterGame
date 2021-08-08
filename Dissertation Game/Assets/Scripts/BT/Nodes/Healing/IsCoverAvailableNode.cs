@@ -31,7 +31,6 @@ public class IsCoverAvailableNode : Node
             return true;
         }
 
-        RaycastHit hit;
         Vector3 spotPosition = new Vector3(spot.transform.position.x, 1f, spot.transform.position.z);
         Vector3 direction = (enemyThinker.fieldOfView.closestEnemyPosition - spotPosition).normalized;
         float distance = Vector3.Distance(spotPosition, enemyThinker.fieldOfView.closestEnemyPosition);
@@ -40,20 +39,5 @@ public class IsCoverAvailableNode : Node
             return false;
         }
         return true;
-    }
-
-    private bool CheckIfSpotIsValid(Transform spot)
-    {
-        RaycastHit hit;
-        Vector3 spotPosition = new Vector3(spot.position.x, 1f, spot.position.z);
-        Vector3 direction = target.position - spotPosition;
-        if(Physics.Raycast(spotPosition, direction, out hit))
-        {
-            if(hit.collider.transform != target)
-            {
-                return true;
-            }
-        }
-        return false;
     }
 }

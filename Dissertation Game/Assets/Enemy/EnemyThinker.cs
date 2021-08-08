@@ -13,6 +13,7 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public FieldOfView fieldOfView;
     [HideInInspector] public CoverSystem coverSystem;
     [HideInInspector] public SensingSystem sensingSystem;
+    [HideInInspector] public Rigidbody rigidBody;
 
     [HideInInspector] public float stateTimeElapsed;
     [HideInInspector] public float currentHP;
@@ -63,6 +64,7 @@ public class EnemyThinker : MonoBehaviour
     private GameManager gameManager;
     private Transform bestCoverSpot;
     public EnemyStats enemyStats;
+    public bool lookingAtTarget;
 
 
     private void Awake()
@@ -76,12 +78,14 @@ public class EnemyThinker : MonoBehaviour
         fieldOfView = GetComponent<FieldOfView>();
         coverSystem = GetComponent<CoverSystem>();
         sensingSystem = GetComponent<SensingSystem>();
+        rigidBody = GetComponent<Rigidbody>();
         searchPoints = new List<Transform>();
         searchPoints = gameManager.searchPoints;
         maximumSearchPoints = searchPoints.Count;
         randomizedRoute = new List<int>();
         currentHP = enemyStats.maxHp;
         isDashing = false;
+        lookingAtTarget = false;
 
         timer = 0f;
         dashEndTime = 0f;

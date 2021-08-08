@@ -8,6 +8,7 @@ public class HPAboveThresholdDecision : Decision
     public override bool Decide(StateController controller)
     {
         bool aboveThreshold = checkHP(controller);
+        Debug.LogWarning(aboveThreshold);
         return aboveThreshold;
     }
 

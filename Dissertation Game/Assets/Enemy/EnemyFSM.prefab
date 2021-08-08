@@ -237,13 +237,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyThinker: {fileID: 0}
   enemyStats: {fileID: 11400000, guid: 3200733487427174c8eea3bdc71c907a, type: 2}
-  coverSystem: {fileID: 0}
-  fieldOfView: {fileID: 0}
-  sensingSystem: {fileID: 0}
-  navMeshAgent: {fileID: 0}
-  wayPointList: []
-  currentState: {fileID: 11400000, guid: 7df3c719d2da10c4b88bf8b05a022b9a, type: 2}
+  currentState: {fileID: 11400000, guid: 5bc7d01776775e94aac37082331e9e53, type: 2}
   remainState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
+  walkingTargetEnum: 0
 --- !u!114 &995243185492678062
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -305,6 +301,10 @@ MonoBehaviour:
   pathfinding: {fileID: 0}
   navMeshAgent: {fileID: 0}
   shooting: {fileID: 0}
+  fieldOfView: {fileID: 0}
+  coverSystem: {fileID: 0}
+  sensingSystem: {fileID: 0}
+  rigidBody: {fileID: 0}
   stateTimeElapsed: 0
   currentHP: 0
   timer: 0
@@ -314,7 +314,8 @@ MonoBehaviour:
   combatStartTime: 0
   meleeAttackTime: 0
   lastShotTime: 0
-  closestEnemy: {fileID: 0}
+  closestEnemyTransform: {fileID: 0}
+  closestEnemyObject: {fileID: 0}
   closestEnemyIndex: 0
   walkingTarget: {x: 0, y: 0, z: 0}
   lastKnownEnemyLoc: {x: 0, y: 0, z: 0}
@@ -333,6 +334,7 @@ MonoBehaviour:
   targetArray: []
   aiRotatingPosition: {x: 0, y: 0, z: 0}
   enemyStats: {fileID: 11400000, guid: 3200733487427174c8eea3bdc71c907a, type: 2}
+  lookingAtTarget: 0
 --- !u!114 &6819051451311551699
 MonoBehaviour:
   m_ObjectHideFlags: 0

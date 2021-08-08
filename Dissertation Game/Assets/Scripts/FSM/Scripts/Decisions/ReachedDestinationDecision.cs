@@ -10,6 +10,7 @@ public class ReachedDestinationDecision : Decision
     public override bool Decide(StateController controller)
     {
         bool destinationReached = CheckIfDestinationReached(controller);
+        Debug.LogError(destinationReached);
         return destinationReached;
     }
 
@@ -19,6 +20,7 @@ public class ReachedDestinationDecision : Decision
         EnemyStats enemyStats = controller.enemyStats;
 
         float distance = Vector3.Distance(enemyThinker.walkingTarget, controller.transform.position);
+        Debug.LogError(distance);
 
         if (distance < enemyStats.arrivalDistance)
         {

@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bffb75611d798434390e9b2aec31f6e8, type: 3}
+  m_Name: HealState
+  m_EditorClassIdentifier: 
+  actions: []
+  transitions:
+  - decision:
+    - {fileID: 11400000, guid: 542e0be14b4c4074a88794bb044f9c1d, type: 2}
+    trueState: {fileID: 11400000, guid: 880f25f3ee09fa94b82909b597eee8a1, type: 2}
+    falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
+  - decision:
+    - {fileID: 11400000, guid: 2f138cfb3bf21a14baa756f705f6f37a, type: 2}
+    trueState: {fileID: 11400000, guid: 162f31b85a2bc244d900f131c3744138, type: 2}
+    falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
+  - decision:
+    - {fileID: 11400000, guid: 44ea4aa709a67d4448ac4c726f41b860, type: 2}
+    trueState: {fileID: 11400000, guid: a08270c41bebb0f4b8a7ffaab48d9805, type: 2}
+    falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
+  sceneGizmoColor: {r: 1, g: 1, b: 1, a: 1}

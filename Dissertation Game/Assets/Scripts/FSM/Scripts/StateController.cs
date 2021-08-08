@@ -24,15 +24,24 @@ public class StateController : MonoBehaviour
     void Update()
     {
         currentState.UpdateState(this);
+        Debug.Log(currentState.ToString());
+
+        if (enemyThinker.swordObject.activeSelf)
+        {
+            if (enemyThinker.timer - enemyThinker.meleeAttackTime > enemyStats.meleeAttackDuration)
+            {
+                enemyThinker.swordObject.SetActive(false);
+                enemyThinker.pistolObject.SetActive(true);
+            }
+        }
     }
 
     void OnDrawGizmos()
     {
-        //if (currentState != null && eyes != null)
-        //{
-        //Gizmos.color = currentState.sceneGizmoColor;
-        //Gizmos.DrawWireSphere(eyes.position, enemyStats.lookSphereCastRadius);
-        //}
+        Gizmos.color = Color.red;
+        Gizmos.DrawCube(enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(transform.position), new Vector3(1f, 1f, 1f));
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawCube(enemyThinker.knownEnemiesBlackboard.GetClosestCurrentPosition(transform.position), new Vector3(1f, 1f, 1f));
     }
 
     public void TransitionToState(State nextState)

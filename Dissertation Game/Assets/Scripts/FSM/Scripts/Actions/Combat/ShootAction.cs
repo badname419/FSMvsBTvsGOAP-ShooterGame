@@ -15,6 +15,9 @@ public class ShootAction : Action
         EnemyThinker enemyThinker = controller.enemyThinker;
         EnemyStats enemyStats = enemyThinker.enemyStats;
 
-        enemyThinker.shooting.Shoot(enemyStats.shootingWaitTime, enemyStats.shootingDamage, enemyThinker.transform);
+        if (enemyThinker.lookingAtTarget)
+        {
+            enemyThinker.shooting.Shoot(enemyStats.shootingWaitTime, enemyStats.shootingDamage, enemyThinker.transform);
+        }
     }
 }

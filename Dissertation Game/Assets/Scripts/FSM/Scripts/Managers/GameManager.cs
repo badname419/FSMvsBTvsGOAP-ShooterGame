@@ -7,6 +7,9 @@ public class GameManager : MonoBehaviour
     private Pathfinding pathfinding;
     private string cameraTag = "MainCamera";
 
+    public List<LayerMask> enemyMasksList;
+    public LayerMask enemyMask1;
+    public LayerMask enemyMask2;
     public int numOfEnemies = 1;
     public List<Transform> spawnPoints;
     public List<Transform> searchPoints;
@@ -26,6 +29,8 @@ public class GameManager : MonoBehaviour
         knownEnemies = new KnownEnemiesBlackboard();
         pathfinding = GetComponent<Pathfinding>();
         kitLocationList = new List<Vector3>();
+        enemyMasksList.Add(enemyMask1);
+        enemyMasksList.Add(enemyMask2);
         SpawnPlayer();
         SpawnEnemies();
     }
