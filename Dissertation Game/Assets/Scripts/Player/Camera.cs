@@ -11,14 +11,18 @@ public class Camera : MonoBehaviour
     private Vector3 velocity = Vector3.zero;
 
     public Transform player;
+    public bool pve;
 
     private void Update()
     {
-        Vector3 pos = new Vector3();
-        pos.x = player.position.x - xOffset;
-        pos.z = player.position.z - zOffset;
-        pos.y = player.position.y - yOffset;
-        transform.position = Vector3.SmoothDamp(transform.position, pos, ref velocity, smooth);
+        if (pve)
+        {
+            Vector3 pos = new Vector3();
+            pos.x = player.position.x - xOffset;
+            pos.z = player.position.z - zOffset;
+            pos.y = player.position.y - yOffset;
+            transform.position = Vector3.SmoothDamp(transform.position, pos, ref velocity, smooth);
+        }
     }
 
 }

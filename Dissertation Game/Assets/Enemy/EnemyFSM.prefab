@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 4134525613720877234}
   - component: {fileID: 1130863501703192928}
   - component: {fileID: 4859320353670112618}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: HealthBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -99,9 +99,9 @@ GameObject:
   - component: {fileID: 5639643220496667478}
   - component: {fileID: 2053347557663200082}
   - component: {fileID: -3248783470644788323}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: EnemyFSM
-  m_TagString: Enemy
+  m_TagString: Enemy2
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -314,6 +314,10 @@ MonoBehaviour:
   combatStartTime: 0
   meleeAttackTime: 0
   lastShotTime: 0
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
+  enemyTag: 
   closestEnemyTransform: {fileID: 0}
   closestEnemyObject: {fileID: 0}
   closestEnemyIndex: 0
@@ -423,7 +427,7 @@ GameObject:
   - component: {fileID: 6324543992173849412}
   - component: {fileID: 2960854117013695604}
   - component: {fileID: 3006261555565739212}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -517,7 +521,7 @@ GameObject:
   - component: {fileID: 2328912842518756081}
   - component: {fileID: 3269510573122269406}
   - component: {fileID: 218176529442047878}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -593,7 +597,7 @@ GameObject:
   - component: {fileID: 4223391405358977983}
   - component: {fileID: 1295185659831725679}
   - component: {fileID: 734632795596348336}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -688,7 +692,7 @@ GameObject:
   - component: {fileID: 2333472266410854273}
   - component: {fileID: 5886413661954608824}
   - component: {fileID: 637785223552326109}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: Pistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -785,7 +789,7 @@ GameObject:
   - component: {fileID: 5566305408256217631}
   - component: {fileID: 5911263497025619950}
   - component: {fileID: 7462893233326850396}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -882,7 +886,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4512228893553844899}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: PistolHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -916,7 +920,7 @@ GameObject:
   - component: {fileID: 7920496197873833925}
   - component: {fileID: 7081178721239585934}
   - component: {fileID: 5286209830563344644}
-  m_Layer: 7
+  m_Layer: 12
   m_Name: Hole
   m_TagString: Untagged
   m_Icon: {fileID: 0}

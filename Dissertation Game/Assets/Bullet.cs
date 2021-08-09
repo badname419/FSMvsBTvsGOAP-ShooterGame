@@ -56,7 +56,7 @@ public class Bullet : MonoBehaviour
 
         if (!collisionTag.Equals(bulletOwner.tag))
         {
-            if (collisionTag.Equals(enemyTag))
+            if (collisionTag.Contains(enemyTag))
             {
                 triggeringEnemy = collision.collider.gameObject;
                 triggeringEnemy.GetComponent<EnemyThinker>().LowerHP(damage);

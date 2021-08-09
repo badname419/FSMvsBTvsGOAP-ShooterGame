@@ -7,6 +7,7 @@ public class MeleeAttackNode : Node
 {
     private EnemyThinker enemyThinker;
     private EnemyStats enemyStats;
+    private GameManager gameManager;
 
     public MeleeAttackNode(EnemyThinker enemyThinker)
     {
@@ -22,9 +23,7 @@ public class MeleeAttackNode : Node
 
         GameObject closestEnemy = enemyThinker.knownEnemiesBlackboard.DetermineTheClosestEnemyObject(aiPosition);
 
-        PlayerLogic playerLogic = closestEnemy.GetComponent<PlayerLogic>();
-
-        if(playerLogic != null)
+        if(closestEnemy.TryGetComponent<PlayerLogic>(out PlayerLogic playerLogic))
         {
             playerLogic.LowerHP(enemyStats.meleeDamage);
         }

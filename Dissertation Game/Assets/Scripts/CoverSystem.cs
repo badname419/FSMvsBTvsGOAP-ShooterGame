@@ -38,7 +38,8 @@ public class CoverSystem : MonoBehaviour
     private EnemyThinker enemyThinker;
     private EnemyAI enemyAI;
     private EnemyStats enemyStats;
-    private GameObject enemyPlayer;
+    private GameObject[] enemyPlayerList;
+    private GameManager gameManager;
     private string playerTag = "Player";
     private string wallTag = "Wall";
     private int maxValue;
@@ -47,6 +48,7 @@ public class CoverSystem : MonoBehaviour
     private List<Transform> enemyVisibleWaypoints;
     private GameObject[] walls;
     private List<Bounds> wallsBounds = new List<Bounds>();
+    private string enemyTag;
 
 
     private class Waypoint
@@ -64,8 +66,18 @@ public class CoverSystem : MonoBehaviour
         enemyAI = GetComponent<EnemyAI>();
         enemyThinker = GetComponent<EnemyThinker>();
         enemyStats = enemyThinker.enemyStats;
+        gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        if (gameManager.IsPVE())
+        {
+            enemyTag = gameManager.playerTag;
+        }
+        else
+        {
+            enemyTag = gameManager.team1Tag == gameObject.tag ? gameManager.team2Tag : gameManager.team1Tag;
+        }
 
-        enemyPlayer = GameObject.FindGameObjectWithTag(playerTag);
+        enemyPlayerList = GameObject.FindGameObjectsWithTag(enemyTag);
+        //enemyPlayerList = GameObject.FindGameObjectWithTag(enemyThinker.enemyTag);
 
         //Values from FindCoverValues scriptable object
         interval = findCoverValues.interval;
@@ -106,12 +118,13 @@ public class CoverSystem : MonoBehaviour
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(gameObject.transform.position, radius);
+        /*
         Gizmos.color = Color.yellow;
-        if (enemyPlayer != null && rangeModifier)
+        if (enemyPlayerList != null && rangeModifier)
         {
-            Gizmos.DrawWireSphere(enemyPlayer.transform.position, minPrefRange);
-            Gizmos.DrawWireSphere(enemyPlayer.transform.position, maxPrefRange);
-        }
+            Gizmos.DrawWireSphere(enemyPlayerList.transform.position, minPrefRange);
+            Gizmos.DrawWireSphere(enemyPlayerList.transform.position, maxPrefRange);
+        }*/
 
         if (wallGizmo)
         {
@@ -293,7 +306,26 @@ public class CoverSystem : MonoBehaviour
     private bool IsWaypointSeen(Collider waypoint)
     {
         enemyVisibleWaypoints.Clear();
-        enemyVisibleWaypoints = fieldOfView.FindVisibleObjects(enemyStats.viewAngle, coverMask, waypointColliders, enemyPlayer);
+        //List<Transform> seenList1 = fieldOfView.FindVisibleObjects(enemyStats.viewAngle, coverMask, waypointColliders, enemyPlayerList);
+
+        List<Transform> seenList1 = new List<Transform>();
+        List<Transform> combinedList = new List<Transform>();
+        for (int i=0; i<enemyPlayerList.Length; i++)
+        {
+            seenList1.Clear();
+            foreach(Transform element in combinedList)
+            {
+                seenList1.Add(element);
+            }
+            combinedList.Clear();
+            List<Transform> seenList2 = fieldOfView.FindVisibleObjects(enemyStats.viewAngle, coverMask, waypointColliders, enemyPlayerList[i]);
+            combinedList = seenList1.Union(seenList2).ToList();
+        }
+
+        foreach(Transform seenElement in combinedList)
+        {
+            enemyVisibleWaypoints.Add(seenElement);
+        }
 
         for (int i = 0; i < enemyVisibleWaypoints.Count; i++)
         {
@@ -312,8 +344,9 @@ public class CoverSystem : MonoBehaviour
     private bool IsInPrefRange(Collider waypoint)
     {
         Vector3 waypointPosition = waypoint.transform.position;
-        Vector3 enemyPosition = enemyPlayer.transform.position;
-        float dist = Vector3.Distance(waypointPosition, enemyPosition);
+        Vector3 closestEnemyPosition = enemyThinker.knownEnemiesBlackboard.GetClosestCurrentPosition(transform.position);
+        //Vector3 enemyPosition = enemyPlayerList.transform.position;
+        float dist = Vector3.Distance(waypointPosition, closestEnemyPosition);
 
         return (dist <= maxPrefRange && dist >= minPrefRange);
     }

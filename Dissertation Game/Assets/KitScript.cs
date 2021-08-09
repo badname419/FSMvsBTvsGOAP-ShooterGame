@@ -5,9 +5,7 @@ using UnityEngine;
 public class KitScript : MonoBehaviour
 {
     [SerializeField] private int HPRestored;
-    private List<LayerMask> enemyMasksList;
-    private LayerMask enemyMask1;
-    private LayerMask enemyMask2;
+    [SerializeField] private List<LayerMask> enemyMasksList;
     [SerializeField] private LayerMask playerMask;
     [SerializeField] private float pickUpDistance;
 

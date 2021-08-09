@@ -29,6 +29,8 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public float combatStartTime;
     [HideInInspector] public float meleeAttackTime;
     [HideInInspector] public float lastShotTime;
+    [HideInInspector] public LayerMask enemyMask;
+    [HideInInspector] public string enemyTag;
     #endregion
 
     #region Chasing and searching
@@ -86,6 +88,17 @@ public class EnemyThinker : MonoBehaviour
         currentHP = enemyStats.maxHp;
         isDashing = false;
         lookingAtTarget = false;
+
+        if (gameManager.IsPVE())
+        {
+            enemyTag = gameManager.playerTag;
+            enemyMask = gameManager.playerMask;
+        }
+        else
+        {
+            enemyTag = gameManager.team1Tag == this.gameObject.tag ? gameManager.team2Tag : gameManager.team1Tag;
+            enemyMask = gameManager.enemyMasksList[0] == this.gameObject.layer ? gameManager.enemyMasksList[1] : gameManager.enemyMasksList[0];
+        }
 
         timer = 0f;
         dashEndTime = 0f;
@@ -171,5 +184,10 @@ public class EnemyThinker : MonoBehaviour
     public Transform GetBestCoverSpot()
     {
         return bestCoverSpot;
+    }
+
+    public GameManager GetGameManager()
+    {
+        return gameManager;
     }
 }

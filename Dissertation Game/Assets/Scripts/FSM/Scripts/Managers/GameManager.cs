@@ -7,31 +7,50 @@ public class GameManager : MonoBehaviour
     private Pathfinding pathfinding;
     private string cameraTag = "MainCamera";
 
+    [Header("Teams")]
+    public GameObject team1;
+    public GameObject team2;
+
+    [Header("Tags")]
+    public string playerTag;
+    public string team1Tag;
+    public string team2Tag;
+
+    [Header("Masks")]
+    public LayerMask playerMask;
     public List<LayerMask> enemyMasksList;
-    public LayerMask enemyMask1;
-    public LayerMask enemyMask2;
+
+    [Header("Game Settings")]
     public int numOfEnemies = 1;
-    public List<Transform> spawnPoints;
+    public List<Transform> spawnPoints1;
+    public List<Transform> spawnPoints2;
     public List<Transform> searchPoints;
     public GameObject enemyObject;
     public GameObject playerObject;
     public GameObject firstAidKitObject;
-    public KnownEnemiesBlackboard knownEnemies;
+    public KnownEnemiesBlackboard knownEnemies1;
+    public KnownEnemiesBlackboard knownEnemies2;
     [SerializeField] private int maximumNumOfKits;
     [SerializeField] private int currentNumOfKits;
     [SerializeField] private int kitSpawnRate;
     private List<Vector3> kitLocationList;
 
+    private bool pve;
+
 
     // Start is called before the first frame update
     void Awake()
     {
-        knownEnemies = new KnownEnemiesBlackboard();
+        knownEnemies1 = new KnownEnemiesBlackboard();
+        knownEnemies2 = new KnownEnemiesBlackboard();
         pathfinding = GetComponent<Pathfinding>();
         kitLocationList = new List<Vector3>();
-        enemyMasksList.Add(enemyMask1);
-        enemyMasksList.Add(enemyMask2);
-        SpawnPlayer();
+
+        if (playerMask.value == (playerMask.value | (1 << team1.layer)))
+        {
+            SpawnPlayer();
+            pve = true;
+        }
         SpawnEnemies();
     }
 
@@ -118,34 +137,57 @@ public class GameManager : MonoBehaviour
     }
 
     private void SpawnEnemies()
-    { 
-        for(int i=0; i<numOfEnemies; i++)
+    {
+        for (int i = 0; i < numOfEnemies; i++)
         {
-            int pointIndex = i % spawnPoints.Count;
-            GameObject enemy = Instantiate(enemyObject);
+            int pointIndex = i % spawnPoints1.Count;
+            GameObject enemy = Instantiate(team2);
             EnemyThinker enemyThinker = enemy.GetComponent<EnemyThinker>();
-            enemyThinker.Setup(spawnPoints[pointIndex], pathfinding, knownEnemies, searchPoints);
+            enemyThinker.Setup(spawnPoints1[pointIndex], pathfinding, knownEnemies1, searchPoints);
+        }
+
+        if (!pve)
+        {
+            for (int i = 0; i < numOfEnemies; i++)
+            {
+                int pointIndex = i % spawnPoints2.Count;
+                GameObject enemy = Instantiate(team1);
+                EnemyThinker enemyThinker = enemy.GetComponent<EnemyThinker>();
+                enemyThinker.Setup(spawnPoints2[pointIndex], pathfinding, knownEnemies2, searchPoints);
+            }
         }
     }
 
     private void SpawnPlayer()
     {
-        var player = Instantiate(playerObject);
+        var player = Instantiate(team1);
         SetupCamera(player);
         var playerLogic = player.GetComponent<PlayerLogic>();
 
-        playerLogic.Setup(knownEnemies);
+        playerLogic.Setup(knownEnemies1);
     }
 
     private void SetupCamera(GameObject playerObject)
     {
         GameObject mainCamera = GameObject.FindGameObjectsWithTag(cameraTag)[0];
         Camera cameraScript = mainCamera.GetComponent<Camera>();
-        cameraScript.player = playerObject.transform;
+        if (pve)
+        {
+            cameraScript.player = playerObject.transform;
+        }
+        else
+        {
+            cameraScript.pve = pve;
+        }
     }
 
     public void ReduceNumOfKits()
     {
         currentNumOfKits--;
+    }
+
+    public bool IsPVE()
+    {
+        return pve;
     }
 }

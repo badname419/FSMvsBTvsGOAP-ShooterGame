@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FieldOfView : MonoBehaviour
 {
-    private string playerTag = "Player";
+    private string playerTag;
     private EnemyStats enemyStats;
     private KnownEnemiesBlackboard knownEnemiesBlackboard;
 
@@ -13,6 +13,7 @@ public class FieldOfView : MonoBehaviour
     public Vector3 closestEnemyPosition;
     public Vector3 lastKnownEnemyPosition;
     public GameObject closestEnemyObject;
+    private EnemyThinker enemyThinker;
 
     public class VisibleEnemy
     {
@@ -26,17 +27,23 @@ public class FieldOfView : MonoBehaviour
         public float distance { set; get; }
     }
 
+    private void Awake()
+    {
+        enemyThinker = GetComponent<EnemyThinker>();
+    }
+
     private void Start()
     {
         closestEnemyPosition = Vector3.zero;
         lastKnownEnemyPosition = closestEnemyPosition;
         knownEnemiesBlackboard = GetComponent<EnemyThinker>().knownEnemiesBlackboard;
+        playerTag = enemyThinker.GetGameManager().playerTag;
 
         visibleEnemies = new List<VisibleEnemy>();
         seesEnemy = false;
         if (!this.CompareTag(playerTag))
         {
-            enemyStats = GetComponent<EnemyThinker>().enemyStats;
+            enemyStats = enemyThinker.enemyStats;
             StartCoroutine("FindEnemiesWithDelay", .1f);
         }
     }
@@ -46,7 +53,7 @@ public class FieldOfView : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(delay);
-            FindVisibleEnemies(enemyStats.viewRadius, enemyStats.viewAngle, enemyStats.enemyLayer, enemyStats.coverMask, this.transform);
+            FindVisibleEnemies(enemyStats.viewRadius, enemyStats.viewAngle, enemyThinker.enemyMask, enemyStats.coverMask, this.transform);
             DetermineTheClosestEnemy();
         }
     }

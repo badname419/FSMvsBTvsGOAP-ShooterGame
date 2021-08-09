@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 931949336}
   - component: {fileID: 931949338}
   - component: {fileID: 931949337}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: HealthBar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -86,7 +86,7 @@ GameObject:
   - component: {fileID: 950030406}
   - component: {fileID: 950030408}
   - component: {fileID: 950030407}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: HealthBG
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 1510122758}
   - component: {fileID: 1510122757}
   - component: {fileID: 1510122756}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -263,7 +263,7 @@ GameObject:
   - component: {fileID: 5441656715620015743}
   - component: {fileID: 4668172805585448283}
   - component: {fileID: 7875313557121389956}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Pistol
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -357,7 +357,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 5847161077148954177}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: PistolHolder
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -400,9 +400,9 @@ GameObject:
   - component: {fileID: 4096667758422304173}
   - component: {fileID: 8156870456968139988}
   - component: {fileID: 9110947432744480263}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: EnemyBT
-  m_TagString: Enemy
+  m_TagString: Enemy1
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -538,27 +538,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   enemyThinker: {fileID: 0}
   enemyStats: {fileID: 0}
-  coverSystem: {fileID: 0}
-  fieldOfView: {fileID: 0}
-  shooting: {fileID: 0}
-  playerTransform: {fileID: 0}
-  availableCovers:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  visibleEnemies: []
-  isDashing: 0
-  dashStartTime: 0
-  dashEndTime: 0
+  closestEnemyObject: {fileID: 0}
   timer: 0
-  closestEnemy: {fileID: 0}
 --- !u!114 &6302642181595835723
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -618,14 +599,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pathfinding: {fileID: 0}
-  nextWayPoint: 0
-  distanceToEnemy: 0
+  navMeshAgent: {fileID: 0}
+  shooting: {fileID: 0}
+  fieldOfView: {fileID: 0}
+  coverSystem: {fileID: 0}
+  sensingSystem: {fileID: 0}
+  rigidBody: {fileID: 0}
   stateTimeElapsed: 0
-  lastShotTime: 0
   currentHP: 0
+  timer: 0
+  swordObject: {fileID: 0}
+  pistolObject: {fileID: 0}
   inCombat: 0
   combatStartTime: 0
-  closestEnemy: {fileID: 0}
+  meleeAttackTime: 0
+  lastShotTime: 0
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
+  enemyTag: 
+  closestEnemyTransform: {fileID: 0}
+  closestEnemyObject: {fileID: 0}
   closestEnemyIndex: 0
   walkingTarget: {x: 0, y: 0, z: 0}
   lastKnownEnemyLoc: {x: 0, y: 0, z: 0}
@@ -644,7 +638,7 @@ MonoBehaviour:
   targetArray: []
   aiRotatingPosition: {x: 0, y: 0, z: 0}
   enemyStats: {fileID: 11400000, guid: 3200733487427174c8eea3bdc71c907a, type: 2}
-  timer: 0
+  lookingAtTarget: 0
 --- !u!114 &4096667758422304173
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -702,7 +696,7 @@ GameObject:
   - component: {fileID: 9169024042427168365}
   - component: {fileID: 6455460447168275093}
   - component: {fileID: 8641412760445155281}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Hole
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -797,7 +791,7 @@ GameObject:
   - component: {fileID: 764607186346456834}
   - component: {fileID: 3866947056032302344}
   - component: {fileID: 7028077431770826788}
-  m_Layer: 7
+  m_Layer: 11
   m_Name: Sword
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -892,7 +886,7 @@ GameObject:
   - component: {fileID: 5357923007827759729}
   - component: {fileID: 2184565327142035579}
   - component: {fileID: 3130901599461972399}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Muzzle
   m_TagString: Untagged
   m_Icon: {fileID: 0}

@@ -99,16 +99,27 @@ public class KnownEnemiesBlackboard
     {
         int currentHealth = 0;
 
+        if(transform.TryGetComponent<PlayerLogic>(out PlayerLogic playerLogic))
+        {
+            currentHealth = playerLogic.CurrentHealth;
+        }
+        else
+        {
+            EnemyThinker enemyThinker = transform.gameObject.GetComponent<EnemyThinker>();
+            currentHealth = (int)enemyThinker.currentHP;
+        }
+
+        /*
         if (transform.tag.Equals("Player"))
         {
             PlayerLogic playerLogic = transform.gameObject.GetComponent<PlayerLogic>();
             currentHealth = playerLogic.CurrentHealth;
         }
-        else if (transform.tag.Equals("Enemy"))
+        else
         {
             EnemyThinker enemyThinker = transform.gameObject.GetComponent<EnemyThinker>();
             currentHealth = (int)enemyThinker.currentHP;
-        }
+        }*/
         KnownEnemy enemy = new KnownEnemy(transform, transform.position, transform.position, currentHealth);
         knownEnemiesList.Add(enemy);
     }

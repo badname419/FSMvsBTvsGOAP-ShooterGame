@@ -9,6 +9,8 @@ TagManager:
   - Bullet
   - Weapon
   - Kit
+  - Enemy1
+  - Enemy2
   layers:
   - Default
   - TransparentFX
@@ -21,8 +23,8 @@ TagManager:
   - Player
   - CoverWaypoints
   - Kit
-  - 
-  - 
+  - EnemyTeam1
+  - EnemyTeam2
   - 
   - 
   - 
