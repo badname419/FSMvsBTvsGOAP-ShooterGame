@@ -324,10 +324,7 @@ public class GameManager : MonoBehaviour
         {
             cameraScript.player = playerObject.transform;
         }
-        else
-        {
-            cameraScript.pve = pve;
-        }
+        cameraScript.pve = pve;
     }
 
     public void ReduceNumOfKits()
