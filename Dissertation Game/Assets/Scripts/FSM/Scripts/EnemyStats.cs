@@ -35,10 +35,11 @@ public class EnemyStats : ScriptableObject
     public float hpThreshold = 0.3f;
     public float hpRestoreRate = 1f;
 
-    [Header("Masks")]
+    [Header("Masks and Tags")]
     public LayerMask enemyLayer;
     public LayerMask coverMask;
     public LayerMask kitMask;
+    public string wallTag;
 
     [Header("Rotations")]
     public float rotationSpeed = 10f;

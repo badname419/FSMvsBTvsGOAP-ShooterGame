@@ -80,37 +80,13 @@ public class FieldOfView : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.SphereCast(transform.position, 0.3f, dirToEnemy, out hit))
                 {
-                    if (!hit.collider.CompareTag("Wall") && !hit.collider.CompareTag(transform.tag))
+                    if (!hit.collider.CompareTag(enemyStats.wallTag) && !hit.collider.CompareTag(transform.tag))
                     {
                         VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);
                         visibleEnemies.Add(visibleEnemy);
                         knownEnemiesBlackboard.UpdateEnemyList(enemy);
                     }
                 }
-
-                /*
-                if (Physics.Raycast(transform.position, dirToEnemy, out hit, distToEnemy))
-                {
-                    Debug.Log(hit.collider.CompareTag(transform.tag));
-                    if (!hit.collider.CompareTag("Wall") && !hit.collider.CompareTag(transform.tag))
-                    {
-                        VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);
-                        visibleEnemies.Add(visibleEnemy);
-                        knownEnemiesBlackboard.UpdateEnemyList(enemy);
-                    }
-                        
-                }
-
-                /*
-                if (!Physics.Raycast(transform.position, dirToEnemy, distToEnemy, coverMask))
-                {
-                    if (!Physics.Raycast(transform.position, dirToEnemy, distToEnemy, thisMask))
-                    {
-                        VisibleEnemy visibleEnemy = new VisibleEnemy(enemy, distToEnemy);
-                        visibleEnemies.Add(visibleEnemy);
-                        knownEnemiesBlackboard.UpdateEnemyList(enemy);
-                    }
-                }*/
             }
         }     
         seesEnemy = visibleEnemies.Count != 0;
@@ -185,15 +161,22 @@ public class FieldOfView : MonoBehaviour
         {
             Transform spot = targetObjects[i].transform;
             Vector3 spotPosition = new Vector3(spot.position.x, 1f, spot.position.z);
-            Vector3 dirToSpot = (spotPosition - ai.transform.position).normalized;
-            if (Vector3.Angle(ai.transform.forward, dirToSpot) < viewAngle / 2)
+            if (ai != null && spot != null)
             {
-                float distToSpot = Vector3.Distance(ai.transform.position, spotPosition);
-
-                if (!Physics.Raycast(ai.transform.position, dirToSpot, distToSpot, coverMask))
+                Vector3 dirToSpot = (spotPosition - ai.transform.position).normalized;
+                if (Vector3.Angle(ai.transform.forward, dirToSpot) < viewAngle / 2)
                 {
-                    visibleObjects.Add(spot);
+                    float distToSpot = Vector3.Distance(ai.transform.position, spotPosition);
+
+                    if (!Physics.Raycast(ai.transform.position, dirToSpot, distToSpot, coverMask))
+                    {
+                        visibleObjects.Add(spot);
+                    }
                 }
+            }
+            else
+            {
+                continue;
             }
         }
         return visibleObjects;

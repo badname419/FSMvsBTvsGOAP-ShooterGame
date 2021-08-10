@@ -20,7 +20,8 @@ public class EnemiesVisibleDecision : Decision
         bool enemyVisible = fieldOfView.seesEnemy;
         if (enemyVisible)
         {
-            enemyThinker.closestEnemyTransform = fieldOfView.closestEnemyObject.transform;
+            enemyThinker.closestEnemyObject = fieldOfView.closestEnemyObject;
+            //enemyThinker.closestEnemyTransform = fieldOfView.closestEnemyObject.transform;
             enemyThinker.walkingTarget = fieldOfView.closestEnemyPosition;
         }
         return enemyVisible;

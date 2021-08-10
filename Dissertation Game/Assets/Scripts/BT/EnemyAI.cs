@@ -82,6 +82,8 @@ public class EnemyAI : MonoBehaviour
         Selector meleeDashSelector = new Selector(new List<Node> { meleeSequence, dashMeleeSequence});
 
         Selector attackSelector = new Selector(new List<Node> { meleeDashSelector, /*grenade*/ shootSequence });
+
+        Sequence attackSequence = new Sequence(new List<Node> { lookAtEnemyNode, attackSelector });
         #endregion
 
         #region SeesEnemySelector
@@ -93,7 +95,7 @@ public class EnemyAI : MonoBehaviour
         GoToNode goToKit = new GoToNode(enemyThinker, Target.Kit);
         Sequence grabKitSequence = new Sequence(new List<Node> { kitInRangeNode, goToKit });
 
-        Sequence isCoveredSequence = new Sequence(new List<Node> { isCoveredNode, attackSelector });
+        Sequence isCoveredSequence = new Sequence(new List<Node> { isCoveredNode, attackSequence });
 
         Selector findCoverSelector = new Selector(new List<Node> { goToCoverSequence, shootSequence });
 
@@ -102,7 +104,7 @@ public class EnemyAI : MonoBehaviour
         Selector tryToHealSelector = new Selector(new List<Node> { grabKitSequence, tryToTakeCoverSelector });
 
         Sequence healSequence = new Sequence(new List<Node> { hpThresholdNode, lessHealthNode, tryToHealSelector });
-        Selector combatChoiceSelector = new Selector(new List<Node> {healSequence, attackSelector, chaseDecisionSequence });
+        Selector combatChoiceSelector = new Selector(new List<Node> {healSequence, attackSequence, chaseDecisionSequence });
 
         Sequence seesEnemySequence = new Sequence(new List<Node> { enemyVisibleNode, combatChoiceSelector });
         #endregion

@@ -13,7 +13,10 @@ public class ShootingDistanceDecision : Decision
 
     private bool CheckDistance(StateController controller)
     {
-        float distance = Vector3.Distance(controller.enemyThinker.closestEnemyTransform.position, controller.gameObject.transform.position);
+        EnemyThinker enemyThinker = controller.enemyThinker;
+        Vector3 aiPosition = enemyThinker.transform.position;
+        Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
+        float distance = Vector3.Distance(targetPosition, aiPosition);
         return (distance <= controller.enemyStats.shootingRange);
     }
 }

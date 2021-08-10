@@ -18,6 +18,8 @@ public class IsEnemyVisibleNode : Node
     public override NodeState Evaluate()
     {
         bool seesEnemy = fieldOfView.seesEnemy;
+        Debug.LogWarning("sees enemy:");
+        Debug.LogWarning(seesEnemy);
         if (seesEnemy)
         {
             enemyThinker.SetCombat(true);

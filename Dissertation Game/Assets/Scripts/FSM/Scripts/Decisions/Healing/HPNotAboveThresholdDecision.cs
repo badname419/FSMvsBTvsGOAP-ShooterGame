@@ -2,13 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "AI/Decisions/HPAboveThreshold")]
-public class HPAboveThresholdDecision : Decision
+[CreateAssetMenu(menuName = "AI/Decisions/!HPAboveThreshold")]
+public class HPNotAboveThresholdDecision : Decision
 {
     public override bool Decide(StateController controller)
     {
         bool aboveThreshold = checkHP(controller);
-        return aboveThreshold;
+        return !aboveThreshold;
     }
 
     private bool checkHP(StateController controller)

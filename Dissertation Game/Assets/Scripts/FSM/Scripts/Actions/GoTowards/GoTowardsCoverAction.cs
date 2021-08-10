@@ -17,5 +17,6 @@ public class GoTowardsCoverAction : Action
         controller.walkingTargetEnum = StateController.Target.Enemy;
         agent.isStopped = false;
         agent.SetDestination(targetPosition);
+
     }
 }

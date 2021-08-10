@@ -16,22 +16,17 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float dashForce = 30f;
     [SerializeField] private float dashDuration = 0.2f;
 
-    private float timer;
-
     private Rigidbody rigidbody;
     private Vector3 moveInput;
     private Shooting shooting;
     private int shootingDamage;
     private bool isMoving;
 
-    //Dashing
-    private bool isDashing;
-    private float dashStart;
-
     public GameObject camera;
     Vector3 distantForward;
     Vector3 distantRight;
     Vector3 distantLeft;
+    public bool activeMovement;
     
 
 
@@ -41,11 +36,9 @@ public class PlayerMovement : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         shooting = GetComponent<Shooting>();
-        isDashing = false;
-        dashStart = 0f;
-        timer = 0f;
         shootingDamage = 5;
         isMoving = false;
+        activeMovement = true;
     }
 
     // Update is called once per frame
@@ -85,31 +78,11 @@ public class PlayerMovement : MonoBehaviour
         {
             shooting.Shoot(shootingWaitTime, shootingDamage, transform);
         }
-        if (Input.GetMouseButtonDown(1))
-        {
-            //rigidbody.AddForce(transform.forward * dashForce, ForceMode.Impulse);
-            rigidbody.useGravity = true;
-            isDashing = true;
-            rigidbody.velocity = new Vector3(transform.forward.x * dashForce, 0f, transform.forward.z * dashForce);
-            dashStart = timer;
-
-            //rigidbody.velocity = new Vector3(rigidbody.velocity.x , 0f, rigidbody.velocity.z);
-            //rigidbody.AddForce(dashForce * transform.forward.x, 0, dashForce * transform.forward.z, ForceMode.Impulse);
-            //rigidbody.AddForce(new Vector3(dashForce * transform.forward.x, 0f, dashForce * transform.forward.z), ForceMode.VelocityChange);
-
-        }
     }
 
     private void FixedUpdate()
     {
-        timer += Time.deltaTime;
-        if(timer - dashStart >= dashDuration)
-        {
-            isDashing = false;
-            rigidbody.velocity = new Vector3(0f, 0f, 0f) ;
-        }
-        //rigidbody.position += moveInput * moveSpeed;
-        if (!isDashing)
+        if (activeMovement)
         {
             rigidbody.velocity = moveInput * moveSpeed; //multiply the direction by an appropriate speed, Vector3(0,1,0) is straight up.
         }

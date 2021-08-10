@@ -12,7 +12,7 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float maxDistance;
 
     private GameObject triggeringEnemy;
-    private Rigidbody rigidbody;
+    private new Rigidbody rigidbody;
     private int damage;
     private Transform bulletOwner;
 
@@ -54,21 +54,30 @@ public class Bullet : MonoBehaviour
     {
         string collisionTag = collision.transform.tag;
 
-        if (!collisionTag.Equals(bulletOwner.tag))
+        if (collisionTag != this.gameObject.tag)
         {
-            if (collisionTag.Contains(enemyTag))
+            if (collision.transform != null && bulletOwner != null)
             {
-                triggeringEnemy = collision.collider.gameObject;
-                triggeringEnemy.GetComponent<EnemyThinker>().LowerHP(damage);
-                triggeringEnemy.GetComponent<SensingSystem>().RegisterHit(bulletOwner);
+                if (!collisionTag.Equals(bulletOwner.tag))
+                {
+                    if (collisionTag.Contains(enemyTag))
+                    {
+                        triggeringEnemy = collision.collider.gameObject;
+                        if (triggeringEnemy != null)
+                        {
+                            triggeringEnemy.GetComponent<EnemyThinker>().LowerHP(damage);
+                            triggeringEnemy.GetComponent<SensingSystem>().RegisterHit(bulletOwner);
+                        }
+                    }
+                    else if (collisionTag.Equals(playerTag))
+                    {
+                        triggeringEnemy = collision.collider.gameObject;
+                        triggeringEnemy.GetComponent<PlayerLogic>().LowerHP(damage);
+                    }
+                }
             }
-            else if (collisionTag.Equals(playerTag))
-            {
-                triggeringEnemy = collision.collider.gameObject;
-                triggeringEnemy.GetComponent<PlayerLogic>().LowerHP(damage);
-            }
+            Destroy(this.gameObject);
         }
-        Destroy(this.gameObject);
     }
 
     public void SetBulletDamage(int value)

@@ -14,7 +14,7 @@ public class HpBarScript : MonoBehaviour
         healthBar = GameObject.Find("HP").GetComponent<Image>();
         healthText = GameObject.Find("HpText").GetComponent<Text>();
         playerLogic = GetComponent<PlayerLogic>();
-        healthText.text = playerLogic.CurrentHealth + "/" + playerLogic.MaxHealth;
+        UpdateHealthBar();
     }
 
     public void UpdateHealthBar()

@@ -16,9 +16,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5709f0f2c02c4254d9a207e2b7af4d91, type: 2}
   transitions:
   - decision:
-    - {fileID: 11400000, guid: 3735ae98179e09e42ad5f5b6a7d19c24, type: 2}
-    trueState: {fileID: 0}
-    falseState: {fileID: 11400000, guid: ff5bd25747e7fe04c9f5b5a8a11c565a, type: 2}
+    - {fileID: 11400000, guid: fa3be428c88c3724f84ef1bf94c3913e, type: 2}
+    - {fileID: 11400000, guid: 542e0be14b4c4074a88794bb044f9c1d, type: 2}
+    trueState: {fileID: 11400000, guid: ff5bd25747e7fe04c9f5b5a8a11c565a, type: 2}
+    falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
+  - decision:
+    - {fileID: 11400000, guid: fa3be428c88c3724f84ef1bf94c3913e, type: 2}
+    - {fileID: 11400000, guid: 44ea4aa709a67d4448ac4c726f41b860, type: 2}
+    trueState: {fileID: 11400000, guid: ff5bd25747e7fe04c9f5b5a8a11c565a, type: 2}
+    falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
   - decision:
     - {fileID: 11400000, guid: b9a4e51b026d6e64ba75691db0fc1ef3, type: 2}
     - {fileID: 11400000, guid: 3735ae98179e09e42ad5f5b6a7d19c24, type: 2}
@@ -27,6 +33,13 @@ MonoBehaviour:
   - decision:
     - {fileID: 11400000, guid: 6b5ed08d0faca5d4783cf9e72dbaccf8, type: 2}
     - {fileID: 11400000, guid: 3735ae98179e09e42ad5f5b6a7d19c24, type: 2}
+    trueState: {fileID: 11400000, guid: a4a77c5bc078dc440b27cb7bf5e789ff, type: 2}
+    falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
+  - decision:
+    - {fileID: 11400000, guid: 6b5ed08d0faca5d4783cf9e72dbaccf8, type: 2}
+    - {fileID: 11400000, guid: fa3be428c88c3724f84ef1bf94c3913e, type: 2}
+    - {fileID: 11400000, guid: c1811e1a9fab9124e8aced3397183116, type: 2}
+    - {fileID: 11400000, guid: aba738f71dc0ab446bc135929ddc33ba, type: 2}
     trueState: {fileID: 11400000, guid: a4a77c5bc078dc440b27cb7bf5e789ff, type: 2}
     falseState: {fileID: 11400000, guid: 014bc384b6bde094dafc04dc97a1ed98, type: 2}
   sceneGizmoColor: {r: 0.25872195, g: 0.72916836, b: 0.9622642, a: 1}

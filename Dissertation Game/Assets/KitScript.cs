@@ -36,7 +36,8 @@ public class KitScript : MonoBehaviour
         {
             PlayerLogic playerLogic = detectedPlayers[0].GetComponent<PlayerLogic>();
             playerLogic.RestoreHP(HPRestored);
-            Destroy(this.gameObject);
+            gameManager.RemoveKit(transform.position);
+            Destroy(this);
         }
         else
         {
@@ -46,8 +47,12 @@ public class KitScript : MonoBehaviour
                 if (detectedEnemies.Length != 0)
                 {
                     EnemyThinker enemyThinker = detectedEnemies[0].GetComponent<EnemyThinker>();
+                    SensingSystem sensingSystem = detectedEnemies[0].GetComponent<SensingSystem>();
                     enemyThinker.RestoreHP(HPRestored);
-                    Destroy(this.gameObject);
+                    sensingSystem.RemoveKit(transform);
+                    gameManager.RemoveKit(transform.position);
+
+                    Destroy(this);
                 }
             }
 

@@ -29,8 +29,6 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public float combatStartTime;
     [HideInInspector] public float meleeAttackTime;
     [HideInInspector] public float lastShotTime;
-    [HideInInspector] public LayerMask enemyMask;
-    [HideInInspector] public string enemyTag;
     #endregion
 
     #region Chasing and searching
@@ -43,6 +41,8 @@ public class EnemyThinker : MonoBehaviour
     [HideInInspector] public List<int> randomizedRoute;
     [HideInInspector] public int maximumSearchPoints;
     [HideInInspector] public int currentSearchPoint;
+    [HideInInspector] public LayerMask enemyMask;
+    [HideInInspector] public string enemyTag;
     #endregion
 
     #region Dashing
@@ -67,6 +67,8 @@ public class EnemyThinker : MonoBehaviour
     private Transform bestCoverSpot;
     public EnemyStats enemyStats;
     public bool lookingAtTarget;
+    public bool isMoving;
+    private int teamNumber;
 
 
     private void Awake()
@@ -97,7 +99,9 @@ public class EnemyThinker : MonoBehaviour
         else
         {
             enemyTag = gameManager.team1Tag == this.gameObject.tag ? gameManager.team2Tag : gameManager.team1Tag;
-            enemyMask = gameManager.enemyMasksList[0] == this.gameObject.layer ? gameManager.enemyMasksList[1] : gameManager.enemyMasksList[0];
+            int maskValue0 = gameManager.enemyMasksList[0].value;
+            enemyMask = maskValue0 == (maskValue0 | (1 << this.gameObject.layer)) ? gameManager.enemyMasksList[1] : gameManager.enemyMasksList[0];
+            //enemyMask = gameManager.enemyMasksList[0] == this.gameObject.layer ? gameManager.enemyMasksList[1] : gameManager.enemyMasksList[0];
         }
 
         timer = 0f;
@@ -105,6 +109,7 @@ public class EnemyThinker : MonoBehaviour
         dashStartTime = 0f;
         meleeAttackTime = 0f;
         currentSearchPoint = 0;
+
 
         coroutine = HealEverySecond(1.0f);
         StartCoroutine(coroutine);
@@ -117,10 +122,24 @@ public class EnemyThinker : MonoBehaviour
 
     private void Update()
     {
+        isMoving = false;
         timer += Time.deltaTime;
+        if(currentHP <= 0)
+        {
+            GameObject[] enemies = GameObject.FindGameObjectsWithTag(enemyTag);
+            
+            if (enemies[0].TryGetComponent<EnemyThinker>(out EnemyThinker thinker))
+            {
+                KnownEnemiesBlackboard enemyBlackbaord = thinker.knownEnemiesBlackboard;
+                enemyBlackbaord.RemoveEnemy(this.transform);
+            }
+
+            gameManager.UpdateTeamMembers(teamNumber);
+            Destroy(this.gameObject);
+        }
     }
 
-    public void Setup(Transform spawnPoint, Pathfinding pathfinding, KnownEnemiesBlackboard knownEnemies, List<Transform> searchPoints)
+    public void Setup(Transform spawnPoint, Pathfinding pathfinding, KnownEnemiesBlackboard knownEnemies, List<Transform> searchPoints, int teamNumber)
     {
         transform.position = spawnPoint.position;
         transform.rotation = spawnPoint.rotation;
@@ -131,6 +150,8 @@ public class EnemyThinker : MonoBehaviour
         this.numOfRotations = 0;
         this.totalRotations = enemyStats.maxRotations;
         this.targetArray = new Vector3[totalRotations];
+
+        this.teamNumber = teamNumber;
     }
 
     public void LowerHP(int value)

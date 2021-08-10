@@ -39,13 +39,34 @@ public class SensingSystem : MonoBehaviour
     private void ListenForEnemies()
     {
         float hearingRadius = enemyStats.hearingRange;
-        LayerMask enemyMask = enemyStats.enemyLayer;
+        LayerMask enemyMask = enemyThinker.enemyMask;
         Collider[] enemiesInHearingRadius = Physics.OverlapSphere(transform.position, hearingRadius, enemyMask);
 
         for(int i=0; i<enemiesInHearingRadius.Length; i++)
         {
             Transform enemy = enemiesInHearingRadius[i].transform;
-            bool isMoving = enemy.GetComponent<PlayerMovement>().IsMoving();
+            bool isMoving;
+
+            if(enemy.TryGetComponent<PlayerMovement>(out PlayerMovement playerMovement))
+            {
+                isMoving = playerMovement.IsMoving();
+            }
+            else
+            {
+                EnemyThinker thinker = enemy.GetComponent<EnemyThinker>();
+                if (thinker != null)
+                {
+                    isMoving = !thinker.navMeshAgent.isStopped;
+                    if (!isMoving)
+                    {
+                        isMoving = thinker.isDashing;
+                    }
+                }
+                else
+                {
+                    return;
+                }
+            }
 
             if (isMoving)
             {
@@ -76,14 +97,22 @@ public class SensingSystem : MonoBehaviour
 
     public Transform DetermineClosestKit(Vector3 origin)
     {
+        Transform closestKit;
+        int index = 0;
         if (foundKitsList.Count.Equals(1))
         {
-            return foundKitsList[0].transform;
+            if (foundKitsList.Count > index)
+            {
+                closestKit = foundKitsList[index].transform;
+            }
+            else
+            {
+                return this.transform;
+            }
         }
         else
         {
             float shortestDistance = 0f;
-            int index = 0;
 
             for(int i=0; i<foundKitsList.Count; i++)
             {
@@ -101,15 +130,53 @@ public class SensingSystem : MonoBehaviour
                     }
                 }
             }
-            return foundKitsList[index].transform;
+            if (foundKitsList.Count > index)
+            {
+                closestKit = foundKitsList[index].transform;
+            }
+            else
+            {
+                closestKit = null;
+            }
         }
+
+        if(closestKit == null)
+        {
+            if (foundKitsList.Count > index)
+            {
+                foundKitsList.RemoveAt(index);
+                if (foundKitsList.Count != 0)
+                {
+                    closestKit = DetermineClosestKit(origin);
+                }
+                else
+                {
+                    return this.transform;
+                }
+            }
+        }
+
+        return closestKit;
     }
 
     public void RegisterHit(Transform bulletOwner)
     {
         if (!bulletOwner.CompareTag(transform.tag))
         {
+            Debug.Log("Hit");
             knownEnemiesBlackboard.UpdateEnemyList(bulletOwner);
+        }
+    }
+
+    public void RemoveKit(Transform transform)
+    {
+        for(int i=0; i < foundKitsList.Count; i++)
+        {
+            if (foundKitsList[i].transform.Equals(transform))
+            {
+                foundKitsList.RemoveAt(i);
+                break;
+            }
         }
     }
 }

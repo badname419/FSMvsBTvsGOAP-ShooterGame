@@ -1196,7 +1196,11 @@ MonoBehaviour:
     m_Bits: 2048
   - serializedVersion: 2
     m_Bits: 4096
+  playerPrefab: {fileID: 325436660790668543, guid: 350318d27c65875488128822e3f9bb60, type: 3}
+  BTPrefab: {fileID: 470787981240711513, guid: be9ba07bc467ab747993afb0196d32c0, type: 3}
+  FSMPrefab: {fileID: 2476504960516205660, guid: 9eb8ee3489c6c13498bf16dded41d7eb, type: 3}
   numOfEnemies: 3
+  numOfRounds: 1
   spawnPoints1:
   - {fileID: 1853110326}
   - {fileID: 1238480171}
@@ -1227,6 +1231,11 @@ MonoBehaviour:
   maximumNumOfKits: 3
   currentNumOfKits: 0
   kitSpawnRate: 5
+  pve: 1
+  popUpCanvas: {fileID: 4079938630946942379, guid: 5bb8d433fb1931a40b1efacac486ed85, type: 3}
+  victoryText: Victory!
+  defeatText: Defeat...
+  infoText: You have just played against
 --- !u!4 &208505161
 Transform:
   m_ObjectHideFlags: 0
@@ -1712,10 +1721,6 @@ MonoBehaviour:
   combatStartTime: 0
   meleeAttackTime: 0
   lastShotTime: 0
-  enemyMask:
-    serializedVersion: 2
-    m_Bits: 0
-  enemyTag: 
   closestEnemyTransform: {fileID: 0}
   closestEnemyObject: {fileID: 0}
   closestEnemyIndex: 0
@@ -1725,6 +1730,10 @@ MonoBehaviour:
   randomizedRoute: 
   maximumSearchPoints: 0
   currentSearchPoint: 0
+  enemyMask:
+    serializedVersion: 2
+    m_Bits: 0
+  enemyTag: 
   isDashing: 0
   dashStartTime: 0
   dashEndTime: 0
@@ -1737,6 +1746,7 @@ MonoBehaviour:
   aiRotatingPosition: {x: 0, y: 0, z: 0}
   enemyStats: {fileID: 11400000, guid: 3200733487427174c8eea3bdc71c907a, type: 2}
   lookingAtTarget: 0
+  isMoving: 0
 --- !u!1 &263207603
 GameObject:
   m_ObjectHideFlags: 0
@@ -3041,22 +3051,8 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1932029259060899910, guid: 2824e3a8a79afd64989f9d00a253a4eb, type: 3}
-      propertyPath: m_Text
-      value: 'Health
-
-'
-      objectReference: {fileID: 0}
-    - target: {fileID: 2280134595092409203, guid: 2824e3a8a79afd64989f9d00a253a4eb, type: 3}
-      propertyPath: m_AnchoredPosition.x
-      value: -610.7
-      objectReference: {fileID: 0}
-    - target: {fileID: 2280134595092409203, guid: 2824e3a8a79afd64989f9d00a253a4eb, type: 3}
-      propertyPath: m_AnchoredPosition.y
-      value: -483.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 3629740345187264488, guid: 2824e3a8a79afd64989f9d00a253a4eb, type: 3}
-      propertyPath: m_UiScaleMode
+    - target: {fileID: 2090713840, guid: 2824e3a8a79afd64989f9d00a253a4eb, type: 3}
+      propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8669097706031657686, guid: 2824e3a8a79afd64989f9d00a253a4eb, type: 3}

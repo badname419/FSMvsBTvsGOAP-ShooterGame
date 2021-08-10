@@ -43,6 +43,7 @@ MonoBehaviour:
   kitMask:
     serializedVersion: 2
     m_Bits: 1024
+  wallTag: Wall
   rotationSpeed: 20
   rotationAngle: 120
   maxRotations: 5

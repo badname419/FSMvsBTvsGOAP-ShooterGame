@@ -11,7 +11,15 @@ public class GoTowardsKitAction : Action
         EnemyThinker enemyThinker = controller.enemyThinker;
         NavMeshAgent agent = enemyThinker.navMeshAgent;
         Vector3 aiPosition = enemyThinker.transform.position;
-        Vector3 targetPosition = enemyThinker.sensingSystem.DetermineClosestKit(aiPosition).position;
+        Vector3 targetPosition;
+        if (enemyThinker.sensingSystem != null)
+        {
+             targetPosition = enemyThinker.sensingSystem.DetermineClosestKit(aiPosition).position;
+        }
+        else
+        {
+            targetPosition = enemyThinker.transform.position;
+        }
 
         enemyThinker.walkingTarget = targetPosition;
 

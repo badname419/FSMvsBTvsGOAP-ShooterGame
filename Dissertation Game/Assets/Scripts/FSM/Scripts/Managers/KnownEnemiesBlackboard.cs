@@ -106,7 +106,14 @@ public class KnownEnemiesBlackboard
         else
         {
             EnemyThinker enemyThinker = transform.gameObject.GetComponent<EnemyThinker>();
-            currentHealth = (int)enemyThinker.currentHP;
+            if (enemyThinker != null)
+            {
+                currentHealth = (int)enemyThinker.currentHP;
+            }
+            else
+            {
+                return;
+            }
         }
 
         /*
@@ -133,7 +140,21 @@ public class KnownEnemiesBlackboard
         }
         else
         {
-            return knownEnemiesList[index].transform.gameObject;
+            if (knownEnemiesList.Count > index)
+            {
+                if (knownEnemiesList[index] != null)
+                {
+                    return knownEnemiesList[index].transform.gameObject;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            else
+            {
+                return null;
+            }
         }
     }
 
@@ -218,7 +239,10 @@ public class KnownEnemiesBlackboard
     public void UpdateEnemyHP(Transform transform, int newHP)
     {
         int index = FindEnemyIndex(transform);
-        knownEnemiesList[index].hp = newHP;
+        if (knownEnemiesList[index] != null)
+        {
+            knownEnemiesList[index].hp = newHP;
+        }
     }
 
     public void RemoveEnemy(Vector3 knownPosition)
@@ -231,6 +255,17 @@ public class KnownEnemiesBlackboard
                 knownEnemiesList.RemoveAt(i);
             }
             break;
+        }
+    }
+
+    public void RemoveEnemy(Transform transform)
+    {
+        for(int i=0; i < knownEnemiesList.Count; i++)
+        {
+            if (knownEnemiesList[i].transform.Equals(transform))
+            {
+                knownEnemiesList.RemoveAt(i);
+            }
         }
     }
 
