@@ -17,6 +17,8 @@ public class MeleeDistanceDecision : Decision
         Vector3 aiPosition = enemyThinker.transform.position;
         Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         float distance = Vector3.Distance(targetPosition, aiPosition);
-        return (distance <= controller.enemyStats.meleeRange);
+
+        bool result = (distance <= controller.enemyStats.meleeRange);
+        return result;
     }
 }

@@ -17,7 +17,7 @@ public class LookAtEnemyAction : Action
         {
             EnemyStats enemyStats = enemyThinker.enemyStats;
             Vector3 aiPosition = enemyThinker.transform.position;
-            Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
+            Vector3 targetPosition = enemyThinker.fieldOfView.closestEnemyPosition;
             Transform aiTransform = enemyThinker.transform;
 
             Vector3 targetDir = targetPosition - aiPosition;

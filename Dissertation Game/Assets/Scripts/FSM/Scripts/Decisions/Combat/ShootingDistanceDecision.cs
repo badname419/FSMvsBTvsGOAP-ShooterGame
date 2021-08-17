@@ -17,6 +17,8 @@ public class ShootingDistanceDecision : Decision
         Vector3 aiPosition = enemyThinker.transform.position;
         Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         float distance = Vector3.Distance(targetPosition, aiPosition);
-        return (distance <= controller.enemyStats.shootingRange);
+
+        bool result = (distance <= controller.enemyStats.shootingRange);
+        return result;
     }
 }

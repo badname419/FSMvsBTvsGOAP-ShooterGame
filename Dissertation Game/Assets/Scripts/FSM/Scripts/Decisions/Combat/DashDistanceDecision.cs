@@ -17,6 +17,8 @@ public class DashDistanceDecision : Decision
         Vector3 aiPosition = enemyThinker.transform.position;
         Vector3 targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestPreviousPosition(aiPosition);
         float distance = Vector3.Distance(targetPosition, aiPosition);
-        return (distance <= controller.enemyStats.dashRange);
+
+        bool result = (distance <= controller.enemyStats.dashRange);
+        return result;
     }
 }

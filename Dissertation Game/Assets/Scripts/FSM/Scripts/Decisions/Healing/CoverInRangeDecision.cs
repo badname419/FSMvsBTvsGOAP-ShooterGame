@@ -19,7 +19,6 @@ public class CoverInRangeDecision : Decision
         GameObject bestCoverSpot = enemyThinker.coverSystem.FindBestCoveringSpot();
         enemyThinker.SetBestCoverSpot(bestCoverSpot.transform);
         bool valid = IsSpotValid(bestCoverSpot, enemyThinker);
-
         return valid;
     }
 

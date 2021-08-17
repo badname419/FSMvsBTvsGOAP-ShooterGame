@@ -116,17 +116,6 @@ public class KnownEnemiesBlackboard
             }
         }
 
-        /*
-        if (transform.tag.Equals("Player"))
-        {
-            PlayerLogic playerLogic = transform.gameObject.GetComponent<PlayerLogic>();
-            currentHealth = playerLogic.CurrentHealth;
-        }
-        else
-        {
-            EnemyThinker enemyThinker = transform.gameObject.GetComponent<EnemyThinker>();
-            currentHealth = (int)enemyThinker.currentHP;
-        }*/
         KnownEnemy enemy = new KnownEnemy(transform, transform.position, transform.position, currentHealth);
         knownEnemiesList.Add(enemy);
     }
@@ -142,7 +131,7 @@ public class KnownEnemiesBlackboard
         {
             if (knownEnemiesList.Count > index)
             {
-                if (knownEnemiesList[index] != null)
+                if (knownEnemiesList[index].transform != null)
                 {
                     return knownEnemiesList[index].transform.gameObject;
                 }
@@ -155,6 +144,36 @@ public class KnownEnemiesBlackboard
             {
                 return null;
             }
+        }
+    }
+
+    private bool IsEnemyVisible(Transform aiTransform, Vector3 enemyPosition, EnemyStats enemyStats)
+    {
+        Vector3 dirToEnemy = (enemyPosition - aiTransform.position).normalized;
+        if (Vector3.Angle(aiTransform.forward, dirToEnemy) < enemyStats.viewAngle / 2)
+        {
+            float distToEnemy = Vector3.Distance(aiTransform.position, enemyPosition);
+
+            RaycastHit hit;
+            if (Physics.SphereCast(aiTransform.position, 0.3f, dirToEnemy, out hit))
+            {
+                if (!hit.collider.CompareTag(enemyStats.wallTag) && !hit.collider.CompareTag(aiTransform.tag))
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+        else
+        {
+            return false;
         }
     }
 
@@ -239,7 +258,7 @@ public class KnownEnemiesBlackboard
     public void UpdateEnemyHP(Transform transform, int newHP)
     {
         int index = FindEnemyIndex(transform);
-        if (knownEnemiesList[index] != null)
+        if (knownEnemiesList.Count > index)
         {
             knownEnemiesList[index].hp = newHP;
         }
@@ -253,8 +272,8 @@ public class KnownEnemiesBlackboard
                 knownEnemiesList[i].previousPosition.Equals(knownPosition))
             {
                 knownEnemiesList.RemoveAt(i);
+                break;
             }
-            break;
         }
     }
 

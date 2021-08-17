@@ -10,6 +10,7 @@ public class KitNotInRangeDecision : Decision
     public override bool Decide(StateController controller)
     {
         EnemyThinker enemyThinker = controller.enemyThinker;
+        
 
         bool kitInRange = enemyThinker.sensingSystem.KitsInRange();
         return !kitInRange;

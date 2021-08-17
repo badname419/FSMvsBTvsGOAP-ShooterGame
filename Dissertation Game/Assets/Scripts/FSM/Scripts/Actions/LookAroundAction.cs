@@ -16,9 +16,9 @@ public class LookAroundAction : Action
         EnemyStats enemyStats = enemyThinker.enemyStats;
         Vector3 aiPosition = enemyThinker.transform.position;       
         float radius = 10f;
-        
+
         //If the values are zero it means this script is run for the first time
-        if(enemyThinker.forwardRotationTarget == Vector3.zero)
+        if (enemyThinker.forwardRotationTarget == Vector3.zero)
         {
            enemyThinker.targetArray = FindRotationTargets(enemyThinker, enemyStats, aiPosition, radius);
         }

@@ -12,17 +12,13 @@ public class Bullet : MonoBehaviour
     [SerializeField] private float maxDistance;
 
     private GameObject triggeringEnemy;
-    private new Rigidbody rigidbody;
+    private Rigidbody rigidbody;
     private int damage;
     private Transform bulletOwner;
-
-    //Debug
-    private Vector3 hitPoint;
 
     private void Start()
     {
         rigidbody = GetComponent<Rigidbody>();
-        hitPoint = Vector3.zero;
     }
 
     // Update is called once per frame
@@ -36,17 +32,6 @@ public class Bullet : MonoBehaviour
         if(maxDistance >= 5)
         {
             Destroy(this.gameObject);
-        }
-    }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        Debug.Log("Hit1");
-        if(other.tag == "Enemy")
-        {
-            Debug.Log("HIT");
-            triggeringEnemy = other.gameObject;
-            triggeringEnemy.GetComponent<EnemyThinker>().LowerHP(damage);
         }
     }
 

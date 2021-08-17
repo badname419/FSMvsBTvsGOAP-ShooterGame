@@ -32,8 +32,9 @@ public class Shooting : MonoBehaviour
 
 	public void Shoot(float wait, int damage, Transform transform)
     {
-		if (timePassed - wait >= timeShot)
+		if (timePassed - timeShot >= wait)
 		{
+
 			Vector3 offset = new Vector3(xOffset, yOffset, zOffset);
 			Vector3 spawnPosition = bulletSpawnPoint.transform.TransformPoint(offset);
 			Transform bulletTransform = Instantiate(bullet.transform, spawnPosition, this.transform.rotation);

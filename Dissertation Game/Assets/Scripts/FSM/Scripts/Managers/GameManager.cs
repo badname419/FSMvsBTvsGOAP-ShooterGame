@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GameManager : MonoBehaviour
 {
@@ -27,8 +28,9 @@ public class GameManager : MonoBehaviour
     public GameObject FSMPrefab;
 
     [Header("Game Settings")]
-    public int numOfEnemies = 1;
+    public int maxNumOfEnemies = 1;
     public int numOfRounds = 1;
+    public float roundDuration = 90f;
     public List<Transform> spawnPoints1;
     public List<Transform> spawnPoints2;
     public List<Transform> searchPoints;
@@ -42,11 +44,15 @@ public class GameManager : MonoBehaviour
     [SerializeField] private int kitSpawnRate;
     private List<Vector3> kitLocationList;
 
-    public bool pve;
+    [Header("Round Options")]
+    [SerializeField] public bool pve;
     private int team1Members;
     private int team2Members;
     private int roundsPlayed;
     private bool playerAlive;
+    [SerializeField] public bool randomizedEnemies;
+    [SerializeField] public bool BT;
+
 
     [Header("Pop-up Options")]
     public Canvas popUpCanvas;
@@ -57,12 +63,20 @@ public class GameManager : MonoBehaviour
     public string victoryText;
     public string defeatText;
     public string infoText;
+    private bool paused;
 
     //Rounds
     List<int> team1Rounds;
     List<int> team2Rounds;
     int team1Wins;
     int team2Wins;
+    private float timer;
+    private bool swapped;
+    private int firstDifficultyThreshold;
+    private int secondDifficultyThreshold;
+    private int numOfThresholds = 2;
+    private int enemiesThisRound;
+    private Text roundText;
 
 
     // Start is called before the first frame update
@@ -80,15 +94,19 @@ public class GameManager : MonoBehaviour
         popUpTextArray = popUpObject.GetComponentsInChildren<Text>();
         popUpButton = popUpObject.GetComponentsInChildren<Button>()[0];
         popUpButton.onClick.AddListener(StartNextRound);
-
-        /*if (playerMask.value == (playerMask.value | (1 << team1.layer)))
-        {
-            pve = true;
-        }*/
-
+        roundText = GameObject.Find("Round Display").GetComponent<Text>();
+        paused = true;
+        team1Members = team2Members = maxNumOfEnemies;
+        swapped = false;
+        
         if (pve)
         {
-            numOfRounds *= 2;
+            if (randomizedEnemies)
+            {
+                numOfRounds *= 2;
+            }
+            firstDifficultyThreshold = numOfRounds / 3;
+            secondDifficultyThreshold = (numOfRounds / 3) * 2;
             RandomizeTeamOrder();
         }
 
@@ -97,32 +115,52 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        team1Members = team2Members = numOfEnemies;
-        StartCoroutine(KitCoroutine(kitSpawnRate));
+
     }
 
     private void Update()
     {
+        timer += Time.deltaTime;
         if (roundsPlayed < numOfRounds)
         {
             if (CheckIfRoundFinished())
             {
-                popUpObject.SetActive(true);
-                bool victory = CheckIfVictory();
-                popUpTextArray[0].text = victory ? victoryText : defeatText;
-                string enemyName;
-                string infoTextEnding = "-driven enemies! Please take note of that in order to complete the survey.";
-
-                bool team1Round = team1Rounds.Contains(roundsPlayed);
-                enemyName = team1Round ? " Behavior-Tree" : " Finite-State Machine";
-                popUpTextArray[1].text = infoText + enemyName + infoTextEnding;
-
-                UpdateScore(victory, team1Round);
-                if ((roundsPlayed + 1) == numOfRounds)
+                if (pve)
                 {
-                    popUpTextArray[2].text = "Display summary";
-                    popUpButton.onClick.AddListener(DisplaySummary);
+                    popUpObject.SetActive(true);
+                    bool victory = CheckIfVictory();
+                    popUpTextArray[0].text = victory ? victoryText : defeatText;
+                    string enemyName;
+                    string infoTextEnding = "-driven enemies! Please take note of that in order to complete the survey.";
+
+                    bool team1Round = team1Rounds.Contains(roundsPlayed);
+                    enemyName = team1Round ? " Behavior-Tree" : " Finite-State Machine";
+                    popUpTextArray[1].text = infoText + enemyName + infoTextEnding;
+
+                    UpdateScore(victory, team1Round);
+                    if ((roundsPlayed + 1) == numOfRounds)
+                    {
+                        popUpTextArray[2].text = "Display summary";
+                        popUpButton.onClick.AddListener(DisplaySummary);
+                    }
                 }
+                else
+                {
+                    UpdateScore();
+                    if ((roundsPlayed + 1) != numOfRounds)
+                    {
+                        StartNextRound();
+                    }
+                    else
+                    {
+                        DisplaySummary();
+                    }
+                }
+            }
+            else if(timer > roundDuration)
+            {
+                roundsPlayed--;
+                StartNextRound();
             }
         }
     }
@@ -131,6 +169,10 @@ public class GameManager : MonoBehaviour
     {
         ResetGame();
         roundsPlayed++;
+        if(roundsPlayed == numOfRounds / 2 && swapped == false && !pve)
+        {
+            SwapSpawnPoints();
+        } 
         if (roundsPlayed < numOfRounds)
         {
             StartGame();
@@ -139,16 +181,36 @@ public class GameManager : MonoBehaviour
 
     private void UpdateScore(bool victory, bool team1Round)
     {
-        if (victory)
+        if (!paused)
         {
-            if (team1Round)
+            if (victory)
             {
-                team1Wins++;
+                if (team1Round)
+                {
+                    team1Wins++;
+                }
+                else
+                {
+                    team2Wins++;
+                }
             }
-            else
+            paused = true;
+        }
+    }
+
+    private void UpdateScore()
+    {
+        if (!paused)
+        {
+            if (team1Members == 0)
             {
                 team2Wins++;
             }
+            else
+            {
+                team1Wins++;
+            }
+            paused = true;
         }
     }
 
@@ -157,9 +219,26 @@ public class GameManager : MonoBehaviour
         popUpObject.SetActive(true);
         roundsPlayed++;
         popUpTextArray[0].text = "Summary!";
-        popUpTextArray[1].text = "You have played against Behavior-Tree-driven enemies " + numOfRounds/2 + " times and won " + team1Wins + " times.\n\n" +
-            "You have played against Finite-State Machine-driven enemies " + numOfRounds/2 + " times and won " + team2Wins + " times.";
-        popUpTextArray[2].text = "Main Menu";
+
+        if (pve)
+        {
+            popUpTextArray[1].text = "You have played against Behavior-Tree-driven enemies " + numOfRounds / 2 + " times and won " + team1Wins + " times.\n\n" +
+                "You have played against Finite-State Machine-driven enemies " + numOfRounds / 2 + " times and won " + team2Wins + " times.";
+            popUpTextArray[2].text = "Main Menu";
+            popUpButton.onClick.AddListener(LoadMainMenu);
+        }
+        else
+        {
+            popUpTextArray[1].text = "Behavior-Tree won " + team2Wins + "/" + numOfRounds + " times.\n\n" +
+                "Finite-State Machine won " + team1Wins + "/" + numOfRounds + " times.";
+            popUpTextArray[2].text = "Main Menu";
+            popUpButton.onClick.AddListener(LoadMainMenu);
+        }
+    }
+
+    private void LoadMainMenu()
+    {
+        SceneManager.LoadScene("Main Menu");
     }
 
     private bool CheckIfRoundFinished()
@@ -198,8 +277,11 @@ public class GameManager : MonoBehaviour
 
     private void StartGame()
     {
+        UpdateRoundText();
         knownEnemies1 = new KnownEnemiesBlackboard();
         knownEnemies2 = new KnownEnemiesBlackboard();
+        paused = false;
+        timer = 0f;
 
         if (pve)
         {
@@ -241,7 +323,7 @@ public class GameManager : MonoBehaviour
         {
             posX = Random.Range(minX, maxX - 1);
             posZ = Random.Range(minZ, maxZ - 1);
-            if (IsKitLocationValid(grid, posX, posZ));
+            if (IsKitLocationValid(grid, posX, posZ))
             {
                 valid = true;
             }
@@ -275,8 +357,33 @@ public class GameManager : MonoBehaviour
         
         if (pve) 
         {
-            GameObject enemyPrefab = team1Rounds.Contains(roundsPlayed) ? BTPrefab : FSMPrefab;
-            for (int i = 0; i < numOfEnemies; i++)
+            GameObject enemyPrefab = new GameObject();
+            if (randomizedEnemies)
+            {
+                enemyPrefab = team1Rounds.Contains(roundsPlayed) ? BTPrefab : FSMPrefab;
+            }
+            else
+            {
+                enemyPrefab = BT ? BTPrefab : FSMPrefab;
+            }
+
+            if(roundsPlayed < firstDifficultyThreshold)
+            {
+                enemiesThisRound = maxNumOfEnemies - 2;
+            }
+            else
+            {
+                if(roundsPlayed < secondDifficultyThreshold)
+                {
+                    enemiesThisRound = maxNumOfEnemies - 1;
+                }
+                else
+                {
+                    enemiesThisRound = maxNumOfEnemies;
+                }
+            }
+            team1Members = enemiesThisRound;
+            for (int i = 0; i < enemiesThisRound; i++)
             {
                 int pointIndex = i % spawnPoints1.Count;
                 GameObject enemy = Instantiate(enemyPrefab);
@@ -287,7 +394,7 @@ public class GameManager : MonoBehaviour
         else
         {
             //First team
-            for (int i = 0; i < numOfEnemies; i++)
+            for (int i = 0; i < maxNumOfEnemies; i++)
             {
                 int pointIndex = i % spawnPoints1.Count;
                 GameObject enemy = Instantiate(team2);
@@ -296,7 +403,7 @@ public class GameManager : MonoBehaviour
             }
 
             //Second team
-            for (int i = 0; i < numOfEnemies; i++)
+            for (int i = 0; i < maxNumOfEnemies; i++)
             {
                 int pointIndex = i % spawnPoints2.Count;
                 GameObject enemy = Instantiate(team1);
@@ -341,6 +448,10 @@ public class GameManager : MonoBehaviour
     {
         if(teamNumber == 0)
         {
+            if (pve && roundsPlayed < numOfRounds / 2 && team1Members == maxNumOfEnemies)
+            {
+                team1Members--;
+            }
             team1Members--;
         }
         else
@@ -390,35 +501,56 @@ public class GameManager : MonoBehaviour
         knownEnemies1 = new KnownEnemiesBlackboard();
         knownEnemies2 = new KnownEnemiesBlackboard();
 
-        team1Members = team2Members = numOfEnemies;
-        team1Wins = team2Wins = 0;
+        team1Members = team2Members = enemiesThisRound;
 
         popUpObject.SetActive(false);
+        timer = 0f;
     }
 
     private void RandomizeTeamOrder()
     {
-        Debug.Log("Team1:");
-        for (int i = 0; i < numOfRounds; i++)
+        int roundsPerTeam = numOfRounds / 2;
+        int numOfStages = numOfThresholds + 1;
+        for (int i = 0; i < roundsPerTeam; i++)
         {
-            int randNum = Random.Range(0, numOfRounds * 2 - 1);
+            int randNum = 0;
+            if (i < roundsPerTeam / numOfStages)
+            {
+                randNum = Random.Range(0, numOfRounds / numOfStages - 1);
+            }
+            else if(i < roundsPerTeam / numOfStages * 2)
+            {
+                randNum = Random.Range(numOfRounds / numOfStages, numOfRounds / numOfStages * 2 - 1);
+            }
+            else
+            {
+                randNum = Random.Range(numOfRounds / numOfStages * 2, numOfRounds - 1);
+            }
 
             while (team1Rounds.Contains(randNum))
             {
-                randNum = Random.Range(0, numOfRounds * 2 - 1);
+                if (i < roundsPerTeam / numOfStages)
+                {
+                    randNum = Random.Range(0, numOfRounds / numOfStages - 1);
+                }
+                else if (i < roundsPerTeam / numOfStages * 2)
+                {
+                    randNum = Random.Range(numOfRounds / numOfStages, numOfRounds / numOfStages * 2 - 1);
+                }
+                else
+                {
+                    randNum = Random.Range(numOfRounds / numOfStages * 2, numOfRounds - 1);
+                }
             }
 
             team1Rounds.Add(randNum);
-            Debug.Log(team1Rounds[i]);
         }
 
-        Debug.Log("Team2:");
-        for (int i = 0; i < numOfRounds * 2; i++)
+        for (int i = 0; i < numOfRounds; i++)
         {
             if (!team1Rounds.Contains(i))
             {
                 team2Rounds.Add(i);
-                Debug.Log(i);
             }
         }
     }
@@ -426,5 +558,31 @@ public class GameManager : MonoBehaviour
     public void SetPlayerStatus(bool alive)
     {
         playerAlive = alive;
+    }
+
+    private void SwapSpawnPoints()
+    {
+        List<Transform> bufferList = new List<Transform>();
+        foreach(Transform spawnPoint in spawnPoints1)
+        {
+            bufferList.Add(spawnPoint);
+        }
+
+        spawnPoints1.Clear();
+        foreach(Transform spawnPoint in spawnPoints2)
+        {
+            spawnPoints1.Add(spawnPoint);
+        }
+
+        spawnPoints2.Clear();
+        foreach(Transform spawnPoint in bufferList)
+        {
+            spawnPoints2.Add(spawnPoint);
+        }
+    }
+
+    public void UpdateRoundText()
+    {
+        roundText.text = "Rounds: " + (roundsPlayed + 1).ToString() + "/" + numOfRounds;
     }
 }

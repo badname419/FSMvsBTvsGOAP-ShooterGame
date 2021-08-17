@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class FieldOfView : MonoBehaviour
 {
-    private string playerTag;
+    public string playerTag;
     private EnemyStats enemyStats;
     private KnownEnemiesBlackboard knownEnemiesBlackboard;
 
@@ -14,6 +14,9 @@ public class FieldOfView : MonoBehaviour
     public Vector3 lastKnownEnemyPosition;
     public GameObject closestEnemyObject;
     private EnemyThinker enemyThinker;
+
+    //Debug
+    GameObject signalCube;
 
     public class VisibleEnemy
     {
@@ -36,11 +39,16 @@ public class FieldOfView : MonoBehaviour
     {
         closestEnemyPosition = Vector3.zero;
         lastKnownEnemyPosition = closestEnemyPosition;
-        knownEnemiesBlackboard = GetComponent<EnemyThinker>().knownEnemiesBlackboard;
-        playerTag = enemyThinker.GetGameManager().playerTag;
+        //knownEnemiesBlackboard = GetComponent<EnemyThinker>().knownEnemiesBlackboard;
+        //playerTag = enemyThinker.GetGameManager().playerTag;
 
         visibleEnemies = new List<VisibleEnemy>();
         seesEnemy = false;
+        /*
+        if (this.gameObject.name == "EnemyBT(Clone)")
+        {
+            signalCube = transform.Find("SignalCube").gameObject;
+        }*/
         if (!this.CompareTag(playerTag))
         {
             enemyStats = enemyThinker.enemyStats;
@@ -70,7 +78,7 @@ public class FieldOfView : MonoBehaviour
             Transform enemy = enemiesInViewRadius[i].transform;
             Vector3 dirToEnemy = (enemy.position - transform.position).normalized;
             Vector3 fromVision = new Vector3(transform.forward.x, transform.forward.y, transform.forward.z - 1);
-            if (Vector3.Angle(fromVision , dirToEnemy) < viewAngle / 2)
+            if (Vector3.Angle(transform.forward , dirToEnemy) < viewAngle / 2)
             {
                 float distToEnemy = Vector3.Distance(transform.position, enemy.position);
 
@@ -78,7 +86,7 @@ public class FieldOfView : MonoBehaviour
 
 
                 RaycastHit hit;
-                if (Physics.SphereCast(transform.position, 0.3f, dirToEnemy, out hit))
+                if (Physics.SphereCast(transform.position, 0.45f, dirToEnemy, out hit))
                 {
                     if (!hit.collider.CompareTag(enemyStats.wallTag) && !hit.collider.CompareTag(transform.tag))
                     {
@@ -180,5 +188,15 @@ public class FieldOfView : MonoBehaviour
             }
         }
         return visibleObjects;
+    }
+
+    public void SetupEnemyBlackboard(KnownEnemiesBlackboard blackboard)
+    {
+        this.knownEnemiesBlackboard = blackboard;
+    }
+
+    public void SetupPlayerTag(string playerTag)
+    {
+        this.playerTag = playerTag;
     }
 }

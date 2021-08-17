@@ -16,6 +16,7 @@ public class MeleeCooldownDecision : Decision
         EnemyThinker enemyThinker = controller.enemyThinker;
         EnemyStats enemyStats = enemyThinker.enemyStats;
 
-        return enemyThinker.timer - enemyThinker.meleeAttackTime > enemyStats.meleeWaitTime;
+        bool result = enemyThinker.timer - enemyThinker.meleeAttackTime > enemyStats.meleeWaitTime;
+        return result;
     }
 }

@@ -18,12 +18,12 @@ MonoBehaviour:
   dashRange: 15
   viewRadius: 72
   viewAngle: 138
-  kitDetectionRange: 50
+  kitDetectionRange: 40
   meleeRange: 5
   minimumLookingAngle: 1.5
   shootingDamage: 5
   attackRate: 0.6
-  shootingWaitTime: 0.45
+  shootingWaitTime: 0.4
   combatDuration: 10
   meleeAttackDuration: 0.2
   meleeWaitTime: 0.5
@@ -49,5 +49,5 @@ MonoBehaviour:
   maxRotations: 5
   aggroDistance: 1000
   arrivalDistance: 2
-  hpPerSecond: 1
+  hpPerSecond: 1.15
   hpFromKit: 40

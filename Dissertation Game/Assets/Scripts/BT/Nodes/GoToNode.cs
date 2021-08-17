@@ -47,6 +47,10 @@ public class GoToNode: Node
             navMeshAgent.isStopped = true;
             return NodeState.FAILURE;
         }
+        if (targetPosition == null)
+        {
+            targetPosition = aiPosition;
+        }
 
         float distance = Vector3.Distance(targetPosition, aiPosition);
         if (distance > enemyStats.arrivalDistance)

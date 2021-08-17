@@ -99,9 +99,13 @@ public class SensingSystem : MonoBehaviour
     {
         Transform closestKit;
         int index = 0;
-        if (foundKitsList.Count.Equals(1))
+        if (foundKitsList.Count.Equals(0))
         {
-            if (foundKitsList.Count > index)
+            return this.transform;
+        }
+        else if (foundKitsList.Count.Equals(1))
+        {
+            if (foundKitsList[index].transform != null)
             {
                 closestKit = foundKitsList[index].transform;
             }
@@ -163,7 +167,6 @@ public class SensingSystem : MonoBehaviour
     {
         if (!bulletOwner.CompareTag(transform.tag))
         {
-            Debug.Log("Hit");
             knownEnemiesBlackboard.UpdateEnemyList(bulletOwner);
         }
     }

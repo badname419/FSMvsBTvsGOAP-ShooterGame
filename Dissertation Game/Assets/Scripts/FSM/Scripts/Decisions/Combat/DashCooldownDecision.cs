@@ -16,6 +16,8 @@ public class DashCooldownDecision : Decision
         EnemyThinker enemyThinker = controller.enemyThinker;
         EnemyStats enemyStats = enemyThinker.enemyStats;
 
-        return enemyThinker.timer - enemyThinker.dashEndTime > enemyStats.dashCooldown;
+        
+        bool result = enemyThinker.timer - enemyThinker.dashEndTime > enemyStats.dashCooldown;
+        return result;
     }
 }

@@ -43,8 +43,6 @@ public class SearchingAction : Action {
             randomizedResult[j] = i;
         }
 
-        Debug.Log(randomizedResult[0]);
-
         for (int i = 0; i < randomizedResult.Length; i++)
         {
             enemyThinker.randomizedRoute.Add(randomizedResult[i]);

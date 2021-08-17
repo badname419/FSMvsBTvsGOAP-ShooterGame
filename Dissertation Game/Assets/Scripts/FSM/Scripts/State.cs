@@ -20,6 +20,7 @@ public class State : ScriptableObject
         for (int i = 0; i < actions.Length; i++)
         {
             actions[i].Act(controller);
+            //controller.enemyThinker.logWriting.AddLine(actions[i].name.ToString());
         }
     }
 
@@ -32,6 +33,7 @@ public class State : ScriptableObject
             for (int j = 0; j < transitions[i].decision.Length; j++)
             {
                 decisionSucceeded = transitions[i].decision[j].Decide(controller);
+                //controller.enemyThinker.logWriting.AddLine(transitions[i].decision[j].name.ToString() + " " + decisionSucceeded);
                 if (!decisionSucceeded)
                 {
                     break;

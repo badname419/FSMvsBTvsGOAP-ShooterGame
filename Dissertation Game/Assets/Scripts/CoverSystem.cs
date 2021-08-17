@@ -108,10 +108,10 @@ public class CoverSystem : MonoBehaviour
     void Update()
     {
         //Make it so that the list of waypoints the player sees at the time is stored globally and can be accessed by the enemies at all times.  
-        if (Time.frameCount % interval == 0)
+        /*if (Time.frameCount % interval == 0)
         {
             bestCover = FindBestCoveringSpot();
-        }
+        }*/
     }
 
     void OnDrawGizmos()
@@ -180,14 +180,14 @@ public class CoverSystem : MonoBehaviour
     public GameObject FindBestCoveringSpot()
     {
         //Debug
-        DestroyFloatingText();
+        //DestroyFloatingText();
 
         waypointList.Clear();
         FindNearbyWaypoints();
         EvaluateWaypoints();
 
         //Debug
-        DrawFloatingText();
+        //DrawFloatingText();
 
         //Debug
         if (updateWallsBounds)

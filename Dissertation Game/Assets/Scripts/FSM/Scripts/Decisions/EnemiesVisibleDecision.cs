@@ -21,43 +21,9 @@ public class EnemiesVisibleDecision : Decision
         if (enemyVisible)
         {
             enemyThinker.closestEnemyObject = fieldOfView.closestEnemyObject;
-            //enemyThinker.closestEnemyTransform = fieldOfView.closestEnemyObject.transform;
             enemyThinker.walkingTarget = fieldOfView.closestEnemyPosition;
         }
         return enemyVisible;
-
-        /*
-        Vector3 position = controller.gameObject.transform.position;
-        Collider[] enemiesInViewRadius = Physics.OverlapSphere(position, controller.enemyStats.viewRadius, controller.enemyStats.enemyLayer);
-
-        List<Transform> visibleEnemiesList = new List<Transform>();
-
-        for (int i = 0; i < enemiesInViewRadius.Length; i++)
-        {
-            Transform enemy = enemiesInViewRadius[i].transform;
-            Vector3 dirToEnemy = (enemy.position - position).normalized;
-            if (Vector3.Angle(controller.gameObject.transform.forward, dirToEnemy) < controller.enemyStats.viewAngle / 2)
-            {
-                float distToEnemy = Vector3.Distance(controller.gameObject.transform.position, enemy.position);
-
-                if (!Physics.Raycast(controller.gameObject.transform.position, dirToEnemy, distToEnemy, controller.enemyStats.coverMask))
-                {
-                    visibleEnemiesList.Add(enemy);
-                    controller.enemyThinker.knownEnemiesBlackboard.UpdateEnemyList(enemy);
-                }
-            }
-        }
-
-        if (visibleEnemiesList.Count != 0)
-        {
-            controller.enemyThinker.closestEnemyTransform = ChooseTarget(controller, visibleEnemiesList);
-            controller.enemyThinker.walkingTarget = controller.enemyThinker.closestEnemyTransform.position;
-            return true;
-        }
-        else
-        {
-            return false;
-        }*/
  
     }
 

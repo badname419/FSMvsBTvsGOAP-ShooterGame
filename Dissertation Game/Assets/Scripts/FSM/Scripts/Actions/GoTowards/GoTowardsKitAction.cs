@@ -21,6 +21,10 @@ public class GoTowardsKitAction : Action
             targetPosition = enemyThinker.transform.position;
         }
 
+        if (targetPosition == null)
+        {
+            targetPosition = aiPosition;
+        }
         enemyThinker.walkingTarget = targetPosition;
 
         controller.walkingTargetEnum = StateController.Target.Enemy;

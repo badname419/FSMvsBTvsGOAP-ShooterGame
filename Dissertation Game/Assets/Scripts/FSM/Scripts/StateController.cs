@@ -24,7 +24,6 @@ public class StateController : MonoBehaviour
     void Update()
     {
         currentState.UpdateState(this);
-        Debug.Log(currentState.ToString());
 
         if (enemyThinker.swordObject.activeSelf)
         {
@@ -34,6 +33,8 @@ public class StateController : MonoBehaviour
                 enemyThinker.pistolObject.SetActive(true);
             }
         }
+
+        //enemyThinker.logWriting.AddLine("State: " + currentState.ToString());
     }
 
     void OnDrawGizmos()
@@ -49,7 +50,7 @@ public class StateController : MonoBehaviour
         if (nextState != remainState)
         {
             currentState = nextState;
-            GetComponent<Renderer>().material.SetColor("_Color", currentState.sceneGizmoColor);
+            //GetComponent<Renderer>().material.SetColor("_Color", currentState.sceneGizmoColor);
             OnExitState();
         }
     }

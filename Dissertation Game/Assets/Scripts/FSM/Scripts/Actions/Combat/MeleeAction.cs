@@ -16,24 +16,29 @@ public class MeleeAction : Action
 
         if (enemyThinker.lookingAtTarget)
         {
-            EnemyStats enemyStats = enemyThinker.enemyStats;
             Vector3 aiPosition = enemyThinker.transform.position;
-            enemyThinker.pistolObject.gameObject.SetActive(false);
-            enemyThinker.swordObject.gameObject.SetActive(true);
-
             GameObject closestEnemy = enemyThinker.knownEnemiesBlackboard.DetermineTheClosestEnemyObject(aiPosition);
 
-            if (closestEnemy.TryGetComponent<PlayerLogic>(out PlayerLogic playerLogic))
+            if (closestEnemy != null)
             {
-                playerLogic.LowerHP(enemyStats.meleeDamage);
-            }
-            else
-            {
-                EnemyThinker thinker = closestEnemy.GetComponent<EnemyThinker>();
-                thinker.LowerHP(enemyStats.meleeDamage);
-            }
 
-            enemyThinker.meleeAttackTime = enemyThinker.timer;
+                EnemyStats enemyStats = enemyThinker.enemyStats;
+
+                enemyThinker.pistolObject.gameObject.SetActive(false);
+                enemyThinker.swordObject.gameObject.SetActive(true);
+
+                if (closestEnemy.TryGetComponent<PlayerLogic>(out PlayerLogic playerLogic))
+                {
+                    playerLogic.LowerHP(enemyStats.meleeDamage);
+                }
+                else
+                {
+                    EnemyThinker thinker = closestEnemy.GetComponent<EnemyThinker>();
+                    thinker.LowerHP(enemyStats.meleeDamage);
+                }
+
+                enemyThinker.meleeAttackTime = enemyThinker.timer;
+            }
         }
     }
 }

@@ -65,6 +65,7 @@ public class EnemyThinker : MonoBehaviour
     private Image healthBar;
     private GameManager gameManager;
     private Transform bestCoverSpot;
+    //public LogWriting logWriting;
     public EnemyStats enemyStats;
     public bool lookingAtTarget;
     public bool isMoving;
@@ -90,6 +91,7 @@ public class EnemyThinker : MonoBehaviour
         currentHP = enemyStats.maxHp;
         isDashing = false;
         lookingAtTarget = false;
+        //logWriting = new LogWriting("gameLog.txt");
 
         if (gameManager.IsPVE())
         {
@@ -146,6 +148,7 @@ public class EnemyThinker : MonoBehaviour
 
         this.pathfinding = pathfinding;
         this.knownEnemiesBlackboard = knownEnemies;
+        fieldOfView.SetupEnemyBlackboard(knownEnemies);
 
         this.numOfRotations = 0;
         this.totalRotations = enemyStats.maxRotations;
@@ -154,7 +157,7 @@ public class EnemyThinker : MonoBehaviour
         this.teamNumber = teamNumber;
     }
 
-    public void LowerHP(int value)
+    public void LowerHP(float value)
     {
         currentHP -= value;
         inCombat = true;
@@ -162,7 +165,7 @@ public class EnemyThinker : MonoBehaviour
         UpdateHPBar();
     }
 
-    public void RestoreHP(int value)
+    public void RestoreHP(float value)
     {
         currentHP += value;
 
@@ -193,7 +196,7 @@ public class EnemyThinker : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(waitTime);
-            RestoreHP((int)enemyStats.hpPerSecond);
+            RestoreHP(enemyStats.hpPerSecond);
         }
     }
 

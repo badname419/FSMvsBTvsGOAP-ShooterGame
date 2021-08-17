@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerLogic : MonoBehaviour
 {
@@ -9,6 +10,7 @@ public class PlayerLogic : MonoBehaviour
     private int currentHealth;
     private HpBarScript hpBarScript;
     private GameManager gameManager;
+    private Image healthBar;
 
     public int CurrentHealth { get => currentHealth; set => currentHealth = value; }
     public int MaxHealth { get => maxHealth; set => maxHealth = value; }
@@ -20,6 +22,7 @@ public class PlayerLogic : MonoBehaviour
         currentHealth = maxHealth;
         hpBarScript = GetComponent<HpBarScript>();
         gameManager = GameObject.Find("GameManager").GetComponent<GameManager>();
+        healthBar = transform.Find("Canvas/HealthBG/HealthBar").GetComponent<Image>();
     }
 
     // Update is called once per frame
@@ -47,6 +50,7 @@ public class PlayerLogic : MonoBehaviour
         }
         enemiesBlackboard.UpdateEnemyHP(transform, currentHealth);
         hpBarScript.UpdateHealthBar();
+        UpdateHPBar();
     }
 
     public void RestoreHP(int value)
@@ -58,6 +62,12 @@ public class PlayerLogic : MonoBehaviour
         }
         enemiesBlackboard.UpdateEnemyHP(transform, currentHealth);
         hpBarScript.UpdateHealthBar();
+        UpdateHPBar();
+    }
+
+    private void UpdateHPBar()
+    {
+        healthBar.fillAmount = (float)currentHealth / (float)maxHealth;
     }
 
 }

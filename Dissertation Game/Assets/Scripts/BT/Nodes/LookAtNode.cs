@@ -39,7 +39,7 @@ public class LookAtNode: Node
 
             if (target.Equals(EnemyAI.Target.Enemy))
             {
-                targetPosition = enemyThinker.knownEnemiesBlackboard.GetClosestCurrentPosition(aiPosition);
+                targetPosition = enemyThinker.fieldOfView.closestEnemyPosition;
             }
             else if (target.Equals(EnemyAI.Target.Around))
             {

@@ -1,6 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System;
+//using System;
 using UnityEngine;
 
 public class RandomizeSearchRoute : Node
@@ -17,11 +17,11 @@ public class RandomizeSearchRoute : Node
         int n = enemyThinker.searchPoints.Count;
         enemyThinker.randomizedRoute.Clear();
 
-        var random = new System.Random();
+        //var random = new UnityEngine.Random;
         var randomizedResult = new int[n];
         for (var i = 0; i < n; i++)
         {
-            var j = random.Next(0, i + 1);
+            var j = Random.Range(0, i + 1);
             if (i != j)
             {
                 randomizedResult[i] = randomizedResult[j];
@@ -31,7 +31,7 @@ public class RandomizeSearchRoute : Node
 
         for (int i = 0; i < randomizedResult.Length; i++) 
         {
-            enemyThinker.randomizedRoute.Add(randomizedResult[i]);
+            enemyThinker.randomizedRoute.Add(randomizedResult[i]);         
         }
 
         return NodeState.SUCCESS;

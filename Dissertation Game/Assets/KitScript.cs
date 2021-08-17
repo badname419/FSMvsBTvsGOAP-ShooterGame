@@ -37,7 +37,7 @@ public class KitScript : MonoBehaviour
             PlayerLogic playerLogic = detectedPlayers[0].GetComponent<PlayerLogic>();
             playerLogic.RestoreHP(HPRestored);
             gameManager.RemoveKit(transform.position);
-            Destroy(this);
+            Destroy(this.gameObject);
         }
         else
         {
@@ -52,7 +52,7 @@ public class KitScript : MonoBehaviour
                     sensingSystem.RemoveKit(transform);
                     gameManager.RemoveKit(transform.position);
 
-                    Destroy(this);
+                    Destroy(this.gameObject);
                 }
             }
 

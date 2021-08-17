@@ -12,14 +12,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] private float moveSpeed = 30f;
     [SerializeField] private float rotationSpeed = 10f;
     [SerializeField] private float rotationRate = 15f;
-    [SerializeField] private float shootingWaitTime = 0.45f;
-    [SerializeField] private float dashForce = 30f;
-    [SerializeField] private float dashDuration = 0.2f;
-
+    [SerializeField] private float shootingWaitTime = 1f;
+    [SerializeField] private int shootingDamage = 5;
+    
     private Rigidbody rigidbody;
     private Vector3 moveInput;
     private Shooting shooting;
-    private int shootingDamage;
+    
     private bool isMoving;
 
     public GameObject camera;
@@ -36,7 +35,6 @@ public class PlayerMovement : MonoBehaviour
     {
         rigidbody = GetComponent<Rigidbody>();
         shooting = GetComponent<Shooting>();
-        shootingDamage = 5;
         isMoving = false;
         activeMovement = true;
     }
